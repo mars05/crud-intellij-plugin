@@ -1,0 +1,23 @@
+# Maven #
+target/
+
+# IDEA #
+.idea/
+*.iml
+
+# Eclipse #
+.settings/
+.classpath
+.project
+
+
+out/
+.gradle/
+build/
+generated/
+idea-sandbox/
+distro/
+*.ipr
+*.iws
+
+gradle.properties

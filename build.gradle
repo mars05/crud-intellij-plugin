@@ -1,0 +1,50 @@
+plugins {
+    id 'org.jetbrains.intellij' version '0.4.8'
+}
+
+group 'com.github.mars05'
+version pluginVersion
+
+apply plugin: 'java'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.47'
+    compile group: 'org.projectlombok', name: 'lombok', version: '1.18.6'
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.45'
+    compile group: 'org.freemarker', name: 'freemarker', version: '2.3.28'
+    compileOnly fileTree(dir: 'lib', include: ['*.jar'])
+}
+
+intellij {
+    version ideaVersion
+    intellij.updateSinceUntilBuild false
+    sandboxDirectory = "${rootProject.projectDir}/idea-sandbox/idea-${ideaVersion}"
+    plugins 'maven'
+}
+
+publishPlugin {
+    token IJ_REPO_TOKEN
+}
+patchPluginXml {
+    changeNotes """
+<div> 
+  <p>1.0.0 </p> 
+  <ul> 
+    <li> 第一个版本 </li> 
+  </ul>
+</div>
+       """
+}

@@ -1,0 +1,52 @@
+<idea-plugin>
+    <id>com.github.mars05.crud-plugin</id>
+    <name>Crud Plugin</name>
+    <vendor url="https://github.com/mars05/crud-intellij-plugin" email="xiaoyucoder@163.com">mars05</vendor>
+    <category>Code Tools</category>
+    <description><![CDATA[
+<div>
+  <h1> Crud Plugin </h1>
+  <p> 一个增删改查的插件，可以根据数据库表结构，帮助您快速生成相关代码。 </p>
+  <p> 使用的方式有两种: </p>
+  <ul>
+   <li> 从Crud Plugin 生成项目 </li>
+   <li> 已有项目右键选择生成代码 </li>
+  </ul>
+  <p> 更多信息请访问: <a href="https://github.com/mars05/crud-intellij-plugin">GitHub</a> </p>
+</div>
+    ]]></description>
+    <change-notes><![CDATA[
+        Change notes will be filled by gradle build
+]]></change-notes>
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+
+    <depends>org.jetbrains.idea.maven</depends>
+
+    <idea-version since-build="173.0"/>
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <projectTemplatesFactory implementation="com.github.mars05.crud.intellij.plugin.wizard.CrudTemplateFactory"/>
+        <applicationService serviceImplementation="com.github.mars05.crud.intellij.plugin.setting.CrudSettings"/>
+    </extensions>
+
+    <actions>
+        <group id="CrudActionGroup" text="Crud"
+               popup="true" icon="/icons/crud.png">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+        </group>
+        <!-- Add your actions here -->
+        <action class="com.github.mars05.crud.intellij.plugin.action.NewFileAction"
+                id="crud.NewFileAction" description="创建Crud"
+                icon="/icons/mysql.png"
+                text="从MySQL生成">
+            <add-to-group group-id="CrudActionGroup"/>
+        </action>
+    </actions>
+</idea-plugin>
