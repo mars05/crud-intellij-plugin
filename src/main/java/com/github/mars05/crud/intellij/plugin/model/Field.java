@@ -3,8 +3,6 @@ package com.github.mars05.crud.intellij.plugin.model;
 import com.google.common.base.CaseFormat;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Set;
-
 /**
  * @author xiaoyu
  */
@@ -20,6 +18,9 @@ public class Field {
      * @param columnName 列的名称
      */
     public Field(String comment, Class<?> type, String columnName) {
+        if (StringUtils.startsWith(columnName, "is_")) {
+            type = boolean.class;
+        }
         this.comment = comment;
         this.type = type;
         this.columnName = columnName;
@@ -43,7 +44,11 @@ public class Field {
     }
 
     public String getName() {
-        return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, columnName);
+        String str = columnName;
+        if (StringUtils.startsWith(columnName, "is_")) {
+            str = StringUtils.substringAfter(columnName, "is_");
+        }
+        return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, str);
     }
 
     public void setId(boolean id) {
@@ -56,11 +61,7 @@ public class Field {
 
     public boolean isImport() {
         String typeName = getTypeName();
-        try {
-            if ("java.lang".equals(StringUtils.substringBeforeLast(typeName, ".")) || Class.forName(typeName).isPrimitive()) {
-                return false;
-            }
-        } catch (ClassNotFoundException e) {
+        if (type.isPrimitive() || "java.lang".equals(StringUtils.substringBeforeLast(typeName, "."))) {
             return false;
         }
         return true;
