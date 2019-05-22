@@ -1,6 +1,9 @@
 plugins {
     id 'org.jetbrains.intellij' version '0.4.8'
 }
+Properties properties = new Properties()
+properties.load project.rootProject.file('local.properties').newDataInputStream()
+def IJ_REPO_TOKEN = properties.getProperty("IJ_REPO_TOKEN")
 
 group 'com.github.mars05'
 version pluginVersion

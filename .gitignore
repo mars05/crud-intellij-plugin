@@ -20,4 +20,4 @@ distro/
 *.ipr
 *.iws
 
-gradle.properties
+local.properties
