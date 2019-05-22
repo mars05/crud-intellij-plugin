@@ -40,10 +40,14 @@ publishPlugin {
 }
 patchPluginXml {
     changeNotes """
-<div> 
+<div>
+  <p>1.0.1</p> 
+  <ul> 
+    <li>Changed some plugin information</li> 
+  </ul>
   <p>1.0.0 </p> 
   <ul> 
-    <li> 第一个版本 </li> 
+    <li>Initial release</li> 
   </ul>
 </div>
        """
