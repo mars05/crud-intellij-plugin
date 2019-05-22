@@ -5,14 +5,28 @@
     <category>Code Tools</category>
     <description><![CDATA[
 <div>
-  <h1> Crud Plugin </h1>
-  <p> A plugin for create, delete, update, and retrieve can help you quickly generate relevant code based on the database table structure.</p>
-  <p> There are two ways to use: </p>
-  <ul>
-   <li> Generate project from Crud Plugin </li>
-   <li> Right project has selected right to generate code </li>
-  </ul>
-  <p> For more information please visit: <a href="https://github.com/mars05/crud-intellij-plugin">GitHub</a> </p>
+    <h1> Crud Plugin </h1>
+    <hr/>
+    <div>
+        <p> A plugin for create, delete, update, and retrieve can help you quickly generate relevant code based on the
+            database table structure.</p>
+        <p> There are two ways to use: </p>
+        <ul>
+            <li> Generate project from Crud Plugin</li>
+            <li> Right project has selected right to generate code</li>
+        </ul>
+        <p> For more information please visit: <a href="https://github.com/mars05/crud-intellij-plugin">GitHub</a></p>
+    </div>
+    <hr/>
+    <div>
+        <p> 一个增删改查的插件，可以根据数据库表结构，帮助您快速生成相关代码。 </p>
+        <p> 使用的方式有两种: </p>
+        <ul>
+            <li> 从Crud Plugin 生成项目</li>
+            <li> 已有项目右键选择生成代码</li>
+        </ul>
+        <p> 更多信息请访问: <a href="https://github.com/mars05/crud-intellij-plugin">GitHub</a></p>
+    </div>
 </div>
     ]]></description>
     <change-notes><![CDATA[
