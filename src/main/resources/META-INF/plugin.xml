@@ -12,7 +12,7 @@
         <p> There are two ways to use: </p>
         <ul>
             <li> Generate project from Crud Plugin</li>
-            <li> Right project has selected right to generate code</li>
+            <li> Project right click to generate code</li>
         </ul>
         <p> For more information please visit: <a href="https://github.com/mars05/crud-intellij-plugin">GitHub</a></p>
     </div>
