@@ -25,7 +25,7 @@ import java.util.List;
  * @author xiaoyu
  */
 public class PsiFileUtils {
-    private static FreemarkerConfiguration freemarker = new FreemarkerConfiguration("templates");
+    private static FreemarkerConfiguration freemarker = new FreemarkerConfiguration("/templates");
 
     public static void createPOMXML(Project project, VirtualFile root, Selection selection) throws Exception {
         VirtualFile virtualFile = root.createChildData(project, "pom.xml");
