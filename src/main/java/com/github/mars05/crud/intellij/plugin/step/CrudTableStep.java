@@ -1,4 +1,4 @@
-package com.github.mars05.crud.intellij.plugin.wizard;
+package com.github.mars05.crud.intellij.plugin.step;
 
 import com.github.mars05.crud.intellij.plugin.model.Column;
 import com.github.mars05.crud.intellij.plugin.model.Table;

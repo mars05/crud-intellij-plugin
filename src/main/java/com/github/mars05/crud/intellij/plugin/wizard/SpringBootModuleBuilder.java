@@ -2,6 +2,9 @@ package com.github.mars05.crud.intellij.plugin.wizard;
 
 import com.github.mars05.crud.intellij.plugin.CrudBundle;
 import com.github.mars05.crud.intellij.plugin.icon.CrudIcons;
+import com.github.mars05.crud.intellij.plugin.step.CrudConnStep;
+import com.github.mars05.crud.intellij.plugin.step.CrudDbStep;
+import com.github.mars05.crud.intellij.plugin.step.CrudTableStep;
 import com.github.mars05.crud.intellij.plugin.ui.CrudConnView;
 import com.github.mars05.crud.intellij.plugin.ui.CrudDbView;
 import com.github.mars05.crud.intellij.plugin.ui.CrudTableView;
