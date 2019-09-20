@@ -23,12 +23,11 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.47'
-    compile group: 'org.projectlombok', name: 'lombok', version: '1.18.6'
-    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.45'
     compile group: 'org.freemarker', name: 'freemarker', version: '2.3.28'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.6'
     compileOnly fileTree(dir: 'lib', include: ['*.jar'])
+    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 intellij {
