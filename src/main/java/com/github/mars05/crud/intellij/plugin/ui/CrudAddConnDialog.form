@@ -112,6 +112,14 @@
             </constraints>
             <properties/>
           </component>
+          <component id="3c3ea" class="javax.swing.JButton" binding="myTestButton" custom-create="true">
+            <constraints>
+              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="测试连接"/>
+            </properties>
+          </component>
         </children>
       </grid>
       <grid id="9a702" binding="myActionPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
