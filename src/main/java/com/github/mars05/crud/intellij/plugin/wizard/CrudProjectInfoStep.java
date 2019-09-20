@@ -12,47 +12,47 @@ import javax.swing.*;
  * @author xiaoyu
  */
 public class CrudProjectInfoStep extends ModuleWizardStep {
-    private JPanel myMainPanel;
-    private JTextField myGroupIdField;
-    private JTextField myArtifactIdField;
-    private JTextField myVersionField;
-    private JTextField myPackageField;
-    private JComboBox myFrameComboBox;
+	private JPanel myMainPanel;
+	private JTextField myGroupIdField;
+	private JTextField myArtifactIdField;
+	private JTextField myVersionField;
+	private JTextField myPackageField;
+	private JComboBox myFrameComboBox;
 
-    @Override
-    public JComponent getComponent() {
-        return myMainPanel;
-    }
+	@Override
+	public JComponent getComponent() {
+		return myMainPanel;
+	}
 
-    @Override
-    public void updateDataModel() {
+	@Override
+	public void updateDataModel() {
 
-    }
+	}
 
-    @Override
-    public boolean validate() throws ConfigurationException {
-        if (StringUtil.isEmptyOrSpaces(myGroupIdField.getText())) {
-            throw new ConfigurationException(CrudBundle.message("projectinfo.validate.groupid"));
-        }
-        if (StringUtil.isEmptyOrSpaces(myArtifactIdField.getText())) {
-            throw new ConfigurationException(CrudBundle.message("projectinfo.validate.artifactid"));
-        }
-        if (StringUtil.isEmptyOrSpaces(myVersionField.getText())) {
-            throw new ConfigurationException(CrudBundle.message("projectinfo.validate.version"));
-        }
-        if (StringUtil.isEmptyOrSpaces(myPackageField.getText())) {
-            throw new ConfigurationException(CrudBundle.message("projectinfo.validate.package"));
-        }
+	@Override
+	public boolean validate() throws ConfigurationException {
+		if (StringUtil.isEmptyOrSpaces(myGroupIdField.getText())) {
+			throw new ConfigurationException(CrudBundle.message("validate.projectinfo.groupid"));
+		}
+		if (StringUtil.isEmptyOrSpaces(myArtifactIdField.getText())) {
+			throw new ConfigurationException(CrudBundle.message("validate.projectinfo.artifactid"));
+		}
+		if (StringUtil.isEmptyOrSpaces(myVersionField.getText())) {
+			throw new ConfigurationException(CrudBundle.message("validate.projectinfo.version"));
+		}
+		if (StringUtil.isEmptyOrSpaces(myPackageField.getText())) {
+			throw new ConfigurationException(CrudBundle.message("validate.projectinfo.package"));
+		}
 
-        SelectionContext.setGroupId(myGroupIdField.getText());
-        SelectionContext.setArtifactId(myArtifactIdField.getText());
-        SelectionContext.setVersion(myVersionField.getText());
-        SelectionContext.setPackage(myPackageField.getText());
-        SelectionContext.setOrmType(myFrameComboBox.getSelectedIndex());
-        return super.validate();
-    }
+		SelectionContext.setGroupId(myGroupIdField.getText());
+		SelectionContext.setArtifactId(myArtifactIdField.getText());
+		SelectionContext.setVersion(myVersionField.getText());
+		SelectionContext.setPackage(myPackageField.getText());
+		SelectionContext.setOrmType(myFrameComboBox.getSelectedIndex());
+		return super.validate();
+	}
 
-    public JTextField getArtifactIdField() {
-        return myArtifactIdField;
-    }
+	public JTextField getArtifactIdField() {
+		return myArtifactIdField;
+	}
 }

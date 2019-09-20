@@ -69,24 +69,24 @@ public class CrudAddConnDialog extends DialogWrapper {
 	protected ValidationInfo doValidate() {
 		ValidationInfo info = null;
 		if (StringUtil.isEmptyOrSpaces(myNameField.getText())) {
-			info = new ValidationInfo(CrudBundle.message("conn.validate.name"));
+			info = new ValidationInfo(CrudBundle.message("validate.conn.name"));
 		}
 		if (info == null && StringUtil.isEmptyOrSpaces(myHostField.getText())) {
-			info = new ValidationInfo(CrudBundle.message("conn.validate.host"));
+			info = new ValidationInfo(CrudBundle.message("validate.conn.host"));
 		}
 		String portText = myPortField.getText();
 		if (info == null && StringUtil.isEmptyOrSpaces(portText)) {
-			info = new ValidationInfo(CrudBundle.message("conn.validate.port"));
+			info = new ValidationInfo(CrudBundle.message("validate.conn.port"));
 		}
 		if (info == null && !StringUtils.isNumeric(portText)) {
-			info = new ValidationInfo(CrudBundle.message("conn.validate.portnum"));
+			info = new ValidationInfo(CrudBundle.message("validate.conn.portnum"));
 		}
 		if (info == null && StringUtil.isEmptyOrSpaces(myUsernameField.getText())) {
-			info = new ValidationInfo(CrudBundle.message("conn.validate.username"));
+			info = new ValidationInfo(CrudBundle.message("validate.conn.username"));
 		}
 		if (info == null) {
 			if (myPasswordField.getPassword() == null || StringUtil.isEmptyOrSpaces(new String(myPasswordField.getPassword()))) {
-				info = new ValidationInfo(CrudBundle.message("conn.validate.password"));
+				info = new ValidationInfo(CrudBundle.message("validate.conn.password"));
 			}
 		}
 		return info;
