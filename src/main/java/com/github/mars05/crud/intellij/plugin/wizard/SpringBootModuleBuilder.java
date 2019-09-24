@@ -40,132 +40,135 @@ import java.io.File;
  */
 public class SpringBootModuleBuilder extends ModuleBuilder {
 
-    public SpringBootModuleBuilder() {
-    }
+	public SpringBootModuleBuilder() {
+	}
 
-    @Override
-    public Icon getNodeIcon() {
-        return CrudIcons.SPRING_BOOT;
-    }
+	@Override
+	public Icon getNodeIcon() {
+		return CrudIcons.SPRING_BOOT;
+	}
 
-    @Override
-    public String getPresentableName() {
-        return CrudBundle.message("wizard.spring.boot.name");
-    }
+	@Override
+	public String getPresentableName() {
+		return CrudBundle.message("wizard.spring.boot.name");
+	}
 
 
-    @Override
-    public String getDescription() {
-        return CrudBundle.message("wizard.spring.boot.description");
-    }
+	@Override
+	public String getDescription() {
+		return CrudBundle.message("wizard.spring.boot.description");
+	}
 
-    @Nullable
-    @Override
-    public String getBuilderId() {
-        return getClass().getName();
-    }
+	@Nullable
+	@Override
+	public String getBuilderId() {
+		return getClass().getName();
+	}
 
-    @Nullable
-    @Override
-    public ModuleWizardStep modifySettingsStep(@NotNull SettingsStep settingsStep) {
-        final JTextField moduleNameField = settingsStep.getModuleNameField();
-        String artifactId = SelectionContext.getArtifactId();
-        if (moduleNameField != null && !StringUtil.isEmptyOrSpaces(artifactId)) {
-            moduleNameField.setText(StringUtil.sanitizeJavaIdentifier(artifactId));
-        }
-        return super.modifyProjectTypeStep(settingsStep);
-    }
+	@Nullable
+	@Override
+	public ModuleWizardStep modifySettingsStep(@NotNull SettingsStep settingsStep) {
+		final JTextField moduleNameField = settingsStep.getModuleNameField();
+		String artifactId = SelectionContext.getArtifactId();
+		if (moduleNameField != null && !StringUtil.isEmptyOrSpaces(artifactId)) {
+			moduleNameField.setText(StringUtil.sanitizeJavaIdentifier(artifactId));
+		}
+		return super.modifyProjectTypeStep(settingsStep);
+	}
 
-    @Override
-    public void setupRootModel(ModifiableRootModel rootModel) throws ConfigurationException {
-        Selection selection = SelectionContext.copyToSelection();
-        if (this.myJdk != null) {
-            rootModel.setSdk(this.myJdk);
-        } else {
-            rootModel.inheritSdk();
-        }
-        SelectionContext.clearAllSet();
-        Project project = rootModel.getProject();
-        VirtualFile root = createAndGetContentEntry();
-        rootModel.addContentEntry(root);
-        CrudUtils.runWhenInitialized(project, () -> new WriteCommandAction<VirtualFile>(project) {
-            @Override
-            protected void run(@NotNull Result<VirtualFile> result) throws Throwable {
-                initProject(project, selection);
-            }
-        }.execute());
-    }
+	@Override
+	public void setupRootModel(ModifiableRootModel rootModel) throws ConfigurationException {
+		Selection selection = SelectionContext.copyToSelection();
+		if (this.myJdk != null) {
+			rootModel.setSdk(this.myJdk);
+		} else {
+			rootModel.inheritSdk();
+		}
+		SelectionContext.clearAllSet();
+		Project project = rootModel.getProject();
+		VirtualFile root = createAndGetContentEntry();
+		rootModel.addContentEntry(root);
+		CrudUtils.runWhenInitialized(project, () -> new WriteCommandAction<VirtualFile>(project) {
+			@Override
+			protected void run(@NotNull Result<VirtualFile> result) throws Throwable {
+				initProject(project, selection);
+			}
+		}.execute());
+	}
 
-    private void initProject(Project project, Selection selection) throws Exception {
-        initMavenStructure();
-        //pom.xml生成
-        PsiFileUtils.createPOMXML(project, createAndGetContentEntry(), selection);
-        //swagger生成
-        PsiFileUtils.createSwagger(project, createPackageDir(selection.getPackage() + ".config"), selection);
-        //Application类生成
-        PsiFileUtils.createApplicationJava(project, createPackageDir(selection.getPackage()), selection);
-        //application.yml配置生成
-        PsiFileUtils.createApplicationYml(project, createResourceDir("/"), selection);
+	private void initProject(Project project, Selection selection) throws Exception {
+		initMavenStructure();
+		//pom.xml生成
+		PsiFileUtils.createPOMXML(project, createAndGetContentEntry(), selection);
+		//swagger生成
+		PsiFileUtils.createSwagger(project, createPackageDir(selection.getPackage() + ".config"), selection);
+		//Application类生成
+		PsiFileUtils.createApplicationJava(project, createPackageDir(selection.getPackage()), selection);
+		//application.yml配置生成
+		PsiFileUtils.createApplicationYml(project, createResourceDir("/"), selection);
 
-        selection.setModelPackage(selection.getPackage() + ".model");
-        selection.setDaoPackage(selection.getPackage() + ".dao");
-        if (selection.getOrmType() == SelectionContext.MYBATIS) {
-            selection.setMapperDir(getContentEntryPath() + "/src/main/resources/mapper");
-        }
-        selection.setServicePackage(selection.getPackage() + ".service");
-        selection.setControllerPackage(selection.getPackage() + ".controller");
+		selection.setModelPackage(selection.getPackage() + ".model");
+		selection.setDaoPackage(selection.getPackage() + ".dao");
+		if (selection.getOrmType() == SelectionContext.MYBATIS) {
+			selection.setMapperDir(getContentEntryPath() + "/src/main/resources/mapper");
+		}
+		selection.setServicePackage(selection.getPackage() + ".service");
+		selection.setControllerPackage(selection.getPackage() + ".controller");
 
-        PsiFileUtils.createCrud(project, selection, getContentEntryPath());
-        //解决依赖
-        MavenProjectsManager.getInstance(project).forceUpdateAllProjectsOrFindAllAvailablePomFiles();
-        //优化生成的所有Java类
-        CrudUtils.doOptimize(project);
-    }
+		PsiFileUtils.createCrud(project, selection, getContentEntryPath());
+		//解决依赖
+		try {
+			MavenProjectsManager.getInstance(project).forceUpdateAllProjectsOrFindAllAvailablePomFiles();
+		} catch (Exception ignored) {
+		}
+		//优化生成的所有Java类
+		CrudUtils.doOptimize(project);
+	}
 
-    private VirtualFile createAndGetContentEntry() {
-        String path = FileUtil.toSystemIndependentName(getContentEntryPath());
-        new File(path).mkdirs();
-        return LocalFileSystem.getInstance().refreshAndFindFileByPath(path);
-    }
+	private VirtualFile createAndGetContentEntry() {
+		String path = FileUtil.toSystemIndependentName(getContentEntryPath());
+		new File(path).mkdirs();
+		return LocalFileSystem.getInstance().refreshAndFindFileByPath(path);
+	}
 
-    private void initMavenStructure() {
-        String path = FileUtil.toSystemIndependentName(getContentEntryPath()) + "/";
-        new File(path + "src/main/java").mkdirs();
-        new File(path + "src/main/resources").mkdirs();
-        new File(path + "src/test/java").mkdirs();
-        new File(path + "src/test/resources").mkdirs();
-    }
+	private void initMavenStructure() {
+		String path = FileUtil.toSystemIndependentName(getContentEntryPath()) + "/";
+		new File(path + "src/main/java").mkdirs();
+		new File(path + "src/main/resources").mkdirs();
+		new File(path + "src/test/java").mkdirs();
+		new File(path + "src/test/resources").mkdirs();
+	}
 
-    private VirtualFile createPackageDir(String packageName) {
-        packageName = "src/main/java/" + packageName;
-        String path = FileUtil.toSystemIndependentName(getContentEntryPath() + "/" + StringUtil.replace(packageName, ".", "/"));
-        new File(path).mkdirs();
-        return LocalFileSystem.getInstance().refreshAndFindFileByPath(path);
-    }
+	private VirtualFile createPackageDir(String packageName) {
+		packageName = "src/main/java/" + packageName;
+		String path = FileUtil.toSystemIndependentName(getContentEntryPath() + "/" + StringUtil.replace(packageName, ".", "/"));
+		new File(path).mkdirs();
+		return LocalFileSystem.getInstance().refreshAndFindFileByPath(path);
+	}
 
-    private VirtualFile createResourceDir(String childDir) {
-        String resourceDir = "src/main/resources" + childDir;
-        String path = FileUtil.toSystemIndependentName(getContentEntryPath() + "/" + resourceDir);
-        new File(path).mkdirs();
-        return LocalFileSystem.getInstance().refreshAndFindFileByPath(path);
-    }
+	private VirtualFile createResourceDir(String childDir) {
+		String resourceDir = "src/main/resources" + childDir;
+		String path = FileUtil.toSystemIndependentName(getContentEntryPath() + "/" + resourceDir);
+		new File(path).mkdirs();
+		return LocalFileSystem.getInstance().refreshAndFindFileByPath(path);
+	}
 
-    @Override
-    public ModuleType getModuleType() {
-        return StdModuleTypes.JAVA;
-    }
+	@Override
+	public ModuleType getModuleType() {
+		return StdModuleTypes.JAVA;
+	}
 
-    @Override
-    public ModuleWizardStep[] createWizardSteps(@NotNull WizardContext wizardContext, @NotNull ModulesProvider modulesProvider) {
-        SelectionContext.clearAllSet();
-        CrudTableStep tableStep = new CrudTableStep(new CrudTableView());
-        CrudDbStep dbStep = new CrudDbStep(new CrudDbView(), tableStep);
-        CrudConnStep connStep = new CrudConnStep(new CrudConnView(), dbStep);
-        return new ModuleWizardStep[]{
-                connStep,
-                dbStep,
-                tableStep,
-                new CrudProjectInfoStep()
-        };
-    }
+	@Override
+	public ModuleWizardStep[] createWizardSteps(@NotNull WizardContext wizardContext, @NotNull ModulesProvider modulesProvider) {
+		SelectionContext.clearAllSet();
+		CrudTableStep tableStep = new CrudTableStep(new CrudTableView());
+		CrudDbStep dbStep = new CrudDbStep(new CrudDbView(), tableStep);
+		CrudConnStep connStep = new CrudConnStep(new CrudConnView(), dbStep);
+		return new ModuleWizardStep[]{
+				connStep,
+				dbStep,
+				tableStep,
+				new CrudProjectInfoStep()
+		};
+	}
 }
