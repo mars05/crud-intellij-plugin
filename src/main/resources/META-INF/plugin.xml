@@ -26,7 +26,11 @@
     <!-- uncomment to enable plugin in all products
     <depends>com.intellij.modules.lang</depends>
     -->
-    <depends optional="true">org.jetbrains.idea.maven</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+
+    <depends optional="true" config-file="maven-support.xml">org.jetbrains.idea.maven</depends>
 
     <idea-version since-build="173.0"/>
     <extensions defaultExtensionNs="com.intellij">
