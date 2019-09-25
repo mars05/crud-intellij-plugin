@@ -43,6 +43,13 @@ publishPlugin {
 patchPluginXml {
     changeNotes """
 <div>
+  <p>1.0.2</p> 
+  <ul> 
+    <li>Support internationalization</li> 
+    <li>Support test connection</li> 
+    <li>Optimize project structure</li> 
+    <li>Remove unnecessary dependencies</li> 
+  </ul>
   <p>1.0.1</p> 
   <ul> 
     <li>Changed some plugin information</li> 
