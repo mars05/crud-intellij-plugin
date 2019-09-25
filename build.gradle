@@ -43,6 +43,10 @@ publishPlugin {
 patchPluginXml {
     changeNotes """
 <div>
+  <p>1.0.3</p> 
+  <ul> 
+    <li>Fixed template encoding issue</li> 
+  </ul>  
   <p>1.0.2</p> 
   <ul> 
     <li>Support internationalization</li> 
