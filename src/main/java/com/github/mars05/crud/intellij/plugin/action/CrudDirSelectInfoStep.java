@@ -1,5 +1,6 @@
 package com.github.mars05.crud.intellij.plugin.action;
 
+import com.github.mars05.crud.intellij.plugin.util.OrmType;
 import com.github.mars05.crud.intellij.plugin.util.SelectionContext;
 import com.google.common.base.Preconditions;
 import com.intellij.ide.util.PackageChooserDialog;
@@ -116,18 +117,20 @@ public class CrudDirSelectInfoStep extends ModuleWizardStep {
             throw new ConfigurationException("未选择需要生成的文件");
         }
         JavaPsiFacade facade = JavaPsiFacade.getInstance(myProject);
-        if (0 == myFrameComboBox.getSelectedIndex()) {
+        if (OrmType.MYBATIS == myFrameComboBox.getSelectedIndex()) {
             try {
                 Preconditions.checkNotNull(facade.findClass("org.apache.ibatis.session.SqlSession", GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(myModule)),
                         "org.apache.ibatis.session.SqlSession 未找到");
                 Preconditions.checkNotNull(facade.findClass("org.mybatis.spring.SqlSessionFactoryBean", GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(myModule)),
                         "org.mybatis.spring.SqlSessionFactoryBean 未找到");
-                Preconditions.checkNotNull(facade.findClass("com.github.pagehelper.Page", GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(myModule)),
-                        "com.github.pagehelper.Page 未找到");
+                if (myDaoCheckBox.isSelected()) {
+                    Preconditions.checkNotNull(facade.findClass("com.github.pagehelper.Page", GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(myModule)),
+                            "com.github.pagehelper.Page 未找到");
+                }
             } catch (Exception e) {
                 throw new ConfigurationException(e.getMessage(), "缺少依赖");
             }
-            SelectionContext.setOrmType(SelectionContext.MYBATIS);
+            SelectionContext.setOrmType(OrmType.MYBATIS);
         } else {
             try {
                 Preconditions.checkNotNull(facade.findClass("javax.persistence.Table", GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(myModule)),
@@ -139,7 +142,7 @@ public class CrudDirSelectInfoStep extends ModuleWizardStep {
             } catch (Exception e) {
                 throw new ConfigurationException(e.getMessage(), "缺少依赖");
             }
-            SelectionContext.setOrmType(SelectionContext.JPA);
+            SelectionContext.setOrmType(OrmType.JPA);
         }
 
         //先清空所有包

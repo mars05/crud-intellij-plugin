@@ -8,10 +8,7 @@ import com.github.mars05.crud.intellij.plugin.step.CrudTableStep;
 import com.github.mars05.crud.intellij.plugin.ui.CrudConnView;
 import com.github.mars05.crud.intellij.plugin.ui.CrudDbView;
 import com.github.mars05.crud.intellij.plugin.ui.CrudTableView;
-import com.github.mars05.crud.intellij.plugin.util.CrudUtils;
-import com.github.mars05.crud.intellij.plugin.util.PsiFileUtils;
-import com.github.mars05.crud.intellij.plugin.util.Selection;
-import com.github.mars05.crud.intellij.plugin.util.SelectionContext;
+import com.github.mars05.crud.intellij.plugin.util.*;
 import com.intellij.ide.util.projectWizard.ModuleBuilder;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.SettingsStep;
@@ -109,7 +106,7 @@ public class SpringBootModuleBuilder extends ModuleBuilder {
 
 		selection.setModelPackage(selection.getPackage() + ".model");
 		selection.setDaoPackage(selection.getPackage() + ".dao");
-		if (selection.getOrmType() == SelectionContext.MYBATIS) {
+		if (selection.getOrmType() == OrmType.MYBATIS) {
 			selection.setMapperDir(getContentEntryPath() + "/src/main/resources/mapper");
 		}
 		selection.setServicePackage(selection.getPackage() + ".service");
