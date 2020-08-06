@@ -28,7 +28,7 @@ Intellij Idea | 2017.3以上
   
 ![image](https://raw.githubusercontent.com/mars05/static/master/image/crud2.jpg)
 #### 本地安装：
-下载插件文件 [crud-plugin](https://github.com/mars05/crud-intellij-plugin/releases/download/v1.0.3/crud-plugin-1.0.3.zip)
+下载插件文件 [crud-plugin](https://github.com/mars05/crud-intellij-plugin/releases/download/v1.1.0/crud-plugin-1.1.0.zip)
 ## 使用教程
 
 ### 1.创建一个新的项目:
