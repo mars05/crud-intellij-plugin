@@ -1,10 +1,6 @@
 package ${package};
 
-<#if ormType==0>
 import com.github.pagehelper.PageInfo;
-<#else>
-import org.springframework.data.domain.Page;
-</#if>
 <#list imports as import>
     import ${import};
 </#list>
@@ -32,7 +28,7 @@ public interface ${simpleName} {
      * @param pageSize 每页大小
      * @return {@link ${model.simpleName}}
      */
-     Page<#if ormType==0>Info</#if><${model.simpleName}> findByPage(int pageNum, int pageSize);
+     PageInfo<${model.simpleName}> findByPage(int pageNum, int pageSize);
 
     /**
      * 新增${model.comment}

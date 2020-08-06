@@ -131,7 +131,7 @@ public class CrudDirSelectInfoStep extends ModuleWizardStep {
                 throw new ConfigurationException(e.getMessage(), "缺少依赖");
             }
             SelectionContext.setOrmType(OrmType.MYBATIS);
-        } else {
+        } else if (OrmType.JPA == myFrameComboBox.getSelectedIndex()) {
             try {
                 Preconditions.checkNotNull(facade.findClass("javax.persistence.Table", GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(myModule)),
                         "javax.persistence.Table 未找到");
@@ -143,6 +143,22 @@ public class CrudDirSelectInfoStep extends ModuleWizardStep {
                 throw new ConfigurationException(e.getMessage(), "缺少依赖");
             }
             SelectionContext.setOrmType(OrmType.JPA);
+        } else {
+            try {
+                Preconditions.checkNotNull(facade.findClass("com.baomidou.mybatisplus.annotation.TableName", GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(myModule)),
+                        "com.baomidou.mybatisplus.annotation.TableName 未找到");
+                Preconditions.checkNotNull(facade.findClass("org.apache.ibatis.session.SqlSession", GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(myModule)),
+                        "org.apache.ibatis.session.SqlSession 未找到");
+                Preconditions.checkNotNull(facade.findClass("org.mybatis.spring.SqlSessionFactoryBean", GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(myModule)),
+                        "org.mybatis.spring.SqlSessionFactoryBean 未找到");
+                if (myDaoCheckBox.isSelected()) {
+                    Preconditions.checkNotNull(facade.findClass("com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor", GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(myModule)),
+                            "com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor 未找到");
+                }
+            } catch (Exception e) {
+                throw new ConfigurationException(e.getMessage(), "缺少依赖");
+            }
+            SelectionContext.setOrmType(OrmType.MYBATIS_PLUS);
         }
 
         //先清空所有包

@@ -75,7 +75,7 @@ public class PsiFileUtils {
         try {
             VirtualFile virtualFile = packageDir.createChildData(project, dao.getModel().getSimpleName() + "Mapper.xml");
             StringWriter sw = new StringWriter();
-            Template template = freemarker.getTemplate("mapper.ftl");
+            Template template = freemarker.getTemplate("mybatis/mapper.ftl");
             template.process(dao, sw);
             virtualFile.setBinaryContent(sw.toString().getBytes(CrudUtils.DEFAULT_CHARSET));
         } catch (Exception e) {
@@ -88,10 +88,12 @@ public class PsiFileUtils {
             VirtualFile virtualFile = packageDir.createChildData(project, model.getSimpleName() + ".java");
             StringWriter sw = new StringWriter();
             String templateName;
-            if (model.getOrmType() == OrmType.MYBATIS) {
-                templateName = "model_mybatis.ftl";
+            if (model.getOrmType() == OrmType.JPA) {
+                templateName = "jpa/model.ftl";
+            } else if (model.getOrmType() == OrmType.MYBATIS) {
+                templateName = "mybatis/model.ftl";
             } else {
-                templateName = "model_jpa.ftl";
+                templateName = "mybatisplus/model.ftl";
             }
             Template template = freemarker.getTemplate(templateName);
             template.process(model, sw);
@@ -100,7 +102,6 @@ public class PsiFileUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private static void createDao(Project project, VirtualFile packageDir, Dao dao) {
@@ -108,10 +109,12 @@ public class PsiFileUtils {
             VirtualFile virtualFile = packageDir.createChildData(project, dao.getSimpleName() + ".java");
             StringWriter sw = new StringWriter();
             String templateName;
-            if (dao.getOrmType() == OrmType.MYBATIS) {
-                templateName = "dao_mybatis.ftl";
+            if (dao.getOrmType() == OrmType.JPA) {
+                templateName = "jpa/dao.ftl";
+            } else if (dao.getOrmType() == OrmType.MYBATIS) {
+                templateName = "mybatis/dao.ftl";
             } else {
-                templateName = "dao_jpa.ftl";
+                templateName = "mybatisplus/dao.ftl";
             }
             Template template = freemarker.getTemplate(templateName);
             template.process(dao, sw);
@@ -127,7 +130,15 @@ public class PsiFileUtils {
         try {
             VirtualFile virtualFile = packageDir.createChildData(project, service.getSimpleName() + ".java");
             StringWriter sw = new StringWriter();
-            Template template = freemarker.getTemplate("service.ftl");
+            String templateName;
+            if (service.getOrmType() == OrmType.JPA) {
+                templateName = "jpa/service.ftl";
+            } else if (service.getOrmType() == OrmType.MYBATIS) {
+                templateName = "mybatis/service.ftl";
+            } else {
+                templateName = "mybatisplus/service.ftl";
+            }
+            Template template = freemarker.getTemplate(templateName);
             template.process(service, sw);
             virtualFile.setBinaryContent(sw.toString().getBytes(CrudUtils.DEFAULT_CHARSET));
 
@@ -137,11 +148,19 @@ public class PsiFileUtils {
         }
     }
 
-    private static void createServiceImplJpa(Project project, VirtualFile packageDir, Service service) {
+    private static void createServiceImpl(Project project, VirtualFile packageDir, Service service) {
         try {
             VirtualFile virtualFile = packageDir.createChildData(project, service.getSimpleName() + "Impl.java");
             StringWriter sw = new StringWriter();
-            Template template = freemarker.getTemplate("service_impl.ftl");
+            String templateName;
+            if (service.getOrmType() == OrmType.JPA) {
+                templateName = "jpa/service_impl.ftl";
+            } else if (service.getOrmType() == OrmType.MYBATIS) {
+                templateName = "mybatis/service_impl.ftl";
+            } else {
+                templateName = "mybatisplus/service_impl.ftl";
+            }
+            Template template = freemarker.getTemplate(templateName);
             template.process(service, sw);
             virtualFile.setBinaryContent(sw.toString().getBytes(CrudUtils.DEFAULT_CHARSET));
 
@@ -155,7 +174,15 @@ public class PsiFileUtils {
         try {
             VirtualFile virtualFile = packageDir.createChildData(project, controller.getSimpleName() + ".java");
             StringWriter sw = new StringWriter();
-            Template template = freemarker.getTemplate("controller.ftl");
+            String templateName;
+            if (controller.getOrmType() == OrmType.JPA) {
+                templateName = "jpa/controller.ftl";
+            } else if (controller.getOrmType() == OrmType.MYBATIS) {
+                templateName = "mybatis/controller.ftl";
+            } else {
+                templateName = "mybatisplus/controller.ftl";
+            }
+            Template template = freemarker.getTemplate(templateName);
             template.process(controller, sw);
             virtualFile.setBinaryContent(sw.toString().getBytes(CrudUtils.DEFAULT_CHARSET));
 
@@ -232,7 +259,7 @@ public class PsiFileUtils {
             VirtualFile serviceImplPackageDir = createPackageDir(serviceImplPackage, moduleRootPath);
             service.getImports().add(service.getDao().getName());
             service.getImports().add(service.getName());
-            PsiFileUtils.createServiceImplJpa(project, serviceImplPackageDir, service);
+            PsiFileUtils.createServiceImpl(project, serviceImplPackageDir, service);
             //controller生成
             String controllerPackage = selection.getControllerPackage();
             if (controllerPackage == null) {

@@ -33,6 +33,7 @@
               <model>
                 <item value="MyBatis"/>
                 <item value="JPA"/>
+                <item value="MyBatisPlus"/>
               </model>
             </properties>
           </component>

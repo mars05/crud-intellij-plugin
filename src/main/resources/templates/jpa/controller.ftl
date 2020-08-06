@@ -4,11 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-<#if ormType==0>
-import com.github.pagehelper.PageInfo;
-<#else>
 import org.springframework.data.domain.Page;
-</#if>
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,7 +39,7 @@ public class ${simpleName} {
 
     @GetMapping
     @ApiOperation("分页查询${model.comment}")
-    public Page<#if ormType==0>Info</#if><${model.simpleName}> findByPage(@ApiParam("页号") @RequestParam(defaultValue = "1") Integer pageNum,
+    public Page<${model.simpleName}> findByPage(@ApiParam("页号") @RequestParam(defaultValue = "1") Integer pageNum,
                                                 @ApiParam("每页大小") @RequestParam(defaultValue = "10") Integer pageSize) {
         return ${service.varName}.findByPage(pageNum, pageSize);
     }
