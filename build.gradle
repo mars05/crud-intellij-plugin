@@ -47,6 +47,11 @@ publishPlugin {
 patchPluginXml {
     changeNotes """
 <div>
+  <p>1.1.0</p> 
+  <ul> 
+    <li>Support MybatisPlus</li>
+    <li>Refactored template</li>
+  </ul> 
   <p>1.0.3</p> 
   <ul> 
     <li>Fixed template encoding issue</li> 
