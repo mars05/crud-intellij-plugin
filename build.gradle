@@ -47,6 +47,10 @@ publishPlugin {
 patchPluginXml {
     changeNotes """
 <div>
+  <p>1.1.1</p> 
+  <ul> 
+    <li>Fixed the slow problem of multiple tables</li>
+  </ul>
   <p>1.1.0</p> 
   <ul> 
     <li>Support MybatisPlus</li>
