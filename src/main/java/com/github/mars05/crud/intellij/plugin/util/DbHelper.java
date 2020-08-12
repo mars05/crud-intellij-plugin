@@ -4,11 +4,7 @@ import com.github.mars05.crud.intellij.plugin.model.Column;
 import com.github.mars05.crud.intellij.plugin.model.Table;
 import com.mysql.jdbc.StringUtils;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -108,7 +104,6 @@ public class DbHelper {
         }
     }
 
-
     public Table getTable(String tableName) {
         Connection conn = getConnection(db);
         try {
@@ -116,7 +111,7 @@ public class DbHelper {
             ResultSet rs = metaData.getTables(null, "", tableName, new String[]{"TABLE"});
             Table table = null;
             if (rs.next()) {
-                table = new Table(rs.getString("REMARKS"), tableName, getAllColumn(tableName));
+                table = new Table(rs.getString("REMARKS"), tableName, getAllColumn(tableName, conn));
             }
             return table;
         } catch (Exception e) {
@@ -126,8 +121,7 @@ public class DbHelper {
         }
     }
 
-    private List<Column> getAllColumn(String tableName) {
-        Connection conn = getConnection(db);
+    private List<Column> getAllColumn(String tableName, Connection conn) {
         try {
             DatabaseMetaData metaData = conn.getMetaData();
             ResultSet primaryKeys = metaData.getPrimaryKeys(null, null, tableName);
@@ -148,9 +142,6 @@ public class DbHelper {
             return ls;
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage(), e);
-        } finally {
-            closeConnection(conn);
         }
     }
-
 }

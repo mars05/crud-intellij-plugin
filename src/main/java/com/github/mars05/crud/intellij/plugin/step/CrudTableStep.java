@@ -13,6 +13,8 @@ import com.intellij.openapi.options.ConfigurationException;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author xiaoyu
@@ -64,9 +66,18 @@ public class CrudTableStep extends ModuleWizardStep {
                 throw new Exception("请选择至少一个表");
             }
             List<Table> tables = new ArrayList<>();
+            CountDownLatch latch = new CountDownLatch(elements.size());
             for (ListElement element : elements) {
-                tables.add(dbHelper.getTable(element.getName()));
+                // 线程处理
+                new Thread(() -> {
+                    tables.add(dbHelper.getTable(element.getName()));
+                    latch.countDown();
+                }).start();
             }
+            if (!latch.await(10L, TimeUnit.SECONDS)) {
+                throw new Exception("获取" + elements.size() + "个表失败");
+            }
+
             for (Table table : tables) {
                 List<Column> columns = table.getColumns();
                 boolean hasId = false;
