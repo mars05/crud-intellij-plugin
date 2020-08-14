@@ -13,6 +13,7 @@ import com.intellij.openapi.options.ConfigurationException;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -65,7 +66,7 @@ public class CrudTableStep extends ModuleWizardStep {
             if (elements == null || elements.size() == 0) {
                 throw new Exception("请选择至少一个表");
             }
-            List<Table> tables = new ArrayList<>();
+            List<Table> tables = new Vector<>();
             CountDownLatch latch = new CountDownLatch(elements.size());
             for (ListElement element : elements) {
                 // 线程处理
