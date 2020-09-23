@@ -25,6 +25,11 @@ public class Selection {
     private String mapperDir;
     private String modelPackage;
 
+    public boolean modelSelected;
+    public boolean daoSelected;
+    public boolean serviceSelected;
+    public boolean controllerSelected;
+
     public String getProjectType() {
         return projectType;
     }
@@ -135,5 +140,37 @@ public class Selection {
 
     public int getOrmType() {
         return ormType;
+    }
+
+    public boolean isModelSelected() {
+        return modelSelected;
+    }
+
+    public void setModelSelected(boolean modelSelected) {
+        this.modelSelected = modelSelected;
+    }
+
+    public boolean isDaoSelected() {
+        return daoSelected;
+    }
+
+    public void setDaoSelected(boolean daoSelected) {
+        this.daoSelected = daoSelected;
+    }
+
+    public boolean isServiceSelected() {
+        return serviceSelected;
+    }
+
+    public void setServiceSelected(boolean serviceSelected) {
+        this.serviceSelected = serviceSelected;
+    }
+
+    public boolean isControllerSelected() {
+        return controllerSelected;
+    }
+
+    public void setControllerSelected(boolean controllerSelected) {
+        this.controllerSelected = controllerSelected;
     }
 }

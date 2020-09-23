@@ -1,6 +1,8 @@
 package com.github.mars05.crud.intellij.plugin.util;
 
 import com.github.mars05.crud.intellij.plugin.model.*;
+import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
+import com.github.mars05.crud.intellij.plugin.setting.SelectionSaveInfo;
 import com.google.common.base.CaseFormat;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
@@ -14,6 +16,7 @@ import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author xiaoyu
@@ -200,6 +203,30 @@ public class PsiFileUtils {
     }
 
     public static void createCrud(Project project, Selection selection, String moduleRootPath) {
+        createCrud(project, selection, moduleRootPath, false);
+    }
+
+    public static void createCrud(Project project, Selection selection, String moduleRootPath, boolean isSaveSelection) {
+        if (isSaveSelection) {
+            SelectionSaveInfo selectionSaveInfo = new SelectionSaveInfo();
+
+            selectionSaveInfo.setOrmType(selection.getOrmType());
+
+            selectionSaveInfo.setModelPackage(selection.getModelPackage());
+            selectionSaveInfo.setDaoPackage(selection.getDaoPackage());
+            selectionSaveInfo.setServicePackage(selection.getServicePackage());
+            selectionSaveInfo.setControllerPackage(selection.getControllerPackage());
+            selectionSaveInfo.setMapperDir(selection.getMapperDir());
+
+            selectionSaveInfo.setModelSelected(selection.isModelSelected());
+            selectionSaveInfo.setDaoSelected(selection.isDaoSelected());
+            selectionSaveInfo.setServiceSelected(selection.isServiceSelected());
+            selectionSaveInfo.setControllerSelected(selection.isControllerSelected());
+
+            Map<String, SelectionSaveInfo> selectionSaveInfoMap = CrudSettings.getInstance().getSelectionSaveInfoMap();
+            selectionSaveInfoMap.put(project.getName(), selectionSaveInfo);
+        }
+
         List<Table> tables = selection.getTables();
         for (Table table : tables) {
             //model生成
@@ -211,7 +238,7 @@ public class PsiFileUtils {
                 fields.add(field);
             }
             String modelPackage = selection.getModelPackage();
-            if (modelPackage == null) {
+            if (modelPackage == null||(isSaveSelection&&!selection.isModelSelected())) {
                 return;
             }
             VirtualFile modelPackageDir = createPackageDir(modelPackage, moduleRootPath);
@@ -223,7 +250,7 @@ public class PsiFileUtils {
             PsiFileUtils.createModel(project, modelPackageDir, model);
             //dao生成
             String daoPackage = selection.getDaoPackage();
-            if (daoPackage == null) {
+            if (daoPackage == null||(isSaveSelection&&!selection.isDaoSelected())) {
                 continue;
             }
             VirtualFile daoPackageDir = createPackageDir(daoPackage, moduleRootPath);
@@ -245,7 +272,7 @@ public class PsiFileUtils {
             //service生成
             //接口
             String servicePackage = selection.getServicePackage();
-            if (servicePackage == null) {
+            if (servicePackage == null||(isSaveSelection&&!selection.isServiceSelected())) {
                 continue;
             }
             VirtualFile servicePackageDir = createPackageDir(servicePackage, moduleRootPath);
@@ -262,7 +289,7 @@ public class PsiFileUtils {
             PsiFileUtils.createServiceImpl(project, serviceImplPackageDir, service);
             //controller生成
             String controllerPackage = selection.getControllerPackage();
-            if (controllerPackage == null) {
+            if (controllerPackage == null||(isSaveSelection&&!selection.isControllerSelected())) {
                 continue;
             }
             VirtualFile controllerPackageDir = createPackageDir(controllerPackage, moduleRootPath);

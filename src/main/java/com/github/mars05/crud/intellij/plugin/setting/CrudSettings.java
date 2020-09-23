@@ -7,6 +7,7 @@ import com.intellij.openapi.components.Storage;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author xiaoyu
@@ -32,5 +33,9 @@ public class CrudSettings implements PersistentStateComponent<CrudState> {
 
     public List<Conn> getConns() {
         return myState.getConns();
+    }
+
+    public Map<String, SelectionSaveInfo> getSelectionSaveInfoMap() {
+        return myState.getSelectionSaveInfoMap();
     }
 }

@@ -24,6 +24,11 @@ public class SelectionContext {
     private static String controllerPackage;
     private static String mapperDir;
 
+    public static boolean modelSelected;
+    public static boolean daoSelected;
+    public static boolean serviceSelected;
+    public static boolean controllerSelected;
+
     public static Conn getConn() {
         return conn;
     }
@@ -104,6 +109,22 @@ public class SelectionContext {
         mapperDir = null;
         modelPackage = null;
         ormType = 0;
+        modelSelected = false;
+        daoSelected = false;
+        serviceSelected = false;
+        controllerSelected = false;
+    }
+
+    public static void clearSelection() {
+        modelPackage = null;
+        daoPackage = null;
+        servicePackage = null;
+        controllerPackage = null;
+        mapperDir = null;
+        modelSelected = false;
+        daoSelected = false;
+        serviceSelected = false;
+        controllerSelected = false;
     }
 
     public static Selection copyToSelection() {
@@ -122,6 +143,10 @@ public class SelectionContext {
         selection.setMapperDir(mapperDir);
         selection.setModelPackage(modelPackage);
         selection.setOrmType(ormType);
+        selection.setModelSelected(modelSelected);
+        selection.setDaoSelected(daoSelected);
+        selection.setServiceSelected(serviceSelected);
+        selection.setControllerSelected(controllerSelected);
         return selection;
     }
 
@@ -171,5 +196,37 @@ public class SelectionContext {
 
     public static String getModelPackage() {
         return modelPackage;
+    }
+
+    public static boolean isModelSelected() {
+        return modelSelected;
+    }
+
+    public static void setModelSelected(boolean modelSelected) {
+        SelectionContext.modelSelected = modelSelected;
+    }
+
+    public static boolean isDaoSelected() {
+        return daoSelected;
+    }
+
+    public static void setDaoSelected(boolean daoSelected) {
+        SelectionContext.daoSelected = daoSelected;
+    }
+
+    public static boolean isServiceSelected() {
+        return serviceSelected;
+    }
+
+    public static void setServiceSelected(boolean serviceSelected) {
+        SelectionContext.serviceSelected = serviceSelected;
+    }
+
+    public static boolean isControllerSelected() {
+        return controllerSelected;
+    }
+
+    public static void setControllerSelected(boolean controllerSelected) {
+        SelectionContext.controllerSelected = controllerSelected;
     }
 }

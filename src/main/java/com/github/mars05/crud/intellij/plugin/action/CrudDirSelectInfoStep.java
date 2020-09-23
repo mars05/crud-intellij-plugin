@@ -1,5 +1,7 @@
 package com.github.mars05.crud.intellij.plugin.action;
 
+import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
+import com.github.mars05.crud.intellij.plugin.setting.SelectionSaveInfo;
 import com.github.mars05.crud.intellij.plugin.util.OrmType;
 import com.github.mars05.crud.intellij.plugin.util.SelectionContext;
 import com.google.common.base.Preconditions;
@@ -17,6 +19,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.Map;
 
 /**
  * @author xiaoyu
@@ -51,6 +54,24 @@ public class CrudDirSelectInfoStep extends ModuleWizardStep {
         myDaoField.setText(SelectionContext.getDaoPackage());
         myModelField.setText(SelectionContext.getModelPackage());
         ((TextFieldWithBrowseButton) myMapperField).setText(SelectionContext.getMapperDir());
+
+        Map<String, SelectionSaveInfo> selectionSaveInfoMap = CrudSettings.getInstance().getSelectionSaveInfoMap();
+        if (selectionSaveInfoMap != null && selectionSaveInfoMap.get(myProject.getName()) != null) {
+            SelectionSaveInfo selectionSaveInfo = selectionSaveInfoMap.get(myProject.getName());
+
+            this.myFrameComboBox.setSelectedIndex(selectionSaveInfo.getOrmType());
+
+            this.myControllerCheckBox.setSelected(selectionSaveInfo.getControllerSelected());
+            this.myServiceCheckBox.setSelected(selectionSaveInfo.getServiceSelected());
+            this.myDaoCheckBox.setSelected(selectionSaveInfo.getDaoSelected());
+            this.myModelCheckBox.setSelected(selectionSaveInfo.getModelSelected());
+
+            this.myControllerField.setText(selectionSaveInfo.getControllerPackage());
+            this.myServiceField.setText(selectionSaveInfo.getServicePackage());
+            this.myDaoField.setText(selectionSaveInfo.getDaoPackage());
+            this.myModelField.setText(selectionSaveInfo.getModelPackage());
+            ((TextFieldWithBrowseButton) this.myMapperField).setText(selectionSaveInfo.getMapperDir());
+        }
 
         myControllerCheckBox.addChangeListener(e -> checkBoxSetup(myControllerCheckBox.isSelected()));
         myServiceCheckBox.addChangeListener(e -> checkBoxSetup(myServiceCheckBox.isSelected()));
@@ -162,26 +183,21 @@ public class CrudDirSelectInfoStep extends ModuleWizardStep {
         }
 
         //先清空所有包
-        SelectionContext.setControllerPackage(null);
-        SelectionContext.setServicePackage(null);
-        SelectionContext.setDaoPackage(null);
-        SelectionContext.setMapperDir(null);
-        SelectionContext.setModelPackage(null);
-        if (myControllerCheckBox.isSelected()) {
-            SelectionContext.setControllerPackage(myControllerField.getText());
-        }
-        if (myServiceCheckBox.isSelected()) {
-            SelectionContext.setServicePackage(myServiceField.getText());
-        }
-        if (myDaoCheckBox.isSelected()) {
-            SelectionContext.setDaoPackage(myDaoField.getText());
-            if (0 == myFrameComboBox.getSelectedIndex()) {
-                SelectionContext.setMapperDir(((TextFieldWithBrowseButton) myMapperField).getText());
-            }
-        }
-        if (myModelCheckBox.isSelected()) {
-            SelectionContext.setModelPackage(myModelField.getText());
-        }
+        SelectionContext.clearSelection();
+
+        SelectionContext.setControllerPackage(myControllerField.getText());
+        SelectionContext.setControllerSelected(myControllerCheckBox.isSelected());
+
+        SelectionContext.setServicePackage(myServiceField.getText());
+        SelectionContext.setServiceSelected(myServiceCheckBox.isSelected());
+
+        SelectionContext.setDaoPackage(myDaoField.getText());
+        SelectionContext.setMapperDir(((TextFieldWithBrowseButton) myMapperField).getText());
+        SelectionContext.setDaoSelected(myDaoCheckBox.isSelected());
+
+        SelectionContext.setModelPackage(myModelField.getText());
+        SelectionContext.setModelSelected(myModelCheckBox.isSelected());
+
         return super.validate();
     }
 

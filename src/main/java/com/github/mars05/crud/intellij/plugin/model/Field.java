@@ -18,9 +18,9 @@ public class Field {
      * @param columnName 列的名称
      */
     public Field(String comment, Class<?> type, String columnName) {
-        if (StringUtils.startsWith(columnName, "is_")) {
-            type = boolean.class;
-        }
+//        if (StringUtils.startsWith(columnName, "is_")) {
+//            type = boolean.class;
+//        }
         this.comment = comment;
         this.type = type;
         this.columnName = columnName;
@@ -45,9 +45,9 @@ public class Field {
 
     public String getName() {
         String str = columnName;
-        if (StringUtils.startsWith(columnName, "is_")) {
-            str = StringUtils.substringAfter(columnName, "is_");
-        }
+//        if (StringUtils.startsWith(columnName, "is_")) {
+//            str = StringUtils.substringAfter(columnName, "is_");
+//        }
         return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, str);
     }
 
