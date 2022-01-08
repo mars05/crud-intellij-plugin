@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.47'
-    compile group: 'org.freemarker', name: 'freemarker', version: '2.3.28'
+    compile group: 'org.freemarker', name: 'freemarker', version: '2.3.31'
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.6'
     compileOnly fileTree(dir: 'lib', include: ['*.jar'])
     testCompile group: 'junit', name: 'junit', version: '4.12'
