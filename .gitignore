@@ -10,7 +10,6 @@ target/
 .classpath
 .project
 
-
 out/
 .gradle/
 build/
