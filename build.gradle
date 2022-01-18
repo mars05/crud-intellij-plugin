@@ -27,11 +27,28 @@ repositories {
 }
 
 dependencies {
-    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.47'
     compile group: 'org.freemarker', name: 'freemarker', version: '2.3.31'
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.6'
+    compile 'org.modelmapper:modelmapper:2.3.0'
     compileOnly fileTree(dir: 'lib', include: ['*.jar'])
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compileOnly 'org.projectlombok:lombok:1.18.6'
+    annotationProcessor 'org.projectlombok:lombok:1.18.6'
+    compile('com.baomidou:mybatis-plus-core:3.5.0') {
+        exclude group: 'com.baomidou', module: 'mybatis-plus-annotation'
+        exclude group: 'org.mybatis', module: 'mybatis'
+    }
+    compile 'cn.smallbun.screw:screw-core:1.0.5'
+    compile 'com.alibaba:druid:1.2.8'
+    compile('org.springframework.boot:spring-boot-starter-validation:2.6.2') {
+        exclude group: 'org.springframework'
+        exclude group: 'org.springframework.boot'
+    }
+    compile 'org.apache.commons:commons-lang3:3.12.0'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.47'
+    compile 'mysql:mysql-connector-java:8.0.27'
+    compile 'org.postgresql:postgresql:42.3.1'
+    compile 'com.oracle.database.jdbc:ojdbc8:21.4.0.0.1'
+    compile 'com.oracle.database.nls:orai18n:21.4.0.0.1'
 }
 
 intellij {

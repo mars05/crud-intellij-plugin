@@ -2,7 +2,7 @@ package com.github.mars05.crud.intellij.plugin.util;
 
 import com.github.mars05.crud.intellij.plugin.model.Column;
 import com.github.mars05.crud.intellij.plugin.model.Table;
-import com.mysql.jdbc.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -134,7 +134,7 @@ public class DbHelper {
             while (rs.next()) {
                 String columnName = rs.getString("COLUMN_NAME");
                 Column column = new Column(rs.getString("REMARKS"), columnName, rs.getInt("DATA_TYPE"));
-                if (!StringUtils.isNullOrEmpty(primaryKey) && columnName.equals(primaryKey)) {
+                if (StringUtils.isNotBlank(primaryKey) && columnName.equals(primaryKey)) {
                     column.setId(true);
                 }
                 ls.add(column);

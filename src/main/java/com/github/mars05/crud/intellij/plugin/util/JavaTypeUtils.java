@@ -41,7 +41,7 @@ public class JavaTypeUtils {
      * @see Types
      * @see JDBCType
      */
-    public static Class convertType(int sqlType) {
+    public static Class<?> convertType(int sqlType) {
         return map.getOrDefault(JDBCType.valueOf(sqlType), Object.class);
     }
 

@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -105,15 +104,6 @@ public class TemplateUtils {
             }
             return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         }
-    }
-
-    public static void main(String[] args) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("nlpSd", new NlpSd());
-        map.put("aaa", "2021-11-11 11:11:11");
-        map.put("sd", "7个小时");
-        String s = processTemplate("${nlpSd(aaa,sd)}", map);
-        System.out.println(s);
     }
 
     //截取数字

@@ -37,6 +37,19 @@
         <!-- Add your extensions here -->
         <projectTemplatesFactory implementation="com.github.mars05.crud.intellij.plugin.wizard.CrudTemplateFactory"/>
         <applicationService serviceImplementation="com.github.mars05.crud.intellij.plugin.setting.CrudSettings"/>
+
+        <applicationService
+                serviceImplementation="com.github.mars05.crud.intellij.plugin.dao.repository.ProjectTemplateRepository"/>
+        <applicationService
+                serviceImplementation="com.github.mars05.crud.intellij.plugin.dao.repository.FileTemplateRepository"/>
+        <applicationService
+                serviceImplementation="com.github.mars05.crud.intellij.plugin.service.ProjectTemplateService"/>
+        <applicationService
+                serviceImplementation="com.github.mars05.crud.intellij.plugin.service.FileTemplateService"/>
+
+        <projectConfigurable parentId="tools" instance="com.github.mars05.crud.intellij.plugin.setting.CrudConfigurable"
+                             id="com.github.mars05.crud.intellij.plugin.setting.CrudConfigurable"
+                             key="configurable.title.name" bundle="messages.CrudBundle"/>
     </extensions>
 
     <actions>
