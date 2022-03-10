@@ -1,7 +1,6 @@
 package com.github.mars05.crud.intellij.plugin;
 
 import com.alibaba.fastjson.JSON;
-import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateCreateReqDTO;
 import com.github.mars05.crud.intellij.plugin.service.ProjectTemplateService;
 import org.junit.Test;
 

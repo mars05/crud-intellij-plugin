@@ -1,14 +1,12 @@
 package com.github.mars05.crud.intellij.plugin.setting;
 
 import com.github.mars05.crud.intellij.plugin.dao.model.DataSourceDO;
-import com.github.mars05.crud.intellij.plugin.dao.model.FileTemplateDO;
 import com.github.mars05.crud.intellij.plugin.dao.model.ProjectTemplateDO;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -18,10 +16,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class CrudState {
     private List<DataSourceDO> dataSources = new CopyOnWriteArrayList<>();
     private List<ProjectTemplateDO> projectTemplates = new CopyOnWriteArrayList<>();
-    private List<FileTemplateDO> fileTemplates = new CopyOnWriteArrayList<>();
 
-    private List<Conn> conns = new ArrayList<>();
+    private List<Conn> conns = new CopyOnWriteArrayList<>();
 
-    private Map<String, SelectionSaveInfo> selectionSaveInfoMap = new HashMap<>();
+    private Map<String, SelectionSaveInfo> selectionSaveInfoMap = new ConcurrentHashMap<>();
 
 }

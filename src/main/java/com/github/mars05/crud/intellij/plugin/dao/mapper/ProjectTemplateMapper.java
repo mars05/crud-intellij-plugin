@@ -1,20 +1,17 @@
-package com.github.mars05.crud.intellij.plugin.dao.repository;
+package com.github.mars05.crud.intellij.plugin.dao.mapper;
 
 import com.github.mars05.crud.intellij.plugin.dao.model.ProjectTemplateDO;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 
-public class ProjectTemplateRepository extends AbstractRepository<ProjectTemplateDO> {
-
-    private final List<ProjectTemplateDO> dataList = Objects.requireNonNull(CrudSettings.getInstance().getState()).getProjectTemplates();
+public class ProjectTemplateMapper extends AbstractMapper<ProjectTemplateDO> {
 
     @NotNull
     @Override
     protected List<ProjectTemplateDO> getDataList() {
-        return dataList;
+        return CrudSettings.getInstance().getProjectTemplates();
     }
 
     @NotNull
@@ -22,5 +19,6 @@ public class ProjectTemplateRepository extends AbstractRepository<ProjectTemplat
     protected Class<ProjectTemplateDO> getDataClass() {
         return ProjectTemplateDO.class;
     }
+
 
 }

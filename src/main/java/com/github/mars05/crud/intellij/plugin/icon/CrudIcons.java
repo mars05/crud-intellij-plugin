@@ -23,4 +23,5 @@ public class CrudIcons {
     public static final Icon REMOVE = load("/general/remove.png");
     public static final Icon EDIT = load("/actions/edit.png");
 
+    public static final Icon LOADING = load("/icons/loading.gif");
 }

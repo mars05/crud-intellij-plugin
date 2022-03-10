@@ -11,5 +11,5 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 public abstract class BaseDO {
-    private String id;
+    private Long id;
 }

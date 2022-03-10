@@ -1,72 +1,60 @@
 package com.github.mars05.crud.intellij.plugin.service;
 
-import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.alibaba.fastjson.JSON;
+import com.github.mars05.crud.intellij.plugin.dao.mapper.ProjectTemplateMapper;
 import com.github.mars05.crud.intellij.plugin.dao.model.ProjectTemplateDO;
-import com.github.mars05.crud.intellij.plugin.dao.repository.ProjectTemplateRepository;
-import com.github.mars05.crud.intellij.plugin.dto.FileTemplateSaveDTO;
-import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateCreateReqDTO;
+import com.github.mars05.crud.intellij.plugin.dto.FileTemplateDTO;
+import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateDTO;
 import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateRespDTO;
-import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateUpdateReqDTO;
 import com.github.mars05.crud.intellij.plugin.exception.BizException;
 import com.github.mars05.crud.intellij.plugin.util.BeanUtils;
-import com.github.mars05.crud.intellij.plugin.util.ValidateUtils;
 import com.google.common.base.Preconditions;
 
 import java.util.List;
 
 public class ProjectTemplateService {
-    private final ProjectTemplateRepository projectTemplateRepository =
-            new ProjectTemplateRepository();
-    private final FileTemplateService fileTemplateService =
-            new FileTemplateService();
+    private ProjectTemplateMapper projectTemplateMapper = new ProjectTemplateMapper();
 
-    public void create(ProjectTemplateCreateReqDTO reqDTO) {
-        ValidateUtils.validAnnotation(reqDTO);
-        if (projectTemplateRepository.list().stream().anyMatch(dataDO -> dataDO.getName().equals(reqDTO.getName()))) {
-            throw new BizException("名称已存在");
-        }
-        ProjectTemplateDO dataSourceDO = BeanUtils.convertBean(reqDTO, ProjectTemplateDO.class);
-        dataSourceDO.setId(IdWorker.get32UUID());
-        projectTemplateRepository.create(dataSourceDO);
+    public void create(ProjectTemplateDTO reqDTO) {
+        //校验
+        ProjectTemplateDO newDO = BeanUtils.convertBean(reqDTO, ProjectTemplateDO.class);
+        checkRepeat(newDO);
+        //新增
+        newDO.setFileTemplates(JSON.toJSONString(reqDTO.getFileTemplateList()));
+        projectTemplateMapper.insert(newDO);
     }
 
-    public ProjectTemplateCreateReqDTO copy(String projectTemplateId, String name) {
-        ProjectTemplateRespDTO respDTO = detail(projectTemplateId);
-        ProjectTemplateCreateReqDTO reqDTO = BeanUtils.convertBean(respDTO, ProjectTemplateCreateReqDTO.class);
-        reqDTO.setName(name);
-        reqDTO.setFileTemplateList(BeanUtils.convertList(respDTO.getFileTemplateList(), FileTemplateSaveDTO.class));
-        return reqDTO;
-    }
-
-    public void update(ProjectTemplateUpdateReqDTO reqDTO) {
-        ValidateUtils.validAnnotation(reqDTO);
-        ProjectTemplateDO oldData = projectTemplateRepository.detail(reqDTO.getId());
-        Preconditions.checkNotNull(oldData, "项目模板不存在");
-        if (projectTemplateRepository.list().stream().anyMatch(dataDO -> !dataDO.getId().equals(reqDTO.getId()) && dataDO.getName().equals(reqDTO.getName()))) {
-            throw new BizException("名称已存在");
-        }
-        ProjectTemplateDO dataDO = BeanUtils.convertBean(reqDTO, ProjectTemplateDO.class);
-        projectTemplateRepository.update(dataDO);
+    public void update(ProjectTemplateDTO reqDTO) {
+        //校验
+        ProjectTemplateDO oldDO = projectTemplateMapper.selectById(reqDTO.getId());
+        Preconditions.checkNotNull(oldDO, "项目模板不存在");
+        ProjectTemplateDO newDO = BeanUtils.convertBean(reqDTO, ProjectTemplateDO.class);
+        //修改
+        newDO.setFileTemplates(JSON.toJSONString(reqDTO.getFileTemplateList()));
+        projectTemplateMapper.updateById(newDO);
     }
 
     public List<ProjectTemplateRespDTO> list() {
-        return BeanUtils.convertList(projectTemplateRepository.list(), ProjectTemplateRespDTO.class);
+        return BeanUtils.convertList(projectTemplateMapper.selectList(), ProjectTemplateRespDTO.class);
     }
 
-    public ProjectTemplateRespDTO detail(String id) {
-        ProjectTemplateDO detail = projectTemplateRepository.detail(id);
-        if (detail == null) {
-            return null;
-        }
+    public ProjectTemplateRespDTO detail(Long id) {
+        ProjectTemplateDO detail = projectTemplateMapper.selectById(id);
+        Preconditions.checkNotNull(detail, "项目模板不存在");
         ProjectTemplateRespDTO respDTO = BeanUtils.convertBean(detail, ProjectTemplateRespDTO.class);
-        respDTO.setFileTemplateList(fileTemplateService.list(id));
+        respDTO.setFileTemplateList(JSON.parseArray(detail.getFileTemplates(), FileTemplateDTO.class));
         return respDTO;
     }
 
-    public void delete(String id) {
-        ProjectTemplateDO oldDataDO = projectTemplateRepository.detail(id);
-        Preconditions.checkNotNull(oldDataDO, "项目模板不存在");
-        projectTemplateRepository.delete(id);
+    public void delete(Long id) {
+        projectTemplateMapper.deleteById(id);
+    }
+
+    private void checkRepeat(ProjectTemplateDO param) {
+        if (projectTemplateMapper.selectList().stream().anyMatch(projectTemplateDO ->
+                projectTemplateDO.getId().equals(param.getId()))) {
+            throw new BizException("模板已存在");
+        }
     }
 
 }

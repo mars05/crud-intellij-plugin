@@ -1,24 +1,24 @@
-package com.github.mars05.crud.intellij.plugin.dao.repository;
+package com.github.mars05.crud.intellij.plugin.dao.mapper;
 
 import com.github.mars05.crud.intellij.plugin.dao.model.DataSourceDO;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 数据源
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class DataSourceRepository extends AbstractRepository<DataSourceDO> {
-    private final List<DataSourceDO> dataList = Objects.requireNonNull(CrudSettings.getInstance().getState()).getDataSources();
+public class DataSourceMapper extends AbstractMapper<DataSourceDO> {
 
     @NotNull
     @Override
     protected List<DataSourceDO> getDataList() {
-        return dataList;
+        return CrudSettings.getInstance().getDataSources();
     }
 
     @NotNull

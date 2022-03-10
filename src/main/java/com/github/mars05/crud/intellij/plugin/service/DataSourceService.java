@@ -3,8 +3,8 @@ package com.github.mars05.crud.intellij.plugin.service;
 import cn.smallbun.screw.core.metadata.Column;
 import cn.smallbun.screw.core.metadata.Table;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.github.mars05.crud.intellij.plugin.dao.mapper.DataSourceMapper;
 import com.github.mars05.crud.intellij.plugin.dao.model.DataSourceDO;
-import com.github.mars05.crud.intellij.plugin.dao.repository.DataSourceRepository;
 import com.github.mars05.crud.intellij.plugin.dto.DataSourceCreateReqDTO;
 import com.github.mars05.crud.intellij.plugin.dto.DataSourceRespDTO;
 import com.github.mars05.crud.intellij.plugin.dto.DataSourceUpdateReqDTO;
@@ -30,41 +30,41 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class DataSourceService {
-    private final DataSourceRepository dataSourceRepository = new DataSourceRepository();
+    private final DataSourceMapper dataSourceRepository = new DataSourceMapper();
 
     public List<DataSourceRespDTO> list() {
-        return BeanUtils.convertList(dataSourceRepository.list(), DataSourceRespDTO.class);
+        return BeanUtils.convertList(dataSourceRepository.selectList(), DataSourceRespDTO.class);
     }
 
     public void create(DataSourceCreateReqDTO reqDTO) {
         ValidateUtils.validAnnotation(reqDTO);
-        if (dataSourceRepository.list().stream().anyMatch(dataSourceDO -> dataSourceDO.getName().equals(reqDTO.getName()))) {
+        if (dataSourceRepository.selectList().stream().anyMatch(dataSourceDO -> dataSourceDO.getName().equals(reqDTO.getName()))) {
             throw new BizException("名称已存在");
         }
         DataSourceDO dataSourceDO = BeanUtils.convertBean(reqDTO, DataSourceDO.class);
-        dataSourceDO.setId(IdWorker.get32UUID());
-        dataSourceRepository.create(dataSourceDO);
+        dataSourceDO.setId(IdWorker.getId());
+        dataSourceRepository.insert(dataSourceDO);
     }
 
     public void update(DataSourceUpdateReqDTO reqDTO) {
         ValidateUtils.validAnnotation(reqDTO);
-        DataSourceDO oldDataSourceDO = dataSourceRepository.detail(reqDTO.getId());
+        DataSourceDO oldDataSourceDO = dataSourceRepository.selectById(reqDTO.getId());
         Preconditions.checkNotNull(oldDataSourceDO, "数据源不存在");
-        if (dataSourceRepository.list().stream().anyMatch(dataSourceDO -> !dataSourceDO.getId().equals(reqDTO.getId()) && dataSourceDO.getName().equals(reqDTO.getName()))) {
+        if (dataSourceRepository.selectList().stream().anyMatch(dataSourceDO -> !dataSourceDO.getId().equals(reqDTO.getId()) && dataSourceDO.getName().equals(reqDTO.getName()))) {
             throw new BizException("名称已存在");
         }
         DataSourceDO dataSourceDO = BeanUtils.convertBean(reqDTO, DataSourceDO.class);
-        dataSourceRepository.update(dataSourceDO);
+        dataSourceRepository.updateById(dataSourceDO);
     }
 
     public DataSourceRespDTO detail(String id) {
-        return BeanUtils.convertBean(dataSourceRepository.detail(id), DataSourceRespDTO.class);
+        return BeanUtils.convertBean(dataSourceRepository.selectById(id), DataSourceRespDTO.class);
     }
 
-    public void delete(String id) {
-        DataSourceDO oldDataSourceDO = dataSourceRepository.detail(id);
+    public void delete(Long id) {
+        DataSourceDO oldDataSourceDO = dataSourceRepository.selectById(id);
         Preconditions.checkNotNull(oldDataSourceDO, "数据源不存在");
-        dataSourceRepository.delete(id);
+        dataSourceRepository.deleteById(id);
     }
 
     public void testConnection(@NotNull DataSourceCreateReqDTO reqDTO) {
@@ -91,18 +91,18 @@ public class DataSourceService {
     }
 
     public List<String> allCatalog(String dsId) {
-        DataSourceDO dataSourceDO = dataSourceRepository.detail(dsId);
+        DataSourceDO dataSourceDO = dataSourceRepository.selectById(dsId);
         return JdbcUtils.getAllCatalog(BeanUtils.convertBean(dataSourceDO, DataSourceVO.class));
     }
 
     public List<String> allTableName(String dsId, String catalog) {
-        DataSourceDO dataSourceDO = dataSourceRepository.detail(dsId);
+        DataSourceDO dataSourceDO = dataSourceRepository.selectById(dsId);
         List<? extends Table> allTable = JdbcUtils.getAllTable(BeanUtils.convertBean(dataSourceDO, DataSourceVO.class), catalog);
         return allTable.stream().map(Table::getTableName).collect(Collectors.toList());
     }
 
     public com.github.mars05.crud.intellij.plugin.model.param.Table getTable(String dsId, String catalog, String tableName) {
-        DataSourceDO dataSourceDO = dataSourceRepository.detail(dsId);
+        DataSourceDO dataSourceDO = dataSourceRepository.selectById(dsId);
         List<? extends Table> allTable = JdbcUtils.getAllTable(BeanUtils.convertBean(dataSourceDO, DataSourceVO.class), catalog);
         return allTable.stream().filter(table -> table.getTableName().equals(tableName)).map(table -> {
             com.github.mars05.crud.intellij.plugin.model.param.Table t = new com.github.mars05.crud.intellij.plugin.model.param.Table();
@@ -114,7 +114,7 @@ public class DataSourceService {
     }
 
     public List<com.github.mars05.crud.intellij.plugin.model.param.Column> allColumn(String dsId, String catalog, String table) {
-        DataSourceDO dataSourceDO = dataSourceRepository.detail(dsId);
+        DataSourceDO dataSourceDO = dataSourceRepository.selectById(dsId);
         List<? extends Column> allColumn = JdbcUtils.getAllColumn(BeanUtils.convertBean(dataSourceDO, DataSourceVO.class), catalog, table);
         return allColumn.stream().map(column -> {
             com.github.mars05.crud.intellij.plugin.model.param.Column c = new com.github.mars05.crud.intellij.plugin.model.param.Column();
@@ -131,7 +131,7 @@ public class DataSourceService {
     }
 
     public List<String> allColumnName(String dsId, String catalog, String table) {
-        DataSourceDO dataSourceDO = dataSourceRepository.detail(dsId);
+        DataSourceDO dataSourceDO = dataSourceRepository.selectById(dsId);
         List<? extends Column> allColumn = JdbcUtils.getAllColumn(BeanUtils.convertBean(dataSourceDO, DataSourceVO.class), catalog, table);
         return allColumn.stream().map(Column::getColumnName).collect(Collectors.toList());
     }

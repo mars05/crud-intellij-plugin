@@ -13,11 +13,6 @@ import lombok.experimental.Accessors;
 public class DataSourceDO extends BaseDO {
 
     /**
-     * 数据源ID
-     */
-    private String id;
-
-    /**
      * 数据库类型
      */
     private String databaseType;

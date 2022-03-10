@@ -1,43 +1,42 @@
 package com.github.mars05.crud.intellij.plugin.dto;
 
+import com.github.mars05.crud.intellij.plugin.model.param.Table;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
+/**
+ * @author xiaoyu
+ */
 @Data
-public class ProjectGenerateReqDTO {
-
-    private Long ptId;
-
+@Accessors(chain = true)
+public class TemplateParam {
     private String projectName;
-
     private String basePackage;
+    private String basePackageDir;
 
-    private MavenReqDTO maven;
+    private Maven maven;
+    private DataSource dataSource;
 
-    private DataSourceReqDTO dataSource;
+    private Table table;
 
-    private String ddl;
 
     @Data
-    public static class MavenReqDTO {
+    @Accessors(chain = true)
+    public static class Maven {
         private String groupId;
         private String artifactId;
         private String version;
     }
 
     @Data
-    public static class DataSourceReqDTO {
+    @Accessors(chain = true)
+    public static class DataSource {
         private String databaseType;
-
         private String host;
-
         private Integer port;
-
         private String username;
-
         private String password;
-
         private String catalog;
         private String schema;
-
     }
 }

@@ -2,23 +2,11 @@ package com.github.mars05.crud.intellij.plugin.util;
 
 import com.github.mars05.crud.intellij.plugin.exception.BizException;
 import freemarker.cache.StringTemplateLoader;
-import freemarker.ext.beans.StringModel;
-import freemarker.template.*;
-import org.apache.commons.lang3.StringUtils;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * TemplateUtils
@@ -34,7 +22,7 @@ public class TemplateUtils {
         }
     }
 
-    public static String processTemplate(String templateSourceCode, Map<String, Object> dataModel) {
+    public static String processTemplate(String templateSourceCode, Object dataModel) {
         Template template = newTemplate(templateSourceCode);
         try {
             StringWriter out = new StringWriter();
@@ -45,18 +33,12 @@ public class TemplateUtils {
         }
     }
 
-    public static String processSql(String templateSourceCode, Map<String, Object> dataModel) {
-        for (Map.Entry<String, Object> entry : dataModel.entrySet()) {
-            String value;
-            if (entry.getValue() instanceof Iterable) {
-                value = StreamSupport.stream(((Iterable<?>) entry.getValue()).spliterator(), false)
-                        .map(TemplateUtils::getValueByType).collect(Collectors.joining(","));
-            } else {
-                value = getValueByType(entry.getValue());
-            }
-            entry.setValue(value);
+    public static String processTemplateOfNoError(String templateSourceCode, Object dataModel) {
+        try {
+            return processTemplate(templateSourceCode, dataModel);
+        } catch (Exception e) {
+            return templateSourceCode;
         }
-        return processTemplate(templateSourceCode, dataModel);
     }
 
     private static Configuration getConfiguration() {
@@ -65,67 +47,5 @@ public class TemplateUtils {
         configuration.setTemplateLoader(templateLoader);
         configuration.setDefaultEncoding("UTF-8");
         return configuration;
-    }
-
-    public static class NlpSd implements TemplateMethodModelEx {
-
-        @Override
-        public Object exec(List arguments) throws TemplateModelException {
-            Object dateObj = arguments.get(0);
-            if (dateObj instanceof StringModel) {
-                dateObj = ((StringModel) dateObj).getWrappedObject();
-            } else if (dateObj instanceof SimpleDate) {
-                dateObj = ((SimpleDate) dateObj).getAsDate();
-            } else {
-                dateObj = dateObj.toString();
-            }
-            LocalDateTime date;
-            if (dateObj instanceof String) {
-                date = LocalDateTime.parse(dateObj.toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            } else if (dateObj instanceof LocalDateTime) {
-                date = (LocalDateTime) dateObj;
-            } else if (dateObj instanceof LocalDate) {
-                LocalDate tempDate = (LocalDate) dateObj;
-                date = tempDate.atStartOfDay();
-            } else if (dateObj instanceof Date) {
-                Date tempDate = (Date) dateObj;
-                date = tempDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            } else {
-                return "";
-            }
-            String sd = arguments.get(1).toString();
-            int num = getNumbers(sd);
-            if (StringUtils.contains(sd, "时")) {
-                date = date.minusHours(num);
-            } else if (StringUtils.contains(sd, "天")) {
-                date = date.minusDays(num);
-            } else {
-                return "";
-            }
-            return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        }
-    }
-
-    //截取数字
-    public static int getNumbers(String content) {
-        Pattern pattern = Pattern.compile("\\d+");
-        Matcher matcher = pattern.matcher(content);
-        while (matcher.find()) {
-            return Integer.parseInt(matcher.group(0));
-        }
-        return 0;
-    }
-
-    private static String getValueByType(Object value) {
-        if (value == null) {
-            return null;
-        }
-        String columnValue;
-        if (value instanceof Number) {
-            columnValue = value.toString();
-        } else {
-            columnValue = "'" + value.toString() + "'";
-        }
-        return columnValue;
     }
 }

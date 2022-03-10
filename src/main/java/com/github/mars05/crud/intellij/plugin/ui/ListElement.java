@@ -7,6 +7,7 @@ import javax.swing.*;
  */
 public class ListElement {
     private Icon icon;
+    private Long id;
     private String name;
 
     public ListElement(Icon icon, String name) {
@@ -14,8 +15,22 @@ public class ListElement {
         this.name = name;
     }
 
+    public ListElement(Icon icon, Long id, String name) {
+        this.icon = icon;
+        this.id = id;
+        this.name = name;
+    }
+
     public Icon getIcon() {
         return icon;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public void setIcon(Icon icon) {

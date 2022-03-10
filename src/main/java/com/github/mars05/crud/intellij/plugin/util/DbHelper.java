@@ -41,7 +41,7 @@ public class DbHelper {
 
     private Connection getConnection() {
         try {
-            return DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false", props);
+            return DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true", props);
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -49,7 +49,7 @@ public class DbHelper {
 
     private Connection getConnection(String database) {
         try {
-            return DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + database + "?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false", props);
+            return DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + database + "?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true", props);
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage(), e);
         }

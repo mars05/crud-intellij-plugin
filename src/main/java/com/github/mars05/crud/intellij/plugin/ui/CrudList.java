@@ -35,6 +35,9 @@ public class CrudList extends JBList {
     }
 
     public ListElement getSelectedElement() {
+        if (getSelectedIndex() < 0) {
+            return null;
+        }
         return (ListElement) model.getElementAt(getSelectedIndex());
     }
 

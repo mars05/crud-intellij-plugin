@@ -1,86 +1,99 @@
 package com.github.mars05.crud.intellij.plugin.service;
 
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.github.mars05.crud.intellij.plugin.dto.*;
+import com.github.mars05.crud.intellij.plugin.enums.DatabaseTypeEnum;
+import com.github.mars05.crud.intellij.plugin.enums.FileTemplateTypeEnum;
 import com.github.mars05.crud.intellij.plugin.exception.BizException;
 import com.github.mars05.crud.intellij.plugin.model.param.Table;
-import com.github.mars05.crud.intellij.plugin.util.Constants;
-import com.github.mars05.crud.intellij.plugin.util.TemplateUtils;
-import com.github.mars05.crud.intellij.plugin.util.ValidateUtils;
+import com.github.mars05.crud.intellij.plugin.dto.FileTemplateDTO;
+import com.github.mars05.crud.intellij.plugin.util.*;
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 public class ProjectService {
     private ProjectTemplateService projectTemplateService = new ProjectTemplateService();
-    private FileTemplateService fileTemplateService = new FileTemplateService();
-    private DataSourceService dataSourceService = new DataSourceService();
 
     public ProjectRespDTO generateProject(ProjectGenerateReqDTO reqDTO) {
         ValidateUtils.validAnnotation(reqDTO);
-        ProjectTemplateRespDTO projectTemplateRespDTO = projectTemplateService.detail(reqDTO.getProjectTemplateId());
-        Preconditions.checkNotNull(projectTemplateRespDTO, "项目模板不存在");
-        DataSourceRespDTO dataSourceRespDTO = dataSourceService.detail(reqDTO.getDsId());
-        Preconditions.checkNotNull(dataSourceRespDTO, "数据源不存在");
+        ProjectTemplateRespDTO projectTemplateRespDTO = getProjectTemplate(reqDTO.getPtId());
 
         ProjectRespDTO projectRespDTO = new ProjectRespDTO();
         projectRespDTO.setProjectName(reqDTO.getProjectName());
         projectRespDTO.setFiles(new Vector<>());
 
-        Map<String, Object> commonParam = new HashMap<>();
-        /*项目 参数*/
-        Map<String, Object> projectParam = new HashMap<>();
-        projectParam.put("projectName", reqDTO.getProjectName());
-        projectParam.put("basePackage", reqDTO.getBasePackage());
-        projectParam.put("basePackageDir", StringUtils.replace(reqDTO.getBasePackage(), ".", "/"));
-        /*数据库 参数*/
-        Map<String, Object> dataSourceParam = new HashMap<>();
-        dataSourceParam.put("host", dataSourceRespDTO.getHost());
-        dataSourceParam.put("port", dataSourceRespDTO.getPort());
-        dataSourceParam.put("username", dataSourceRespDTO.getUsername());
-        dataSourceParam.put("password", dataSourceRespDTO.getPassword());
-        dataSourceParam.put("catalog", reqDTO.getCatalog());
-        dataSourceParam.put("schema", reqDTO.getSchema());
-        /*Maven 参数*/
-        Map<String, Object> mavenParam = new HashMap<>();
-        mavenParam.put("groupId", reqDTO.getGroupId());
-        mavenParam.put("artifactId", reqDTO.getArtifactId());
-        mavenParam.put("version", reqDTO.getVersion());
+        TemplateParam templateParam = new TemplateParam();
+        templateParam.setProjectName(reqDTO.getProjectName());
+        templateParam.setBasePackage(reqDTO.getBasePackage());
+        templateParam.setBasePackageDir(StringUtils.replace(reqDTO.getBasePackage(), ".", "/"));
+        //Maven参数
+        templateParam.setMaven(BeanUtils.convertBean(reqDTO.getMaven(), TemplateParam.Maven.class));
+        //数据源参数
+        templateParam.setDataSource(BeanUtils.convertBean(reqDTO.getDataSource(), TemplateParam.DataSource.class));
 
-        commonParam.put("project", projectParam);
-        commonParam.put("dataSource", dataSourceParam);
-        commonParam.put("maven", mavenParam);
-
-        for (FileTemplateRespDTO fileTemplateRespDTO : projectTemplateRespDTO.getFileTemplateList()) {
-            if (Constants.FILE_TEMPLATE_TYPE_CODE == fileTemplateRespDTO.getType()) {
-                List<String> tableNames = reqDTO.getTableNames();
-                if (tableNames == null) {
-                    continue;
-                }
-                for (String tableName : tableNames) {
-                    Map<String, Object> codeParam = new HashMap<>(commonParam);
-                    Table table = dataSourceService.getTable(reqDTO.getDsId(), reqDTO.getCatalog(), tableName);
-                    codeParam.put("table", table);
-                    FileRespDTO fileRespDTO = new FileRespDTO();
-                    fileRespDTO.setPath(TemplateUtils.processTemplate(fileTemplateRespDTO.getPath(), codeParam));
-                    fileRespDTO.setContent(TemplateUtils.processTemplate(fileTemplateRespDTO.getContent(), codeParam));
-                    projectRespDTO.getFiles().add(fileRespDTO);
-                }
-            } else {
-                Map<String, Object> generalParam = new HashMap<>(commonParam);
+        for (FileTemplateDTO fileTemplateRespDTO : projectTemplateRespDTO.getFileTemplateList()) {
+            if (FileTemplateTypeEnum.GENERAL.getCode() == fileTemplateRespDTO.getType()) {
                 FileRespDTO fileRespDTO = new FileRespDTO();
-                fileRespDTO.setPath(TemplateUtils.processTemplate(fileTemplateRespDTO.getPath(), generalParam));
-                fileRespDTO.setContent(TemplateUtils.processTemplate(fileTemplateRespDTO.getContent(), generalParam));
+                try {
+                    fileRespDTO.setPath(TemplateUtils.processTemplate(fileTemplateRespDTO.getPath(), templateParam));
+                } catch (Exception e) {
+                    throw new BizException("文件路径解析失败: " + fileTemplateRespDTO.getPath());
+                }
+                fileRespDTO.setContent(TemplateUtils.processTemplateOfNoError(fileTemplateRespDTO.getContent(), templateParam));
                 projectRespDTO.getFiles().add(fileRespDTO);
             }
         }
+        CodeGenerateReqDTO codeGenerateReqDTO = BeanUtils.convertBean(reqDTO, CodeGenerateReqDTO.class);
+        codeGenerateReqDTO.setNameList(projectTemplateRespDTO.getFileTemplateList().stream().map(FileTemplateDTO::getName).collect(Collectors.toList()));
+        projectRespDTO.getFiles().addAll(this.generateCode(codeGenerateReqDTO));
         return projectRespDTO;
+    }
+
+    public List<FileRespDTO> generateCode(CodeGenerateReqDTO reqDTO) {
+        List<FileRespDTO> files = new ArrayList<>();
+        if (CollectionUtils.isEmpty(reqDTO.getNameList()) || StringUtils.isBlank(reqDTO.getDdl())) {
+            return files;
+        }
+        ValidateUtils.validAnnotation(reqDTO);
+        ProjectTemplateRespDTO projectTemplateRespDTO = getProjectTemplate(reqDTO.getPtId());
+
+        TemplateParam templateParam = new TemplateParam();
+        templateParam.setBasePackage(reqDTO.getBasePackage());
+        templateParam.setBasePackageDir(StringUtils.replace(reqDTO.getBasePackage(), ".", "/"));
+
+        for (FileTemplateDTO fileTemplateRespDTO : projectTemplateRespDTO.getFileTemplateList()) {
+            if (FileTemplateTypeEnum.CODE.getCode() == fileTemplateRespDTO.getType() && reqDTO.getNameList()
+                    .contains(fileTemplateRespDTO.getName())) {
+                List<Table> tables = SqlUtils.getTablesByDdl(reqDTO.getDdl(), DatabaseTypeEnum.MYSQL);
+                for (Table table : tables) {
+                    templateParam.setTable(table);
+                    FileRespDTO fileRespDTO = new FileRespDTO();
+                    try {
+                        fileRespDTO.setPath(TemplateUtils.processTemplate(fileTemplateRespDTO.getPath(), templateParam));
+                    } catch (Exception e) {
+                        throw new BizException("文件路径解析失败: " + fileTemplateRespDTO.getPath());
+                    }
+                    fileRespDTO.setContent(TemplateUtils.processTemplateOfNoError(fileTemplateRespDTO.getContent(), templateParam));
+                    files.add(fileRespDTO);
+                }
+            }
+        }
+        return files;
+    }
+
+    private ProjectTemplateRespDTO getProjectTemplate(Long id) {
+        ProjectTemplateRespDTO projectTemplateRespDTO = projectTemplateService.detail(id);
+        Preconditions.checkNotNull(projectTemplateRespDTO, "项目模板不存在");
+        return projectTemplateRespDTO;
     }
 
     public void processProjectToDisk(ProjectRespDTO projectRespDTO, String parentDir) {
@@ -108,4 +121,5 @@ public class ProjectService {
             }
         }
     }
+
 }
