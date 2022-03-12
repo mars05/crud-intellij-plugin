@@ -15,7 +15,6 @@ public class CrudDbView implements CrudView {
     private JLabel myPathLabel;
     private JScrollPane myScrollPane;
 
-    @Override
     public CrudList getCrudList() {
         return (CrudList) myDbList;
     }

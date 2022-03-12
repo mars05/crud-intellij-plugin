@@ -18,7 +18,7 @@ public class DataSourceMapper extends AbstractMapper<DataSourceDO> {
     @NotNull
     @Override
     protected List<DataSourceDO> getDataList() {
-        return CrudSettings.getInstance().getDataSources();
+        return CrudSettings.getDataSources();
     }
 
     @NotNull

@@ -41,7 +41,7 @@ public class CrudConnView implements CrudView {
                     Messages.showErrorDialog(myMainPanel, "请选择要修改的连接");
                     return;
                 }
-                Conn conn = CrudSettings.getInstance().getConns().get(index);
+                Conn conn = CrudSettings.getConns().get(index);
                 CrudEditConnDialog dialog = new CrudEditConnDialog(CrudConnView.this, conn);
                 if (!dialog.showAndGet()) {
                     return;
@@ -58,10 +58,10 @@ public class CrudConnView implements CrudView {
                 }
                 int result = Messages.showYesNoDialog(getCrudList().getSelectedElement().getName(), "确认删除？", Messages.getQuestionIcon());
                 if (result == Messages.YES) {
-                    CrudSettings.getInstance().getConns().remove(index);
+                    CrudSettings.getConns().remove(index);
                     CrudList crudList = getCrudList();
                     crudList.clearElement();
-                    List<Conn> conns = CrudSettings.getInstance().getConns();
+                    List<Conn> conns = CrudSettings.getConns();
                     for (Conn conn : conns) {
                         crudList.addElement(new ListElement(CrudIcons.MYSQL_CONN, conn.getName()));
                     }
@@ -70,7 +70,6 @@ public class CrudConnView implements CrudView {
         });
     }
 
-    @Override
     public CrudList getCrudList() {
         return (CrudList) myConnsList;
     }

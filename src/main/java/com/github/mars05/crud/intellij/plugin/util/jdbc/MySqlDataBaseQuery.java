@@ -29,9 +29,8 @@ import cn.smallbun.screw.core.query.mysql.model.MySqlTableModel;
 import cn.smallbun.screw.core.util.Assert;
 import cn.smallbun.screw.core.util.ExceptionUtils;
 import cn.smallbun.screw.core.util.JdbcUtils;
-import com.github.mars05.crud.intellij.plugin.model.DataSourceVO;
+import com.github.mars05.crud.intellij.plugin.dto.DataSourceDTO;
 
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -50,15 +49,15 @@ import static cn.smallbun.screw.core.constant.DefaultConstants.PERCENT_SIGN;
  */
 public class MySqlDataBaseQuery extends AbstractDatabaseQuery {
 
-    public MySqlDataBaseQuery(DataSourceVO dataSource) {
+    public MySqlDataBaseQuery(DataSourceDTO dataSource) {
         super(dataSource);
     }
 
-    public MySqlDataBaseQuery(DataSourceVO dataSource, String catalog) {
+    public MySqlDataBaseQuery(DataSourceDTO dataSource, String catalog) {
         super(dataSource, catalog);
     }
 
-    public MySqlDataBaseQuery(DataSourceVO dataSource, String catalog, String schema) {
+    public MySqlDataBaseQuery(DataSourceDTO dataSource, String catalog, String schema) {
         super(dataSource, catalog, schema);
     }
 

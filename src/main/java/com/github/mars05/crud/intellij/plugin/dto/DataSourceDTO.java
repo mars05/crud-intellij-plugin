@@ -1,4 +1,4 @@
-package com.github.mars05.crud.intellij.plugin.model;
+package com.github.mars05.crud.intellij.plugin.dto;
 
 import lombok.Data;
 
@@ -6,12 +6,11 @@ import lombok.Data;
  * 数据源
  */
 @Data
-public class DataSourceVO {
-
+public class DataSourceDTO {
     /**
      * 数据源ID
      */
-    private String id;
+    private Long id;
 
     /**
      * 数据库类型
@@ -42,11 +41,16 @@ public class DataSourceVO {
      * 密码
      */
     private String password;
-    private String catalog;
+
     /**
      * 数据库
      */
     private String database;
+
+    /**
+     * 模式
+     */
+    private String schema;
 
     private String option;
 

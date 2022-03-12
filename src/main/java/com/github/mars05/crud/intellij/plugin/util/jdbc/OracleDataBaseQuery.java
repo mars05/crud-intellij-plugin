@@ -30,7 +30,7 @@ import cn.smallbun.screw.core.util.Assert;
 import cn.smallbun.screw.core.util.CollectionUtils;
 import cn.smallbun.screw.core.util.ExceptionUtils;
 import cn.smallbun.screw.core.util.JdbcUtils;
-import com.github.mars05.crud.intellij.plugin.model.DataSourceVO;
+import com.github.mars05.crud.intellij.plugin.dto.DataSourceDTO;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -62,15 +62,15 @@ public class OracleDataBaseQuery extends AbstractDatabaseQuery {
      */
     private final Map<String, List<Column>> columnsCaching = new ConcurrentHashMap<>();
 
-    public OracleDataBaseQuery(DataSourceVO dataSource) {
+    public OracleDataBaseQuery(DataSourceDTO dataSource) {
         super(dataSource);
     }
 
-    public OracleDataBaseQuery(DataSourceVO dataSource, String catalog) {
+    public OracleDataBaseQuery(DataSourceDTO dataSource, String catalog) {
         super(dataSource, catalog);
     }
 
-    public OracleDataBaseQuery(DataSourceVO dataSource, String catalog, String schema) {
+    public OracleDataBaseQuery(DataSourceDTO dataSource, String catalog, String schema) {
         super(dataSource, catalog, schema);
     }
 

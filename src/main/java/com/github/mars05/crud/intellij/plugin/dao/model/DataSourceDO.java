@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
 public class DataSourceDO extends BaseDO {
 
     /**
-     * 数据库类型
+     * 数据库类型 mysql:MySQL,pgsql:PostgreSQL,oracle:Oracle,sqlserver:SQL Server
      */
     private String databaseType;
 
@@ -41,10 +41,5 @@ public class DataSourceDO extends BaseDO {
      * 密码
      */
     private String password;
-
-    /**
-     * 数据库
-     */
-    private String database;
 
 }

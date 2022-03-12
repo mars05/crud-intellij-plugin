@@ -6,15 +6,14 @@ import cn.smallbun.screw.core.metadata.Table;
 import cn.smallbun.screw.core.query.mysql.model.MySqlColumnModel;
 import cn.smallbun.screw.core.query.oracle.model.OracleColumnModel;
 import cn.smallbun.screw.core.query.postgresql.model.PostgreSqlColumnModel;
+import com.github.mars05.crud.intellij.plugin.dto.DataSourceDTO;
 import com.github.mars05.crud.intellij.plugin.enums.DatabaseTypeEnum;
 import com.github.mars05.crud.intellij.plugin.exception.BizException;
-import com.github.mars05.crud.intellij.plugin.model.DataSourceVO;
 import com.github.mars05.crud.intellij.plugin.util.jdbc.AbstractDatabaseQuery;
 import com.github.mars05.crud.intellij.plugin.util.jdbc.MySqlDataBaseQuery;
 import com.github.mars05.crud.intellij.plugin.util.jdbc.OracleDataBaseQuery;
 import com.github.mars05.crud.intellij.plugin.util.jdbc.PostgreSqlDataBaseQuery;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -29,12 +28,11 @@ import java.util.stream.Collectors;
  */
 public class JdbcUtils {
 
-    @NotNull
-    public static Connection getConnection(DataSourceVO dataSourceVO) {
+    public static Connection getConnection(DataSourceDTO dataSource) {
         try {
             String url = null;
             String driverClassName = null;
-            switch (Objects.requireNonNull(DatabaseTypeEnum.findByCode(dataSourceVO.getDatabaseType()))) {
+            switch (Objects.requireNonNull(DatabaseTypeEnum.findByCode(dataSource.getDatabaseType()))) {
                 case MYSQL:
                     url = "jdbc:mysql://";
                     driverClassName = "com.mysql.jdbc.Driver";
@@ -48,31 +46,31 @@ public class JdbcUtils {
                     driverClassName = "oracle.jdbc.OracleDriver";
                     break;
                 case SQL_SERVER:
-                    throw new UnsupportedOperationException("暂不支持数据库[" + dataSourceVO.getDatabaseType() + "]");
+                    throw new UnsupportedOperationException("暂不支持数据库[" + dataSource.getDatabaseType() + "]");
             }
             try {
                 Class.forName(driverClassName);
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e.getMessage(), e);
             }
-            url = url + dataSourceVO.getHost() + ":" + dataSourceVO.getPort();
-            if (StringUtils.isNotBlank(dataSourceVO.getDatabase())) {
-                url = url + "/" + dataSourceVO.getDatabase();
+            url = url + dataSource.getHost() + ":" + dataSource.getPort();
+            if (StringUtils.isNotBlank(dataSource.getDatabase())) {
+                url = url + "/" + dataSource.getDatabase();
             }
             List<String> optionList = new ArrayList<>();
-//            if (DatabaseTypeEnum.PG_SQL.getCode().equals(dataSourceVO.getDatabaseType())
-//                    && StringUtils.isNotBlank(dataSourceVO.getSchema())) {
-//                optionList.add("currentSchema=" + dataSourceVO.getSchema());
+//            if (DatabaseTypeEnum.PG_SQL.getCode().equals(dataSource.getDatabaseType())
+//                    && StringUtils.isNotBlank(dataSource.getSchema())) {
+//                optionList.add("currentSchema=" + dataSource.getSchema());
 //            }
-            if (StringUtils.isNotBlank(dataSourceVO.getOption())) {
-                optionList.add(dataSourceVO.getOption());
+            if (StringUtils.isNotBlank(dataSource.getOption())) {
+                optionList.add(dataSource.getOption());
             }
             if (!optionList.isEmpty()) {
                 url = url + "?" + String.join("&", optionList);
             }
             Properties props = new Properties();
-            props.put("user", dataSourceVO.getUsername());
-            props.put("password", dataSourceVO.getPassword());
+            props.put("user", dataSource.getUsername());
+            props.put("password", dataSource.getPassword());
             props.put("remarks", "true");
             props.put("useInformationSchema", "true");
             props.put("ResultSetMetaDataOptions", "1");
@@ -82,7 +80,7 @@ public class JdbcUtils {
         }
     }
 
-    public static List<String> getAllCatalog(DataSourceVO dataSourceVO) {
+    public static List<String> getAllCatalog(DataSourceDTO dataSourceVO) {
         AbstractDatabaseQuery baseQuery = null;
         try {
             switch (Objects.requireNonNull(DatabaseTypeEnum.findByCode(dataSourceVO.getDatabaseType()))) {
@@ -109,7 +107,7 @@ public class JdbcUtils {
         }
     }
 
-    public static List<? extends Table> getAllTable(DataSourceVO dataSourceVO, String catalog) {
+    public static List<? extends Table> getAllTable(DataSourceDTO dataSourceVO, String catalog) {
         AbstractDatabaseQuery baseQuery = null;
         try {
             switch (Objects.requireNonNull(DatabaseTypeEnum.findByCode(dataSourceVO.getDatabaseType()))) {
@@ -136,7 +134,7 @@ public class JdbcUtils {
         }
     }
 
-    public static List<? extends Column> getAllColumn(DataSourceVO dataSourceVO, String catalog, String tableName) {
+    public static List<? extends Column> getAllColumn(DataSourceDTO dataSourceVO, String catalog, String tableName) {
         AbstractDatabaseQuery baseQuery = null;
         List<? extends PrimaryKey> primaryKeys;
         try {
@@ -173,7 +171,7 @@ public class JdbcUtils {
         }
     }
 
-    public static List<String> getSelectColumn(DataSourceVO dataSourceVO, String querySql) {
+    public static List<String> getSelectColumn(DataSourceDTO dataSourceVO, String querySql) {
         AbstractDatabaseQuery baseQuery = null;
         try {
             switch (Objects.requireNonNull(DatabaseTypeEnum.findByCode(dataSourceVO.getDatabaseType()))) {

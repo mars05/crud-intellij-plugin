@@ -102,7 +102,7 @@ public class CrudAddConnDialog extends DialogWrapper {
 	protected void doOKAction() {
 		CrudList crudList = myCrudConnView.getCrudList();
 		crudList.clearElement();
-		List<Conn> conns = CrudSettings.getInstance().getConns();
+		List<Conn> conns = CrudSettings.getConns();
 
 		conns.add(new Conn(myNameField.getText(), myHostField.getText(), Integer.valueOf(myPortField.getText()), myUsernameField.getText(), new String(myPasswordField.getPassword())));
 

@@ -223,7 +223,7 @@ public class PsiFileUtils {
             selectionSaveInfo.setServiceSelected(selection.isServiceSelected());
             selectionSaveInfo.setControllerSelected(selection.isControllerSelected());
 
-            Map<String, SelectionSaveInfo> selectionSaveInfoMap = CrudSettings.getInstance().getSelectionSaveInfoMap();
+            Map<String, SelectionSaveInfo> selectionSaveInfoMap = CrudSettings.getSelectionSaveInfoMap();
             selectionSaveInfoMap.put(project.getName(), selectionSaveInfo);
         }
 

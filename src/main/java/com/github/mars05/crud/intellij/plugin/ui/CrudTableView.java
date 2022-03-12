@@ -15,7 +15,6 @@ public class CrudTableView implements CrudView {
     private JLabel myPathLabel;
     private JScrollPane myScrollPane;
 
-    @Override
     public CrudList getCrudList() {
         CrudList crudList = (CrudList) this.myTableList;
         crudList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);

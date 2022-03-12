@@ -55,7 +55,7 @@ public class CrudDirSelectInfoStep extends ModuleWizardStep {
         myModelField.setText(SelectionContext.getModelPackage());
         ((TextFieldWithBrowseButton) myMapperField).setText(SelectionContext.getMapperDir());
 
-        Map<String, SelectionSaveInfo> selectionSaveInfoMap = CrudSettings.getInstance().getSelectionSaveInfoMap();
+        Map<String, SelectionSaveInfo> selectionSaveInfoMap = CrudSettings.getSelectionSaveInfoMap();
         if (selectionSaveInfoMap != null && selectionSaveInfoMap.get(myProject.getName()) != null) {
             SelectionSaveInfo selectionSaveInfo = selectionSaveInfoMap.get(myProject.getName());
 

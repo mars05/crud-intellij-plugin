@@ -11,7 +11,7 @@ public class ProjectTemplateMapper extends AbstractMapper<ProjectTemplateDO> {
     @NotNull
     @Override
     protected List<ProjectTemplateDO> getDataList() {
-        return CrudSettings.getInstance().getProjectTemplates();
+        return CrudSettings.getProjectTemplates();
     }
 
     @NotNull

@@ -3,6 +3,7 @@ package com.github.mars05.crud.intellij.plugin.step;
 import com.github.mars05.crud.intellij.plugin.icon.CrudIcons;
 import com.github.mars05.crud.intellij.plugin.setting.Conn;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
+import com.github.mars05.crud.intellij.plugin.ui.CrudConnView;
 import com.github.mars05.crud.intellij.plugin.ui.CrudList;
 import com.github.mars05.crud.intellij.plugin.ui.CrudView;
 import com.github.mars05.crud.intellij.plugin.ui.ListElement;
@@ -20,10 +21,10 @@ import java.util.List;
  * @author xiaoyu
  */
 public class CrudConnStep extends ModuleWizardStep {
-    private CrudView myCrudConnView;
+    private CrudConnView myCrudConnView;
     private CrudDbStep myDbStep;
 
-    public CrudConnStep(CrudView crudConnView, CrudDbStep dbStep) {
+    public CrudConnStep(CrudConnView crudConnView, CrudDbStep dbStep) {
         myCrudConnView = crudConnView;
         myDbStep = dbStep;
     }
@@ -32,7 +33,7 @@ public class CrudConnStep extends ModuleWizardStep {
     public JComponent getComponent() {
         CrudList crudList = myCrudConnView.getCrudList();
         crudList.clearElement();
-        List<Conn> conns = CrudSettings.getInstance().getConns();
+        List<Conn> conns = CrudSettings.getConns();
         for (Conn conn : conns) {
             crudList.addElement(new ListElement(CrudIcons.MYSQL_CONN, conn.getName()));
         }
@@ -51,7 +52,7 @@ public class CrudConnStep extends ModuleWizardStep {
             if (index == -1) {
                 throw new Exception("请选择一个连接");
             }
-            Conn conn = CrudSettings.getInstance().getConns().get(index);
+            Conn conn = CrudSettings.getConns().get(index);
 
             DbHelper dbHelper = new DbHelper(conn.getHost(), conn.getPort(), conn.getUsername(), conn.getPassword());
             List<String> databases = dbHelper.getDatabases();

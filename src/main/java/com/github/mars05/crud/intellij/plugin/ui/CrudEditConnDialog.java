@@ -118,7 +118,7 @@ public class CrudEditConnDialog extends DialogWrapper {
 
 		CrudList crudList = myCrudConnView.getCrudList();
 		crudList.clearElement();
-		List<Conn> conns = CrudSettings.getInstance().getConns();
+		List<Conn> conns = CrudSettings.getConns();
 		for (Conn conn : conns) {
 			crudList.addElement(new ListElement(CrudIcons.MYSQL_CONN, conn.getName()));
 		}

@@ -1,11 +1,11 @@
 package com.github.mars05.crud.intellij.plugin.action;
 
+import com.github.mars05.crud.intellij.plugin.dto.CodeGenerateReqDTO;
+import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
+import com.github.mars05.crud.intellij.plugin.step.*;
 import com.github.mars05.crud.intellij.plugin.ui.CrudConnView;
 import com.github.mars05.crud.intellij.plugin.ui.CrudDbView;
 import com.github.mars05.crud.intellij.plugin.ui.CrudTableView;
-import com.github.mars05.crud.intellij.plugin.step.CrudConnStep;
-import com.github.mars05.crud.intellij.plugin.step.CrudDbStep;
-import com.github.mars05.crud.intellij.plugin.step.CrudTableStep;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.wizard.AbstractWizard;
 import com.intellij.openapi.module.Module;
@@ -23,7 +23,7 @@ public class CrudActionDialog extends AbstractWizard<ModuleWizardStep> {
     private Module myModule;
 
     public CrudActionDialog(Project project, Module module) {
-        super("Create New Crud", project);
+        super("代码生成", project);
         myProject = project;
         myModule = module;
         ModuleWizardStep[] wizardSteps = createWizardSteps();
@@ -61,11 +61,14 @@ public class CrudActionDialog extends AbstractWizard<ModuleWizardStep> {
         CrudTableStep tableStep = new CrudTableStep(new CrudTableView());
         CrudDbStep dbStep = new CrudDbStep(new CrudDbView(), tableStep);
         CrudConnStep connStep = new CrudConnStep(new CrudConnView(), dbStep);
+        CrudSettings.setCodeGenerate(new CodeGenerateReqDTO());
         return new ModuleWizardStep[]{
+                new MyTemplateStep(),
+                new CodeStep(),
                 connStep,
                 dbStep,
                 tableStep,
-                new CrudDirSelectInfoStep(myProject,myModule)
+                new CrudDirSelectInfoStep(myProject, myModule)
         };
     }
 

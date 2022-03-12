@@ -29,7 +29,7 @@ import cn.smallbun.screw.core.query.postgresql.model.PostgreSqlTableModel;
 import cn.smallbun.screw.core.util.Assert;
 import cn.smallbun.screw.core.util.ExceptionUtils;
 import cn.smallbun.screw.core.util.JdbcUtils;
-import com.github.mars05.crud.intellij.plugin.model.DataSourceVO;
+import com.github.mars05.crud.intellij.plugin.dto.DataSourceDTO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,15 +44,15 @@ import static cn.smallbun.screw.core.constant.DefaultConstants.PERCENT_SIGN;
  * Created by qinggang.zuo@gmail.com / 2689170096@qq.com on 2020/3/18 13:58
  */
 public class PostgreSqlDataBaseQuery extends AbstractDatabaseQuery {
-    public PostgreSqlDataBaseQuery(DataSourceVO dataSource) {
+    public PostgreSqlDataBaseQuery(DataSourceDTO dataSource) {
         super(dataSource);
     }
 
-    public PostgreSqlDataBaseQuery(DataSourceVO dataSource, String catalog) {
+    public PostgreSqlDataBaseQuery(DataSourceDTO dataSource, String catalog) {
         super(dataSource, catalog);
     }
 
-    public PostgreSqlDataBaseQuery(DataSourceVO dataSource, String catalog, String schema) {
+    public PostgreSqlDataBaseQuery(DataSourceDTO dataSource, String catalog, String schema) {
         super(dataSource, catalog, schema);
     }
 

@@ -1,8 +1,10 @@
 package com.github.mars05.crud.intellij.plugin.dto;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 public class ProjectGenerateReqDTO {
 
     private Long ptId;
@@ -18,6 +20,7 @@ public class ProjectGenerateReqDTO {
     private String ddl;
 
     @Data
+    @Accessors(chain = true)
     public static class MavenReqDTO {
         private String groupId;
         private String artifactId;
@@ -25,6 +28,7 @@ public class ProjectGenerateReqDTO {
     }
 
     @Data
+    @Accessors(chain = true)
     public static class DataSourceReqDTO {
         private String databaseType;
 

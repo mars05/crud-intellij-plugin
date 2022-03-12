@@ -23,7 +23,7 @@ import cn.smallbun.screw.core.query.DatabaseQuery;
 import cn.smallbun.screw.core.util.Assert;
 import cn.smallbun.screw.core.util.ExceptionUtils;
 import cn.smallbun.screw.core.util.StringUtils;
-import com.github.mars05.crud.intellij.plugin.model.DataSourceVO;
+import com.github.mars05.crud.intellij.plugin.dto.DataSourceDTO;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 
@@ -45,7 +45,7 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
      * DataSource
      */
     @Getter
-    private final DataSourceVO dataSource;
+    private final DataSourceDTO dataSource;
     private String catalog;
     private String schema;
 
@@ -54,16 +54,16 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
      */
     volatile protected Connection connection;
 
-    public AbstractDatabaseQuery(DataSourceVO dataSource) {
+    public AbstractDatabaseQuery(DataSourceDTO dataSource) {
         this.dataSource = dataSource;
     }
 
-    public AbstractDatabaseQuery(DataSourceVO dataSource, String catalog) {
+    public AbstractDatabaseQuery(DataSourceDTO dataSource, String catalog) {
         this.dataSource = dataSource;
         this.catalog = catalog;
     }
 
-    public AbstractDatabaseQuery(DataSourceVO dataSource, String catalog, String schema) {
+    public AbstractDatabaseQuery(DataSourceDTO dataSource, String catalog, String schema) {
         this.dataSource = dataSource;
         this.catalog = catalog;
         this.schema = schema;

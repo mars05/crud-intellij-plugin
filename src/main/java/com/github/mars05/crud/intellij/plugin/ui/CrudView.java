@@ -6,8 +6,5 @@ import javax.swing.*;
  * @author xiaoyu
  */
 public interface CrudView {
-    CrudList getCrudList();
-
-
     JComponent getComponent();
 }
