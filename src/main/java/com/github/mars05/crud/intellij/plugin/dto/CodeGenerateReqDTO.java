@@ -20,4 +20,9 @@ public class CodeGenerateReqDTO {
 
     private String ddl;
 
+    private Long dsId;
+    private String database;
+    private String schema;
+    private List<String> tables;
+
 }

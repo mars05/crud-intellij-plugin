@@ -1,7 +1,6 @@
 package com.github.mars05.crud.intellij.plugin.util;
 
 import com.github.mars05.crud.intellij.plugin.model.Table;
-import com.github.mars05.crud.intellij.plugin.setting.Conn;
 
 import java.util.List;
 
@@ -11,7 +10,6 @@ import java.util.List;
 public class Selection {
     private String projectType;
     private int ormType;
-    private Conn conn;
     private String db;
     private List<Table> tables;
     private String groupId;
@@ -36,14 +34,6 @@ public class Selection {
 
     public void setProjectType(String projectType) {
         this.projectType = projectType;
-    }
-
-    public Conn getConn() {
-        return conn;
-    }
-
-    public void setConn(Conn conn) {
-        this.conn = conn;
     }
 
     public String getDb() {

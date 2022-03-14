@@ -11,10 +11,10 @@ public class DataSourceRespDTO {
     /**
      * 数据源ID
      */
-    private String id;
+    private Long id;
 
     /**
-     * 数据库类型
+     * 数据库类型 mysql:MySQL,pgsql:PostgreSQL,oracle:Oracle,sqlserver:SQL Server
      */
     private String databaseType;
 
@@ -42,10 +42,5 @@ public class DataSourceRespDTO {
      * 密码
      */
     private String password;
-
-    /**
-     * 数据库
-     */
-    private String database;
 
 }

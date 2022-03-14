@@ -56,8 +56,8 @@ public class DataSourceService {
         dataSourceRepository.updateById(dataSourceDO);
     }
 
-    public DataSourceRespDTO detail(String id) {
-        return BeanUtils.convertBean(dataSourceRepository.selectById(id), DataSourceRespDTO.class);
+    public DataSourceRespDTO detail(Long dsId) {
+        return BeanUtils.convertBean(dataSourceRepository.selectById(dsId), DataSourceRespDTO.class);
     }
 
     public void delete(Long id) {

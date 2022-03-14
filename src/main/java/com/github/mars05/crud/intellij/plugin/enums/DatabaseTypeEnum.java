@@ -20,6 +20,10 @@ public enum DatabaseTypeEnum {
         return code;
     }
 
+    public String getDesc() {
+        return desc;
+    }
+
     public static DatabaseTypeEnum findByCode(String code) {
         for (DatabaseTypeEnum value : values()) {
             if (value.code.equals(code)) {

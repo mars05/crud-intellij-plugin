@@ -24,6 +24,7 @@ public class CrudSettings implements PersistentStateComponent<CrudState> {
 
     private static CodeGenerateReqDTO codeGenerate;
     private static ProjectGenerateReqDTO projectGenerate;
+    private static boolean ddl;
 
     @Nullable
     @Override
@@ -34,10 +35,6 @@ public class CrudSettings implements PersistentStateComponent<CrudState> {
     @Override
     public void loadState(CrudState state) {
         myState = state;
-    }
-
-    public static List<Conn> getConns() {
-        return CRUD_SETTINGS.myState.getConns();
     }
 
     public static List<DataSourceDO> getDataSources() {
@@ -70,5 +67,13 @@ public class CrudSettings implements PersistentStateComponent<CrudState> {
         } else {
             throw new BizException("生成参数错误");
         }
+    }
+
+    public static boolean isDdl() {
+        return ddl;
+    }
+
+    public static void setDdl(boolean ddl) {
+        CrudSettings.ddl = ddl;
     }
 }

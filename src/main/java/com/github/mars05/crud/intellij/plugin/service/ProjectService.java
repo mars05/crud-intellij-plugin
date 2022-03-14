@@ -1,14 +1,15 @@
 package com.github.mars05.crud.intellij.plugin.service;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.github.mars05.crud.intellij.plugin.dto.*;
 import com.github.mars05.crud.intellij.plugin.enums.DatabaseTypeEnum;
 import com.github.mars05.crud.intellij.plugin.enums.FileTemplateTypeEnum;
 import com.github.mars05.crud.intellij.plugin.exception.BizException;
 import com.github.mars05.crud.intellij.plugin.model.param.Table;
-import com.github.mars05.crud.intellij.plugin.dto.FileTemplateDTO;
-import com.github.mars05.crud.intellij.plugin.util.*;
+import com.github.mars05.crud.intellij.plugin.util.BeanUtils;
+import com.github.mars05.crud.intellij.plugin.util.SqlUtils;
+import com.github.mars05.crud.intellij.plugin.util.TemplateUtils;
+import com.github.mars05.crud.intellij.plugin.util.ValidateUtils;
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.StringUtils;
 
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 public class ProjectService {
     private ProjectTemplateService projectTemplateService = new ProjectTemplateService();
+    private DataSourceService dataSourceService = new DataSourceService();
 
     public ProjectRespDTO generateProject(ProjectGenerateReqDTO reqDTO) {
         ValidateUtils.validAnnotation(reqDTO);
@@ -38,7 +40,7 @@ public class ProjectService {
         //Maven参数
         templateParam.setMaven(BeanUtils.convertBean(reqDTO.getMaven(), TemplateParam.Maven.class));
         //数据源参数
-        templateParam.setDataSource(BeanUtils.convertBean(reqDTO.getDataSource(), TemplateParam.DataSource.class));
+        templateParam.setDataSource(BeanUtils.convertBean(dataSourceService.detail(reqDTO.getDsId()), TemplateParam.DataSource.class));
 
         for (FileTemplateDTO fileTemplateRespDTO : projectTemplateRespDTO.getFileTemplateList()) {
             if (FileTemplateTypeEnum.GENERAL.getCode() == fileTemplateRespDTO.getType()) {

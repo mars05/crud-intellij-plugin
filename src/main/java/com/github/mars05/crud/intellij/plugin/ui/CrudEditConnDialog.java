@@ -1,10 +1,14 @@
 package com.github.mars05.crud.intellij.plugin.ui;
 
 import com.github.mars05.crud.intellij.plugin.CrudBundle;
+import com.github.mars05.crud.intellij.plugin.dto.DataSourceCreateReqDTO;
+import com.github.mars05.crud.intellij.plugin.dto.DataSourceRespDTO;
+import com.github.mars05.crud.intellij.plugin.dto.DataSourceUpdateReqDTO;
+import com.github.mars05.crud.intellij.plugin.enums.DatabaseTypeEnum;
+import com.github.mars05.crud.intellij.plugin.exception.BizException;
 import com.github.mars05.crud.intellij.plugin.icon.CrudIcons;
-import com.github.mars05.crud.intellij.plugin.setting.Conn;
-import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
-import com.github.mars05.crud.intellij.plugin.util.DbHelper;
+import com.github.mars05.crud.intellij.plugin.service.DataSourceService;
+import com.github.mars05.crud.intellij.plugin.step.CrudConnStep;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.ValidationInfo;
@@ -14,135 +18,177 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
 /**
  * @author xiaoyu
  */
 public class CrudEditConnDialog extends DialogWrapper {
-	private JPanel myMainPanel;
-	private JPanel myConnPanel;
-	private JPanel myActionPanel;
-	private JLabel myNameLabel;
-	private JTextField myNameField;
-	private JLabel myHostLabel;
-	private JTextField myHostField;
-	private JTextField myPortField;
-	private JTextField myUsernameField;
-	private JPasswordField myPasswordField;
-	private JLabel myPortLabel;
-	private JLabel myUsernameLabel;
-	private JLabel myPasswordLabel;
-	private JButton myTestButton;
-	private volatile boolean isRepaint = true;
-	private CrudConnView myCrudConnView;
+    private JPanel myMainPanel;
+    private JPanel myConnPanel;
+    private JPanel myActionPanel;
+    private JLabel myNameLabel;
+    private JTextField myNameField;
+    private JLabel myHostLabel;
+    private JTextField myHostField;
+    private JTextField myPortField;
+    private JTextField myUsernameField;
+    private JPasswordField myPasswordField;
+    private JLabel myPortLabel;
+    private JLabel myUsernameLabel;
+    private JLabel myPasswordLabel;
+    private JButton myTestButton;
+    private JComboBox<DatabaseTypeEnum> databaseTypeComboBox;
+    private volatile boolean isRepaint = true;
+    private CrudConnStep myCrudConnStep;
 
-	private Conn myConn;
+    private DataSourceService dataSourceService = new DataSourceService();
+    private Long dsId;
+
+    public CrudEditConnDialog(CrudConnStep crudConnStep, Long dsId) {
+        super(crudConnStep.getComponent(), false);
+        myCrudConnStep = crudConnStep;
+        this.dsId = dsId;
+        setTitle(dsId == null ? "添加连接" : "修改连接");
+        databaseTypeComboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                JLabel jbl = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                DatabaseTypeEnum typeEnum = (DatabaseTypeEnum) value;
+                Icon icon;
+                switch (typeEnum) {
+                    case MYSQL:
+                        icon = CrudIcons.MYSQL_CONN;
+                        break;
+                    case PG_SQL:
+                        icon = CrudIcons.PGSQL_CONN;
+                        break;
+                    case ORACLE:
+                        icon = CrudIcons.ORACLE_CONN;
+                        break;
+                    default:
+                        throw new BizException("暂不支持的数据库类型");
+                }
+                jbl.setIcon(icon);
+                jbl.setText(typeEnum.getDesc());
+                return jbl;
+            }
+        });
+        databaseTypeComboBox.addItem(DatabaseTypeEnum.MYSQL);
+        databaseTypeComboBox.addItem(DatabaseTypeEnum.PG_SQL);
+        databaseTypeComboBox.addItem(DatabaseTypeEnum.ORACLE);
+        if (dsId != null) {
+            DataSourceRespDTO respDTO = dataSourceService.detail(dsId);
+
+            myNameField.setText(respDTO.getName());
+            myHostField.setText(respDTO.getHost());
+            myPortField.setText(String.valueOf(respDTO.getPort()));
+            myUsernameField.setText(respDTO.getUsername());
+            myPasswordField.setText(respDTO.getPassword());
+        }
+        myTestButton.addActionListener(e -> {
+            isRepaint = false;
+            Container contentPane = getContentPane();
+            Graphics graphics = contentPane.getGraphics().create();
+            graphics.setColor(new Color(255, 255, 255, 255 / 3));
+            graphics.fillRect(0, 0, contentPane.getWidth(), contentPane.getHeight());
+            try {
+                DataSourceCreateReqDTO createReqDTO = new DataSourceCreateReqDTO();
+                createReqDTO.setName(myNameField.getText());
+                createReqDTO.setHost(myHostField.getText());
+                createReqDTO.setPort(Integer.valueOf(myPortField.getText()));
+                createReqDTO.setUsername(myUsernameField.getText());
+                createReqDTO.setPassword(new String(myPasswordField.getPassword()));
+                dataSourceService.testConnection(createReqDTO);
+                Messages.showInfoMessage(myMainPanel, "连接成功", "");
+            } catch (Exception ex) {
+                Messages.showErrorDialog(myMainPanel, ex.getMessage());
+            } finally {
+                isRepaint = true;
+                graphics.dispose();
+                contentPane.repaint();
+            }
+        });
+        init();
+    }
+
+    @Nullable
+    @Override
+    protected ValidationInfo doValidate() {
+        ValidationInfo info = null;
+        if (StringUtil.isEmptyOrSpaces(myNameField.getText())) {
+            info = new ValidationInfo(CrudBundle.message("validate.conn.name"));
+        }
+        if (info == null && StringUtil.isEmptyOrSpaces(myHostField.getText())) {
+            info = new ValidationInfo(CrudBundle.message("validate.conn.host"));
+        }
+        String portText = myPortField.getText();
+        if (info == null && StringUtil.isEmptyOrSpaces(portText)) {
+            info = new ValidationInfo(CrudBundle.message("validate.conn.port"));
+        }
+        if (info == null && !StringUtils.isNumeric(portText)) {
+            info = new ValidationInfo(CrudBundle.message("validate.conn.portnum"));
+        }
+        if (info == null && StringUtil.isEmptyOrSpaces(myUsernameField.getText())) {
+            info = new ValidationInfo(CrudBundle.message("validate.conn.username"));
+        }
+        if (info == null) {
+            if (myPasswordField.getPassword() == null || StringUtil.isEmptyOrSpaces(new String(myPasswordField.getPassword()))) {
+                info = new ValidationInfo(CrudBundle.message("validate.conn.password"));
+            }
+        }
+        return info;
+    }
 
 
-	public CrudEditConnDialog(CrudConnView crudConnView, Conn conn) {
-		super(crudConnView.getComponent(), false);
-		myCrudConnView = crudConnView;
-		setTitle("修改连接");
-		myNameField.setText(conn.getName());
-		myHostField.setText(conn.getHost());
-		myPortField.setText(String.valueOf(conn.getPort()));
-		myUsernameField.setText(conn.getUsername());
-		myPasswordField.setText(conn.getPassword());
-		myConn = conn;
+    @Override
+    public void doCancelAction() {
+        super.doCancelAction();
+    }
 
-		myTestButton.addActionListener(e -> {
-			isRepaint = false;
-			Container contentPane = getContentPane();
-			Graphics graphics = contentPane.getGraphics().create();
-			graphics.setColor(new Color(255, 255, 255, 255 / 3));
-			graphics.fillRect(0, 0, contentPane.getWidth(), contentPane.getHeight());
-			try {
-				Conn connTemp = new Conn(myNameField.getText(), myHostField.getText(), Integer.valueOf(myPortField.getText()), myUsernameField.getText(), new String(myPasswordField.getPassword()));
-				DbHelper dbHelper = new DbHelper(connTemp.getHost(), connTemp.getPort(), connTemp.getUsername(), connTemp.getPassword());
-				dbHelper.getDatabases();
+    @Override
+    protected void doOKAction() {
+        if (dsId == null) {
+            DataSourceCreateReqDTO reqDTO = new DataSourceCreateReqDTO();
+            reqDTO.setName(myNameField.getText());
+            reqDTO.setHost(myHostField.getText());
+            reqDTO.setPort(Integer.valueOf(myPortField.getText()));
+            reqDTO.setUsername(myUsernameField.getText());
+            reqDTO.setPassword(new String(myPasswordField.getPassword()));
 
-				Messages.showInfoMessage(myMainPanel, "连接成功", "");
-			} catch (Exception ex) {
-				Messages.showErrorDialog(myMainPanel, ex.getMessage());
-			} finally {
-				isRepaint = true;
-				graphics.dispose();
-				contentPane.repaint();
-			}
-		});
-		init();
-	}
+            dataSourceService.create(reqDTO);
+        } else {
+            DataSourceUpdateReqDTO reqDTO = new DataSourceUpdateReqDTO();
+            reqDTO.setName(myNameField.getText());
+            reqDTO.setHost(myHostField.getText());
+            reqDTO.setPort(Integer.valueOf(myPortField.getText()));
+            reqDTO.setUsername(myUsernameField.getText());
+            reqDTO.setPassword(new String(myPasswordField.getPassword()));
+            reqDTO.setId(dsId);
 
-	@Nullable
-	@Override
-	protected ValidationInfo doValidate() {
-		ValidationInfo info = null;
-		if (StringUtil.isEmptyOrSpaces(myNameField.getText())) {
-			info = new ValidationInfo(CrudBundle.message("validate.conn.name"));
-		}
-		if (info == null && StringUtil.isEmptyOrSpaces(myHostField.getText())) {
-			info = new ValidationInfo(CrudBundle.message("validate.conn.host"));
-		}
-		String portText = myPortField.getText();
-		if (info == null && StringUtil.isEmptyOrSpaces(portText)) {
-			info = new ValidationInfo(CrudBundle.message("validate.conn.port"));
-		}
-		if (info == null && !StringUtils.isNumeric(portText)) {
-			info = new ValidationInfo(CrudBundle.message("validate.conn.portnum"));
-		}
-		if (info == null && StringUtil.isEmptyOrSpaces(myUsernameField.getText())) {
-			info = new ValidationInfo(CrudBundle.message("validate.conn.username"));
-		}
-		if (info == null) {
-			if (myPasswordField.getPassword() == null || StringUtil.isEmptyOrSpaces(new String(myPasswordField.getPassword()))) {
-				info = new ValidationInfo(CrudBundle.message("validate.conn.password"));
-			}
-		}
-		return info;
-	}
+            dataSourceService.update(reqDTO);
+        }
 
+        myCrudConnStep.getList();
+        super.doOKAction();
+    }
 
-	@Override
-	public void doCancelAction() {
-		super.doCancelAction();
-	}
+    @Nullable
+    @Override
+    protected JComponent createCenterPanel() {
+        return myMainPanel;
+    }
 
-	@Override
-	protected void doOKAction() {
-		myConn.setName(myNameField.getText());
-		myConn.setHost(myHostField.getText());
-		myConn.setPort(Integer.valueOf(myPortField.getText()));
-		myConn.setUsername(myUsernameField.getText());
-		myConn.setPassword(new String(myPasswordField.getPassword()));
+    private void createUIComponents() {
+        myTestButton = new JButton() {
+            private static final long serialVersionUID = -137016959157649166L;
 
-		CrudList crudList = myCrudConnView.getCrudList();
-		crudList.clearElement();
-		List<Conn> conns = CrudSettings.getConns();
-		for (Conn conn : conns) {
-			crudList.addElement(new ListElement(CrudIcons.MYSQL_CONN, conn.getName()));
-		}
+            @Override
+            public void repaint() {
+                if (isRepaint) {
+                    super.repaint();
+                }
+            }
+        };
+    }
 
-		super.doOKAction();
-	}
-
-	@Nullable
-	@Override
-	protected JComponent createCenterPanel() {
-		return myMainPanel;
-	}
-
-	private void createUIComponents() {
-		// TODO: place custom component creation code here
-		myTestButton = new JButton() {
-			private static final long serialVersionUID = -137016959157649166L;
-
-			@Override
-			public void repaint() {
-				if (isRepaint) {
-					super.repaint();
-				}
-			}
-		};
-	}
 }

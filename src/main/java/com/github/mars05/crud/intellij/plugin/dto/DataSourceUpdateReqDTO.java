@@ -3,7 +3,7 @@ package com.github.mars05.crud.intellij.plugin.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * 数据源
@@ -11,6 +11,6 @@ import javax.validation.constraints.NotEmpty;
 @Setter
 @Getter
 public class DataSourceUpdateReqDTO extends DataSourceCreateReqDTO {
-    @NotEmpty
-    private String id;
+    @NotNull
+    private Long id;
 }

@@ -1,7 +1,6 @@
 package com.github.mars05.crud.intellij.plugin.util;
 
 import com.github.mars05.crud.intellij.plugin.model.Table;
-import com.github.mars05.crud.intellij.plugin.setting.Conn;
 
 import java.util.List;
 
@@ -11,7 +10,6 @@ import java.util.List;
 public class SelectionContext {
     private static String projectType;
     private static int ormType;
-    private static Conn conn;
     private static String db;
     private static List<Table> tables;
     private static String groupId;
@@ -28,14 +26,6 @@ public class SelectionContext {
     public static boolean daoSelected;
     public static boolean serviceSelected;
     public static boolean controllerSelected;
-
-    public static Conn getConn() {
-        return conn;
-    }
-
-    public static void setConn(Conn conn) {
-        SelectionContext.conn = conn;
-    }
 
     public static String getDb() {
         return db;
@@ -96,7 +86,6 @@ public class SelectionContext {
 
     public static void clearAllSet() {
         projectType = null;
-        conn = null;
         db = null;
         tables = null;
         groupId = null;
@@ -130,7 +119,6 @@ public class SelectionContext {
     public static Selection copyToSelection() {
         Selection selection = new Selection();
         selection.setProjectType(projectType);
-        selection.setConn(conn);
         selection.setDb(db);
         selection.setTables(tables);
         selection.setGroupId(groupId);
