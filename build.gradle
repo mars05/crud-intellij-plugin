@@ -35,7 +35,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.6'
     compile('com.baomidou:mybatis-plus-core:3.5.0') {
         exclude group: 'com.baomidou', module: 'mybatis-plus-annotation'
-        exclude group: 'org.mybatis', module: 'mybatis'
+//        exclude group: 'org.mybatis', module: 'mybatis'
     }
     compile 'cn.smallbun.screw:screw-core:1.0.5'
     compile 'com.alibaba:druid:1.2.8'

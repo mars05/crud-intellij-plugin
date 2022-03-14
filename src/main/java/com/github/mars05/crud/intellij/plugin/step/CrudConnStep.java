@@ -119,7 +119,7 @@ public class CrudConnStep extends ModuleWizardStep {
             } else if (DatabaseTypeEnum.ORACLE.getCode().equals(conn.getDatabaseType())) {
                 icon = CrudIcons.ORACLE_CONN;
             }
-            myConnsList.addElement(new ListElement(icon, conn.getName()));
+            myConnsList.addElement(new ListElement(icon, conn.getId(), conn.getName()));
         }
     }
 

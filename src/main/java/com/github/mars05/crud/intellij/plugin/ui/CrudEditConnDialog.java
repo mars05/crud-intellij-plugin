@@ -9,6 +9,7 @@ import com.github.mars05.crud.intellij.plugin.exception.BizException;
 import com.github.mars05.crud.intellij.plugin.icon.CrudIcons;
 import com.github.mars05.crud.intellij.plugin.service.DataSourceService;
 import com.github.mars05.crud.intellij.plugin.step.CrudConnStep;
+import com.github.mars05.crud.intellij.plugin.util.BeanUtils;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.ValidationInfo;
@@ -93,6 +94,7 @@ public class CrudEditConnDialog extends DialogWrapper {
             graphics.fillRect(0, 0, contentPane.getWidth(), contentPane.getHeight());
             try {
                 DataSourceCreateReqDTO createReqDTO = new DataSourceCreateReqDTO();
+                createReqDTO.setDatabaseType(((DatabaseTypeEnum) databaseTypeComboBox.getSelectedItem()).getCode());
                 createReqDTO.setName(myNameField.getText());
                 createReqDTO.setHost(myHostField.getText());
                 createReqDTO.setPort(Integer.valueOf(myPortField.getText()));
@@ -147,25 +149,19 @@ public class CrudEditConnDialog extends DialogWrapper {
 
     @Override
     protected void doOKAction() {
+        DataSourceCreateReqDTO reqDTO = new DataSourceCreateReqDTO();
+        reqDTO.setDatabaseType(((DatabaseTypeEnum) databaseTypeComboBox.getSelectedItem()).getCode());
+        reqDTO.setName(myNameField.getText());
+        reqDTO.setHost(myHostField.getText());
+        reqDTO.setPort(Integer.valueOf(myPortField.getText()));
+        reqDTO.setUsername(myUsernameField.getText());
+        reqDTO.setPassword(new String(myPasswordField.getPassword()));
         if (dsId == null) {
-            DataSourceCreateReqDTO reqDTO = new DataSourceCreateReqDTO();
-            reqDTO.setName(myNameField.getText());
-            reqDTO.setHost(myHostField.getText());
-            reqDTO.setPort(Integer.valueOf(myPortField.getText()));
-            reqDTO.setUsername(myUsernameField.getText());
-            reqDTO.setPassword(new String(myPasswordField.getPassword()));
-
             dataSourceService.create(reqDTO);
         } else {
-            DataSourceUpdateReqDTO reqDTO = new DataSourceUpdateReqDTO();
-            reqDTO.setName(myNameField.getText());
-            reqDTO.setHost(myHostField.getText());
-            reqDTO.setPort(Integer.valueOf(myPortField.getText()));
-            reqDTO.setUsername(myUsernameField.getText());
-            reqDTO.setPassword(new String(myPasswordField.getPassword()));
-            reqDTO.setId(dsId);
-
-            dataSourceService.update(reqDTO);
+            DataSourceUpdateReqDTO updateReqDTO = BeanUtils.convertBean(reqDTO, DataSourceUpdateReqDTO.class);
+            updateReqDTO.setId(dsId);
+            dataSourceService.update(updateReqDTO);
         }
 
         myCrudConnStep.getList();
