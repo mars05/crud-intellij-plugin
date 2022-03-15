@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <g fill="none" fill-rule="evenodd">
+    <rect width="2" height="2" x="3" y="11" fill="#9AA7B0"/>
+    <rect width="2" height="2" x="6" y="11" fill="#9AA7B0"/>
+    <rect width="2" height="2" x="9" y="11" fill="#9AA7B0"/>
+    <rect width="2" height="2" x="12" y="11" fill="#9AA7B0"/>
+    <rect width="2" height="2" x="3" y="8" fill="#9AA7B0"/>
+    <rect width="2" height="2" x="6" y="8" fill="#9AA7B0"/>
+    <rect width="2" height="2" x="9" y="8" fill="#9AA7B0"/>
+    <rect width="2" height="2" x="12" y="8" fill="#9AA7B0"/>
+    <rect width="2" height="2" x="1.914" y="4.914" fill="#9AA7B0" transform="rotate(45 2.914 5.914)"/>
+    <rect width="2" height="2" x="6" y="5" fill="#9AA7B0"/>
+    <rect width="2" height="2" x="9" y="5" fill="#9AA7B0"/>
+    <rect width="2" height="2" x="12" y="5" fill="#9AA7B0"/>
+    <rect width="2" height="2" x="9" y="2" fill="#9AA7B0"/>
+    <rect width="2" height="2" x="12" y="2" fill="#9AA7B0"/>
+  </g>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <g fill="none" fill-opacity=".7" fill-rule="evenodd">
+    <rect width="5" height="2" x="1" y="11" fill="#F98B9E"/>
+    <rect width="5" height="2" x="10" y="11" fill="#F98B9E"/>
+    <path fill="#F98B9E" d="M9,9 L9,11 L7,11 L7,9 L4,9 L4,7 L12,7 L12,9 L9,9 Z"/>
+    <rect width="2" height="2" x="4" y="13" fill="#F98B9E"/>
+    <rect width="2" height="2" x="1" y="5" fill="#F98B9E"/>
+    <rect width="2" height="2" x="13" y="5" fill="#F98B9E"/>
+    <rect width="2" height="2" x="10" y="13" fill="#F98B9E"/>
+    <rect width="4" height="2" x="6" y="5" fill="#F98B9E"/>
+    <rect width="4" height="2" x="1" y="3" fill="#F98B9E"/>
+    <rect width="4" height="2" x="11" y="3" fill="#F98B9E"/>
+    <rect width="8" height="2" x="4" y="1" fill="#F98B9E"/>
+    <rect width="4" height="2" x="6" y="11" fill="#F98B9E"/>
+  </g>
+</svg>

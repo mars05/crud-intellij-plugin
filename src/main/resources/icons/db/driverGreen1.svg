@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <g fill="#62B543" fill-opacity=".7" fill-rule="evenodd" transform="translate(1 1)">
+    <rect width="3" height="3" x="1"/>
+    <rect width="3" height="3" x="10"/>
+    <path d="M6,3 L6,7 L8,7 L8,3 L10,3 L10,6 L12,6 L12,9 L2,9 L2,6 L4,6 L4,3 L6,3 Z"/>
+    <rect width="3" height="3" y="9"/>
+    <rect width="3" height="3" x="11" y="9"/>
+    <rect width="4" height="3" x="5" y="11"/>
+  </g>
+</svg>
