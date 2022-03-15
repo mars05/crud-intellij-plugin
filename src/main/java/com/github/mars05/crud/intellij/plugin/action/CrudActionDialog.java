@@ -1,10 +1,6 @@
 package com.github.mars05.crud.intellij.plugin.action;
 
-import com.github.mars05.crud.intellij.plugin.dto.CodeGenerateReqDTO;
-import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
 import com.github.mars05.crud.intellij.plugin.step.*;
-import com.github.mars05.crud.intellij.plugin.ui.CrudDbView;
-import com.github.mars05.crud.intellij.plugin.ui.CrudTableView;
 import com.intellij.ide.util.newProjectWizard.AbstractProjectWizard;
 import com.intellij.ide.util.newProjectWizard.StepSequence;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
@@ -40,19 +36,14 @@ public class CrudActionDialog extends AbstractProjectWizard {
     }
 
     public ModuleWizardStep[] createWizardSteps() {
-        CrudTableStep tableStep = new CrudTableStep(new CrudTableView());
-        CrudDbStep dbStep = new CrudDbStep(new CrudDbView(), tableStep);
-
-        CrudSettings.setCodeGenerate(new CodeGenerateReqDTO());
         return new ModuleWizardStep[]{
                 new MyTemplateStep(),
-                new CodeStep(),
                 new DataSelectStep(),
                 new DdlStep(),
                 new CrudConnStep(),
-                dbStep,
-                tableStep,
-                new CrudDirSelectInfoStep(myProject, myModule)
+                new CrudDbStep(),
+                new CrudTableStep(),
+                new CodeStep()
         };
     }
 

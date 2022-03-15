@@ -1,23 +1,20 @@
 package com.github.mars05.crud.intellij.plugin.dto;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import java.util.List;
 
+/**
+ * @author xiaoyu
+ */
 @Data
-@Accessors(chain = true)
-public class ProjectGenerateReqDTO {
+public class GenerateDTO {
 
     private Long ptId;
 
-    private String projectName;
+    private List<String> nameList;
 
     private String basePackage;
-
-    private String groupId;
-    private String artifactId;
-    private String version;
 
     private String ddl;
 
@@ -26,4 +23,12 @@ public class ProjectGenerateReqDTO {
     private String schema;
     private List<String> tables;
 
+    private String projectName;
+
+    private String groupId;
+    private String artifactId;
+    private String version;
+
+    private boolean ddlSelected;
+    private boolean codeGenerate;
 }

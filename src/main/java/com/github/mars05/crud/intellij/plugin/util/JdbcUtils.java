@@ -107,18 +107,18 @@ public class JdbcUtils {
         }
     }
 
-    public static List<? extends Table> getAllTable(DataSourceDTO dataSourceVO, String catalog) {
+    public static List<? extends Table> getAllTable(DataSourceDTO dataSourceVO, String database) {
         AbstractDatabaseQuery baseQuery = null;
         try {
             switch (Objects.requireNonNull(DatabaseTypeEnum.findByCode(dataSourceVO.getDatabaseType()))) {
                 case MYSQL:
-                    baseQuery = new MySqlDataBaseQuery(dataSourceVO, catalog);
+                    baseQuery = new MySqlDataBaseQuery(dataSourceVO, database);
                     return baseQuery.getTables();
                 case ORACLE:
-                    baseQuery = new OracleDataBaseQuery(dataSourceVO, catalog);
+                    baseQuery = new OracleDataBaseQuery(dataSourceVO, database);
                     return baseQuery.getTables();
                 case PG_SQL:
-                    baseQuery = new PostgreSqlDataBaseQuery(dataSourceVO, catalog);
+                    baseQuery = new PostgreSqlDataBaseQuery(dataSourceVO, database);
                     return baseQuery.getTables();
                 case SQL_SERVER:
                 default:

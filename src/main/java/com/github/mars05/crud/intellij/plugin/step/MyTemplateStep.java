@@ -1,7 +1,5 @@
 package com.github.mars05.crud.intellij.plugin.step;
 
-import com.github.mars05.crud.intellij.plugin.dto.CodeGenerateReqDTO;
-import com.github.mars05.crud.intellij.plugin.dto.ProjectGenerateReqDTO;
 import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateRespDTO;
 import com.github.mars05.crud.intellij.plugin.service.ProjectTemplateService;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
@@ -47,13 +45,7 @@ public class MyTemplateStep extends ModuleWizardStep {
                 throw new Exception("请选择一个项目");
             }
             ptId = projectTemplateRespDTO.getId();
-            if (CrudSettings.getGenerate() instanceof ProjectGenerateReqDTO) {
-                ProjectGenerateReqDTO projectGenerateReqDTO = CrudSettings.getGenerate();
-                projectGenerateReqDTO.setPtId(ptId);
-            } else {
-                CodeGenerateReqDTO codeGenerateReqDTO = CrudSettings.getGenerate();
-                codeGenerateReqDTO.setPtId(ptId);
-            }
+            CrudSettings.currentGenerate().setPtId(ptId);
         } catch (Exception e) {
             throw new ConfigurationException(e.getMessage(), "验证失败");
         }

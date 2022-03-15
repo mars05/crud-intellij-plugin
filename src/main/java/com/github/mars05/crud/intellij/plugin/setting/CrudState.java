@@ -2,6 +2,7 @@ package com.github.mars05.crud.intellij.plugin.setting;
 
 import com.github.mars05.crud.intellij.plugin.dao.model.DataSourceDO;
 import com.github.mars05.crud.intellij.plugin.dao.model.ProjectTemplateDO;
+import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
 import lombok.Data;
 
 import java.util.List;
@@ -18,5 +19,7 @@ public class CrudState {
     private List<ProjectTemplateDO> projectTemplates = new CopyOnWriteArrayList<>();
 
     private Map<String, SelectionSaveInfo> selectionSaveInfoMap = new ConcurrentHashMap<>();
+
+    private Map<String, GenerateDTO> generateInfoMap = new ConcurrentHashMap<>();
 
 }

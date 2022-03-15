@@ -1,5 +1,6 @@
 package com.github.mars05.crud.intellij.plugin.step;
 
+import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.openapi.options.ConfigurationException;
@@ -20,7 +21,7 @@ public class DataSelectStep extends ModuleWizardStep {
     public JComponent getComponent() {
         buttonGroup.add(tableRadioButton);
         buttonGroup.add(ddlRadioButton);
-        if (CrudSettings.isDdl()) {
+        if (CrudSettings.currentGenerate().isDdlSelected()) {
             tableRadioButton.setSelected(false);
             ddlRadioButton.setSelected(true);
         } else {
@@ -37,7 +38,16 @@ public class DataSelectStep extends ModuleWizardStep {
 
     @Override
     public boolean validate() throws ConfigurationException {
-        CrudSettings.setDdl(ddlRadioButton.isSelected());
+        GenerateDTO generateDTO = CrudSettings.currentGenerate();
+        generateDTO.setDdlSelected(ddlRadioButton.isSelected());
+        if (generateDTO.isDdlSelected()) {
+            generateDTO.setDsId(null);
+            generateDTO.setDatabase(null);
+            generateDTO.setSchema(null);
+            generateDTO.setTables(null);
+        } else {
+            generateDTO.setDdl(null);
+        }
         return super.validate();
     }
 }

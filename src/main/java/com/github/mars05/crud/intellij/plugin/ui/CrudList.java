@@ -6,12 +6,13 @@ import com.intellij.ui.components.JBList;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 /**
  * @author xiaoyu
  */
-public class CrudList extends JBList {
-    private DefaultListModel model = new DefaultListModel();
+public class CrudList extends JBList<ListElement> {
+    private final DefaultListModel<ListElement> model = new DefaultListModel<>();
 
     public CrudList() {
         setCellRenderer(new DefaultListCellRenderer() {
@@ -35,10 +36,11 @@ public class CrudList extends JBList {
     }
 
     public ListElement getSelectedElement() {
-        if (getSelectedIndex() < 0) {
-            return null;
-        }
-        return (ListElement) model.getElementAt(getSelectedIndex());
+        return getSelectedValue();
+    }
+
+    public List<ListElement> getSelectedElementList() {
+        return getSelectedValuesList();
     }
 
     public void addElement(ListElement element) {

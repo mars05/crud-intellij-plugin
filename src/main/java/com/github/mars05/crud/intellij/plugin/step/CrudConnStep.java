@@ -1,8 +1,6 @@
 package com.github.mars05.crud.intellij.plugin.step;
 
-import com.github.mars05.crud.intellij.plugin.dto.CodeGenerateReqDTO;
 import com.github.mars05.crud.intellij.plugin.dto.DataSourceRespDTO;
-import com.github.mars05.crud.intellij.plugin.dto.ProjectGenerateReqDTO;
 import com.github.mars05.crud.intellij.plugin.enums.DatabaseTypeEnum;
 import com.github.mars05.crud.intellij.plugin.icon.CrudIcons;
 import com.github.mars05.crud.intellij.plugin.service.DataSourceService;
@@ -77,7 +75,7 @@ public class CrudConnStep extends ModuleWizardStep {
 
     @Override
     public boolean isStepVisible() {
-        return !CrudSettings.isDdl();
+        return !CrudSettings.currentGenerate().isDdlSelected();
     }
 
     @Override
@@ -94,13 +92,7 @@ public class CrudConnStep extends ModuleWizardStep {
                 throw new Exception("请选择一个连接");
             }
             DataSourceRespDTO respDTO = dataSourceService.detail(myConnsList.getSelectedElement().getId());
-            if (CrudSettings.getGenerate() instanceof ProjectGenerateReqDTO) {
-                ProjectGenerateReqDTO generate = CrudSettings.getGenerate();
-                generate.setDsId(respDTO.getId());
-            } else {
-                CodeGenerateReqDTO generate = CrudSettings.getGenerate();
-                generate.setDsId(respDTO.getId());
-            }
+            CrudSettings.currentGenerate().setDsId(respDTO.getId());
 
         } catch (Exception e) {
             throw new ConfigurationException(e.getMessage(), "连接打开失败");
@@ -109,17 +101,19 @@ public class CrudConnStep extends ModuleWizardStep {
     }
 
     public void getList() {
-        myConnsList.clearElement();
-        for (DataSourceRespDTO conn : dataSourceService.list()) {
-            Icon icon = null;
-            if (DatabaseTypeEnum.MYSQL.getCode().equals(conn.getDatabaseType())) {
-                icon = CrudIcons.MYSQL_CONN;
-            } else if (DatabaseTypeEnum.PG_SQL.getCode().equals(conn.getDatabaseType())) {
-                icon = CrudIcons.PGSQL_CONN;
-            } else if (DatabaseTypeEnum.ORACLE.getCode().equals(conn.getDatabaseType())) {
-                icon = CrudIcons.ORACLE_CONN;
+        if (!CrudSettings.currentGenerate().isDdlSelected()) {
+            myConnsList.clearElement();
+            for (DataSourceRespDTO conn : dataSourceService.list()) {
+                Icon icon = null;
+                if (DatabaseTypeEnum.MYSQL.getCode().equals(conn.getDatabaseType())) {
+                    icon = CrudIcons.MYSQL_CONN;
+                } else if (DatabaseTypeEnum.PG_SQL.getCode().equals(conn.getDatabaseType())) {
+                    icon = CrudIcons.PGSQL_CONN;
+                } else if (DatabaseTypeEnum.ORACLE.getCode().equals(conn.getDatabaseType())) {
+                    icon = CrudIcons.ORACLE_CONN;
+                }
+                myConnsList.addElement(new ListElement(icon, conn.getId(), conn.getName()));
             }
-            myConnsList.addElement(new ListElement(icon, conn.getId(), conn.getName()));
         }
     }
 

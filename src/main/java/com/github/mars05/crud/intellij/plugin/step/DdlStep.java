@@ -27,7 +27,7 @@ public class DdlStep extends ModuleWizardStep {
 
     @Override
     public boolean isStepVisible() {
-        return CrudSettings.isDdl();
+        return CrudSettings.currentGenerate().isDdlSelected();
     }
 
     @Override

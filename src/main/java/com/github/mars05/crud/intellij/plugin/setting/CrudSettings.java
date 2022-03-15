@@ -2,9 +2,7 @@ package com.github.mars05.crud.intellij.plugin.setting;
 
 import com.github.mars05.crud.intellij.plugin.dao.model.DataSourceDO;
 import com.github.mars05.crud.intellij.plugin.dao.model.ProjectTemplateDO;
-import com.github.mars05.crud.intellij.plugin.dto.CodeGenerateReqDTO;
-import com.github.mars05.crud.intellij.plugin.dto.ProjectGenerateReqDTO;
-import com.github.mars05.crud.intellij.plugin.exception.BizException;
+import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
@@ -22,9 +20,7 @@ public class CrudSettings implements PersistentStateComponent<CrudState> {
     private static final CrudSettings CRUD_SETTINGS = ServiceManager.getService(CrudSettings.class);
     private CrudState myState = new CrudState();
 
-    private static CodeGenerateReqDTO codeGenerate;
-    private static ProjectGenerateReqDTO projectGenerate;
-    private static boolean ddl;
+    private GenerateDTO generateDTO;
 
     @Nullable
     @Override
@@ -49,31 +45,25 @@ public class CrudSettings implements PersistentStateComponent<CrudState> {
         return CRUD_SETTINGS.myState.getSelectionSaveInfoMap();
     }
 
-    public static void setCodeGenerate(CodeGenerateReqDTO codeGenerate) {
-        CrudSettings.codeGenerate = codeGenerate;
-        CrudSettings.projectGenerate = null;
+    public static GenerateDTO getGenerate(String projectName) {
+        CRUD_SETTINGS.generateDTO = CRUD_SETTINGS.myState.getGenerateInfoMap().getOrDefault(projectName, new GenerateDTO());
+        return CRUD_SETTINGS.generateDTO;
     }
 
-    public static void setProjectGenerate(ProjectGenerateReqDTO projectGenerate) {
-        CrudSettings.projectGenerate = projectGenerate;
-        CrudSettings.codeGenerate = null;
+    public static GenerateDTO currentGenerate() {
+        return CRUD_SETTINGS.generateDTO;
     }
 
-    public static <T> T getGenerate() {
-        if (projectGenerate != null) {
-            return (T) projectGenerate;
-        } else if (codeGenerate != null) {
-            return (T) codeGenerate;
-        } else {
-            throw new BizException("生成参数错误");
+    public static void saveGenerate(String projectName) {
+        if (CRUD_SETTINGS.generateDTO != null) {
+            CRUD_SETTINGS.generateDTO.setDdl(null);
+            CRUD_SETTINGS.generateDTO.setDsId(null);
+            CRUD_SETTINGS.generateDTO.setDatabase(null);
+            CRUD_SETTINGS.generateDTO.setSchema(null);
+            CRUD_SETTINGS.generateDTO.setTables(null);
+            CRUD_SETTINGS.myState.getGenerateInfoMap().put(projectName, CRUD_SETTINGS.generateDTO);
         }
+        CRUD_SETTINGS.generateDTO = null;
     }
 
-    public static boolean isDdl() {
-        return ddl;
-    }
-
-    public static void setDdl(boolean ddl) {
-        CrudSettings.ddl = ddl;
-    }
 }

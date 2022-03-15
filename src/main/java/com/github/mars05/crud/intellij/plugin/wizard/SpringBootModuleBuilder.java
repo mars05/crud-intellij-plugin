@@ -5,8 +5,6 @@ import com.github.mars05.crud.intellij.plugin.icon.CrudIcons;
 import com.github.mars05.crud.intellij.plugin.step.CrudConnStep;
 import com.github.mars05.crud.intellij.plugin.step.CrudDbStep;
 import com.github.mars05.crud.intellij.plugin.step.CrudTableStep;
-import com.github.mars05.crud.intellij.plugin.ui.CrudDbView;
-import com.github.mars05.crud.intellij.plugin.ui.CrudTableView;
 import com.github.mars05.crud.intellij.plugin.util.*;
 import com.intellij.ide.util.projectWizard.ModuleBuilder;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
@@ -157,13 +155,11 @@ public class SpringBootModuleBuilder extends ModuleBuilder {
     @Override
     public ModuleWizardStep[] createWizardSteps(@NotNull WizardContext wizardContext, @NotNull ModulesProvider modulesProvider) {
         SelectionContext.clearAllSet();
-        CrudTableStep tableStep = new CrudTableStep(new CrudTableView());
-        CrudDbStep dbStep = new CrudDbStep(new CrudDbView(), tableStep);
 
         return new ModuleWizardStep[]{
                 new CrudConnStep(),
-                dbStep,
-                tableStep,
+                new CrudDbStep(),
+                new CrudTableStep(),
                 new CrudProjectInfoStep()
         };
     }

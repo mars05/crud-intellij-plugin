@@ -1,9 +1,11 @@
 package com.github.mars05.crud.intellij.plugin.action;
 
+import com.github.mars05.crud.intellij.plugin.dto.CodeGenerateReqDTO;
+import com.github.mars05.crud.intellij.plugin.dto.FileRespDTO;
+import com.github.mars05.crud.intellij.plugin.service.ProjectService;
+import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
+import com.github.mars05.crud.intellij.plugin.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.util.CrudUtils;
-import com.github.mars05.crud.intellij.plugin.util.PsiFileUtils;
-import com.github.mars05.crud.intellij.plugin.util.Selection;
-import com.github.mars05.crud.intellij.plugin.util.SelectionContext;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataKeys;
@@ -19,10 +21,14 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 /**
  * @author xiaoyu
  */
 public class NewFileAction extends AnAction {
+    private ProjectService projectService = new ProjectService();
+
     @Override
     public void actionPerformed(AnActionEvent e) {
         Project project = e.getProject();
@@ -37,17 +43,8 @@ public class NewFileAction extends AnAction {
 
         String str = StringUtils.substringAfter(actionDir, moduleRootPath + "/src/main/java/");
         String basePackage = StringUtils.replace(str, "/", ".");
-        SelectionContext.clearAllSet();
 
-        SelectionContext.setPackage(basePackage);
-        if (StringUtils.isNotBlank(basePackage)) {
-            basePackage += ".";
-        }
-        SelectionContext.setControllerPackage(basePackage + "controller");
-        SelectionContext.setServicePackage(basePackage + "service");
-        SelectionContext.setDaoPackage(basePackage + "dao");
-        SelectionContext.setModelPackage(basePackage + "model");
-        SelectionContext.setMapperDir(moduleRootPath + "/src/main/resources/mapper");
+        CrudSettings.getGenerate(project.getName()).setCodeGenerate(true);
 
         CrudActionDialog dialog = new CrudActionDialog(project, module);
         if (!dialog.showAndGet()) {
@@ -56,10 +53,10 @@ public class NewFileAction extends AnAction {
         DumbService.getInstance(project).runWhenSmart((DumbAwareRunnable) () -> new WriteCommandAction(project) {
             @Override
             protected void run(@NotNull Result result) {
-                Selection selection = SelectionContext.copyToSelection();
-                SelectionContext.clearAllSet();
                 try {
-                    PsiFileUtils.createCrud(project, selection, moduleRootPath, true);
+                    CodeGenerateReqDTO reqDTO = BeanUtils.convertBean(CrudSettings.currentGenerate(), CodeGenerateReqDTO.class);
+                    List<FileRespDTO> fileRespDTOS = projectService.generateCode(reqDTO);
+                    projectService.processCodeToDisk(moduleRootPath, fileRespDTOS);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

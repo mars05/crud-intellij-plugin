@@ -21,8 +21,9 @@ public class CrudIcons {
     public static final Icon PGSQL_CONN = load("/providers/postgresql.png");
     public static final Icon ORACLE_CONN = load("/providers/oracle.png");
 
-    public static final Icon MYSQL_DB = load("/icons/schema.png");
-    public static final Icon MYSQL_TABLE = load("/icons/table.png");
+    public static final Icon DB = load("/icons/db/dbms.svg");
+    public static final Icon SCHEMA = load("/icons/db/schema.svg");
+    public static final Icon TABLE = load("/icons/db/table.svg");
 
     public static final Icon ADD = load("/general/add.png");
     public static final Icon REMOVE = load("/general/remove.png");

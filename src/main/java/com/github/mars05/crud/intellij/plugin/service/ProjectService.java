@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class ProjectService {
@@ -38,7 +40,7 @@ public class ProjectService {
         templateParam.setBasePackage(reqDTO.getBasePackage());
         templateParam.setBasePackageDir(StringUtils.replace(reqDTO.getBasePackage(), ".", "/"));
         //Maven参数
-        templateParam.setMaven(BeanUtils.convertBean(reqDTO.getMaven(), TemplateParam.Maven.class));
+        templateParam.setMaven(BeanUtils.convertBean(reqDTO, TemplateParam.Maven.class));
         //数据源参数
         templateParam.setDataSource(BeanUtils.convertBean(dataSourceService.detail(reqDTO.getDsId()), TemplateParam.DataSource.class));
 
@@ -62,7 +64,8 @@ public class ProjectService {
 
     public List<FileRespDTO> generateCode(CodeGenerateReqDTO reqDTO) {
         List<FileRespDTO> files = new ArrayList<>();
-        if (CollectionUtils.isEmpty(reqDTO.getNameList()) || StringUtils.isBlank(reqDTO.getDdl())) {
+        if (CollectionUtils.isEmpty(reqDTO.getNameList()) || (StringUtils.isBlank(reqDTO.getDdl()) &&
+                CollectionUtils.isEmpty(reqDTO.getTables()))) {
             return files;
         }
         ValidateUtils.validAnnotation(reqDTO);
@@ -72,10 +75,41 @@ public class ProjectService {
         templateParam.setBasePackage(reqDTO.getBasePackage());
         templateParam.setBasePackageDir(StringUtils.replace(reqDTO.getBasePackage(), ".", "/"));
 
+        List<Table> tables;
+        if (StringUtils.isNotBlank(reqDTO.getDdl())) {
+            tables = SqlUtils.getTablesByDdl(reqDTO.getDdl(), DatabaseTypeEnum.MYSQL);
+        } else {
+            tables = new Vector<>();
+            CountDownLatch latch = new CountDownLatch(reqDTO.getTables().size());
+            for (String tableName : reqDTO.getTables()) {
+                // 线程处理
+                new Thread(() -> {
+                    try {
+                        tables.add(dataSourceService.getTable(reqDTO.getDsId(), reqDTO.getDatabase(), tableName));
+                    } finally {
+                        latch.countDown();
+                    }
+                }).start();
+            }
+            try {
+                if (!latch.await(10L, TimeUnit.SECONDS)) {
+                    throw new BizException("获取" + reqDTO.getTables().size() + "个表失败");
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            List<String> errorList = reqDTO.getTables().stream().filter(name -> !tables.stream().map(Table::getTableName)
+                    .collect(Collectors.toList()).contains(name)
+            ).collect(Collectors.toList());
+            if (!errorList.isEmpty()) {
+                throw new BizException(errorList + "表获取失败");
+            }
+        }
+
         for (FileTemplateDTO fileTemplateRespDTO : projectTemplateRespDTO.getFileTemplateList()) {
             if (FileTemplateTypeEnum.CODE.getCode() == fileTemplateRespDTO.getType() && reqDTO.getNameList()
                     .contains(fileTemplateRespDTO.getName())) {
-                List<Table> tables = SqlUtils.getTablesByDdl(reqDTO.getDdl(), DatabaseTypeEnum.MYSQL);
+
                 for (Table table : tables) {
                     templateParam.setTable(table);
                     FileRespDTO fileRespDTO = new FileRespDTO();
@@ -107,7 +141,11 @@ public class ProjectService {
         if (!dir.mkdirs()) {
             throw new BizException("项目创建失败: " + dir.getPath());
         }
-        for (FileRespDTO fileRespDTO : projectRespDTO.getFiles()) {
+        this.processCodeToDisk(parentDir + "/" + projectRespDTO.getProjectName(), projectRespDTO.getFiles());
+    }
+
+    public void processCodeToDisk(String projectPath, List<FileRespDTO> files) {
+        for (FileRespDTO fileRespDTO : files) {
             String filePath = projectPath + "/" + StringUtils.removeStart(fileRespDTO.getPath(), "/");
             File file = new File(filePath);
             File parentFile = file.getParentFile();
@@ -123,5 +161,4 @@ public class ProjectService {
             }
         }
     }
-
 }
