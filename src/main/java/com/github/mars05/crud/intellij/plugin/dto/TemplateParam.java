@@ -1,6 +1,6 @@
 package com.github.mars05.crud.intellij.plugin.dto;
 
-import com.github.mars05.crud.intellij.plugin.model.param.Table;
+import com.github.mars05.crud.intellij.plugin.model.Table;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

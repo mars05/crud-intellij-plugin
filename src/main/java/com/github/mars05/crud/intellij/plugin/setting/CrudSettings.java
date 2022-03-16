@@ -10,7 +10,6 @@ import com.intellij.openapi.components.Storage;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author xiaoyu
@@ -41,16 +40,17 @@ public class CrudSettings implements PersistentStateComponent<CrudState> {
         return CRUD_SETTINGS.myState.getProjectTemplates();
     }
 
-    public static Map<String, SelectionSaveInfo> getSelectionSaveInfoMap() {
-        return CRUD_SETTINGS.myState.getSelectionSaveInfoMap();
-    }
-
     public static GenerateDTO getGenerate(String projectName) {
         CRUD_SETTINGS.generateDTO = CRUD_SETTINGS.myState.getGenerateInfoMap().getOrDefault(projectName, new GenerateDTO());
         return CRUD_SETTINGS.generateDTO;
     }
 
     public static GenerateDTO currentGenerate() {
+        return CRUD_SETTINGS.generateDTO;
+    }
+
+    public static GenerateDTO newGenerate() {
+        CRUD_SETTINGS.generateDTO = new GenerateDTO();
         return CRUD_SETTINGS.generateDTO;
     }
 

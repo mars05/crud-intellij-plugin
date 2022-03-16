@@ -100,11 +100,11 @@ public class DataSourceService {
         return allTable.stream().map(Table::getTableName).collect(Collectors.toList());
     }
 
-    public com.github.mars05.crud.intellij.plugin.model.param.Table getTable(Long dsId, String database, String tableName) {
+    public com.github.mars05.crud.intellij.plugin.model.Table getTable(Long dsId, String database, String tableName) {
         DataSourceDO dataSourceDO = dataSourceRepository.selectById(dsId);
         List<? extends Table> allTable = JdbcUtils.getAllTable(BeanUtils.convertBean(dataSourceDO, DataSourceDTO.class), database);
         return allTable.stream().filter(table -> table.getTableName().equals(tableName)).map(table -> {
-            com.github.mars05.crud.intellij.plugin.model.param.Table t = new com.github.mars05.crud.intellij.plugin.model.param.Table();
+            com.github.mars05.crud.intellij.plugin.model.Table t = new com.github.mars05.crud.intellij.plugin.model.Table();
             t.setTableName(table.getTableName());
             t.setRemarks(table.getRemarks());
             t.setColumns(allColumn(dsId, database, tableName));
@@ -112,11 +112,11 @@ public class DataSourceService {
         }).findFirst().orElse(null);
     }
 
-    public List<com.github.mars05.crud.intellij.plugin.model.param.Column> allColumn(Long dsId, String database, String table) {
+    public List<com.github.mars05.crud.intellij.plugin.model.Column> allColumn(Long dsId, String database, String table) {
         DataSourceDO dataSourceDO = dataSourceRepository.selectById(dsId);
         List<? extends Column> allColumn = JdbcUtils.getAllColumn(BeanUtils.convertBean(dataSourceDO, DataSourceDTO.class), database, table);
         return allColumn.stream().map(column -> {
-            com.github.mars05.crud.intellij.plugin.model.param.Column c = new com.github.mars05.crud.intellij.plugin.model.param.Column();
+            com.github.mars05.crud.intellij.plugin.model.Column c = new com.github.mars05.crud.intellij.plugin.model.Column();
             c.setColumnName(column.getColumnName());
             c.setRemarks(column.getRemarks());
             c.setPrimaryKey(Boolean.valueOf(column.getPrimaryKey()));

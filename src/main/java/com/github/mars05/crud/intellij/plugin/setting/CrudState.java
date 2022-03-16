@@ -18,8 +18,6 @@ public class CrudState {
     private List<DataSourceDO> dataSources = new CopyOnWriteArrayList<>();
     private List<ProjectTemplateDO> projectTemplates = new CopyOnWriteArrayList<>();
 
-    private Map<String, SelectionSaveInfo> selectionSaveInfoMap = new ConcurrentHashMap<>();
-
     private Map<String, GenerateDTO> generateInfoMap = new ConcurrentHashMap<>();
 
 }

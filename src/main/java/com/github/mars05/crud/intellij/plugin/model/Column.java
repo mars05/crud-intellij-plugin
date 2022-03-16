@@ -1,42 +1,47 @@
 package com.github.mars05.crud.intellij.plugin.model;
 
+import com.github.mars05.crud.intellij.plugin.util.JavaTypeUtils;
+import com.google.common.base.CaseFormat;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author xiaoyu
  */
+@Setter
+@Getter
 public class Column {
-    private String comment;
-    private String name;
-    private int type;
-    private boolean id;
-
+    private String columnName;
+    private String lowerCamelName;
+    private String upperCamelName;
+    private String remarks;
     /**
-     * @param comment 列注释
-     * @param name    列名
-     * @param type    列类型
+     * 字段类型 ({@link java.sql.Types})
+     *
+     * @see java.sql.Types
      */
-    public Column(String comment, String name, int type) {
-        this.comment = comment;
-        this.name = name;
-        this.type = type;
+    private Integer type;
+    /**
+     * 字段类型对应java类型的class
+     */
+    private Class<?> javaTypeClass;
+    private Boolean primaryKey;
+
+    public String getLowerCamelName() {
+        return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, columnName);
     }
 
-    public String getName() {
-        return name;
+    public String getUpperCamelName() {
+        return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, columnName);
     }
 
-    public String getComment() {
-        return comment;
+    public Class<?> getJavaTypeClass() {
+        return JavaTypeUtils.convertType(type);
     }
 
-    public boolean isId() {
-        return id;
-    }
 
-    public int getType() {
-        return type;
-    }
-
-    public void setId(boolean id) {
-        this.id = id;
-    }
 }

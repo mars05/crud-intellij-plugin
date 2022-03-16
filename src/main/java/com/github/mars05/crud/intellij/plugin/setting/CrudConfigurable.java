@@ -11,16 +11,18 @@ import javax.swing.*;
  * @author xiaoyu
  */
 public class CrudConfigurable implements Configurable {
+    private JPanel myMainPanel;
+
     @Nls(capitalization = Nls.Capitalization.Title)
     @Override
     public String getDisplayName() {
-        return null;
+        return "Crud";
     }
 
     @Nullable
     @Override
     public JComponent createComponent() {
-        return null;
+        return myMainPanel;
     }
 
     @Override
@@ -32,5 +34,4 @@ public class CrudConfigurable implements Configurable {
     public void apply() throws ConfigurationException {
 
     }
-
 }

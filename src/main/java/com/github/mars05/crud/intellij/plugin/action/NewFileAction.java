@@ -54,6 +54,7 @@ public class NewFileAction extends AnAction {
             @Override
             protected void run(@NotNull Result result) {
                 try {
+                    CrudSettings.saveGenerate(project.getName());
                     CodeGenerateReqDTO reqDTO = BeanUtils.convertBean(CrudSettings.currentGenerate(), CodeGenerateReqDTO.class);
                     List<FileRespDTO> fileRespDTOS = projectService.generateCode(reqDTO);
                     projectService.processCodeToDisk(moduleRootPath, fileRespDTOS);

@@ -13,8 +13,8 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisito
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.github.mars05.crud.intellij.plugin.enums.DatabaseTypeEnum;
 import com.github.mars05.crud.intellij.plugin.exception.BizException;
-import com.github.mars05.crud.intellij.plugin.model.param.Column;
-import com.github.mars05.crud.intellij.plugin.model.param.Table;
+import com.github.mars05.crud.intellij.plugin.model.Column;
+import com.github.mars05.crud.intellij.plugin.model.Table;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;

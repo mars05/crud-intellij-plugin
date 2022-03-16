@@ -5,7 +5,7 @@ import com.github.mars05.crud.intellij.plugin.dto.*;
 import com.github.mars05.crud.intellij.plugin.enums.DatabaseTypeEnum;
 import com.github.mars05.crud.intellij.plugin.enums.FileTemplateTypeEnum;
 import com.github.mars05.crud.intellij.plugin.exception.BizException;
-import com.github.mars05.crud.intellij.plugin.model.param.Table;
+import com.github.mars05.crud.intellij.plugin.model.Table;
 import com.github.mars05.crud.intellij.plugin.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.util.SqlUtils;
 import com.github.mars05.crud.intellij.plugin.util.TemplateUtils;
@@ -134,14 +134,14 @@ public class ProjectService {
 
     public void processProjectToDisk(ProjectRespDTO projectRespDTO, String parentDir) {
         String projectPath = parentDir + "/" + projectRespDTO.getProjectName();
-        File dir = new File(projectPath);
-        if (dir.exists()) {
-            throw new BizException("项目已存在: " + dir.getPath());
-        }
-        if (!dir.mkdirs()) {
-            throw new BizException("项目创建失败: " + dir.getPath());
-        }
-        this.processCodeToDisk(parentDir + "/" + projectRespDTO.getProjectName(), projectRespDTO.getFiles());
+//        File dir = new File(projectPath);
+//        if (dir.exists()) {
+//            throw new BizException("项目已存在: " + dir.getPath());
+//        }
+//        if (!dir.mkdirs()) {
+//            throw new BizException("项目创建失败: " + dir.getPath());
+//        }
+        this.processCodeToDisk(projectPath, projectRespDTO.getFiles());
     }
 
     public void processCodeToDisk(String projectPath, List<FileRespDTO> files) {
