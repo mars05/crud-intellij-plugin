@@ -35,7 +35,7 @@
     <idea-version since-build="173.0"/>
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <projectTemplatesFactory implementation="com.github.mars05.crud.intellij.plugin.wizard.CrudTemplateFactory"/>
+        <moduleBuilder builderClass="com.github.mars05.crud.intellij.plugin.wizard.CrudModuleBuilder"/>
         <applicationService serviceImplementation="com.github.mars05.crud.intellij.plugin.setting.CrudSettings"/>
 
         <applicationService
@@ -46,8 +46,7 @@
 
         <applicationConfigurable parentId="tools"
                                  instance="com.github.mars05.crud.intellij.plugin.setting.CrudConfigurable"
-                                 id="com.github.mars05.crud.intellij.plugin.setting.CrudConfigurable"
-                                 key="configurable.title.name" bundle="messages.CrudBundle"/>
+        />
         <applicationConfigurable parentId="com.github.mars05.crud.intellij.plugin.setting.CrudConfigurable"
                                  instance="com.github.mars05.crud.intellij.plugin.setting.TemplateImportConfigurable"
         />
