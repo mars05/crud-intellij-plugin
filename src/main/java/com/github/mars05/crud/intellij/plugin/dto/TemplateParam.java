@@ -36,7 +36,7 @@ public class TemplateParam {
         private Integer port;
         private String username;
         private String password;
-        private String catalog;
+        private String database;
         private String schema;
     }
 }

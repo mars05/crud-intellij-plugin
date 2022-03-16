@@ -22,6 +22,7 @@ import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.module.ModuleType;
+import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -76,7 +77,7 @@ public class CrudModuleBuilder extends ModuleBuilder {
 
     @Override
     public ModuleType getModuleType() {
-        return ModuleType.EMPTY;
+        return StdModuleTypes.JAVA;
     }
 
     @Nullable

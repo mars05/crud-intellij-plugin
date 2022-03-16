@@ -42,7 +42,10 @@ public class ProjectService {
         //Maven参数
         templateParam.setMaven(BeanUtils.convertBean(reqDTO, TemplateParam.Maven.class));
         //数据源参数
-        templateParam.setDataSource(BeanUtils.convertBean(dataSourceService.detail(reqDTO.getDsId()), TemplateParam.DataSource.class));
+        TemplateParam.DataSource dataSource = BeanUtils.convertBean(dataSourceService.detail(reqDTO.getDsId()), TemplateParam.DataSource.class);
+        dataSource.setDatabase(reqDTO.getDatabase());
+        dataSource.setSchema(reqDTO.getSchema());
+        templateParam.setDataSource(dataSource);
 
         for (FileTemplateDTO fileTemplateRespDTO : projectTemplateRespDTO.getFileTemplateList()) {
             if (FileTemplateTypeEnum.GENERAL.getCode() == fileTemplateRespDTO.getType()) {
