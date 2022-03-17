@@ -1,4 +1,4 @@
-package com.github.mars05.crud.intellij.plugin.action;
+package com.github.mars05.crud.intellij.plugin.ui;
 
 import com.github.mars05.crud.intellij.plugin.step.*;
 import com.intellij.ide.util.newProjectWizard.AbstractProjectWizard;

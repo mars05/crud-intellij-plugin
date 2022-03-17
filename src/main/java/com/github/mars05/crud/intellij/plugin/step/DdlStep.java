@@ -1,9 +1,11 @@
 package com.github.mars05.crud.intellij.plugin.step;
 
+import com.github.mars05.crud.intellij.plugin.enums.DatabaseTypeEnum;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
+import com.github.mars05.crud.intellij.plugin.util.SqlUtils;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.util.ui.LabelWithTooltip;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 
@@ -12,7 +14,6 @@ import javax.swing.*;
  */
 public class DdlStep extends ModuleWizardStep {
     private JTextArea ddlTextArea;
-    private LabelWithTooltip ddlLabel;
     private JPanel myMainPanel;
 
     @Override
@@ -32,6 +33,15 @@ public class DdlStep extends ModuleWizardStep {
 
     @Override
     public boolean validate() throws ConfigurationException {
+        if (StringUtils.isBlank(ddlTextArea.getText())) {
+            throw new ConfigurationException("DDL不能为空", "校验失败");
+        }
+        try {
+            SqlUtils.getTablesByDdl(ddlTextArea.getText(), DatabaseTypeEnum.MYSQL);
+        } catch (Exception exception) {
+            throw new ConfigurationException(exception.getMessage(), "DDL解析错误");
+        }
+        CrudSettings.currentGenerate().setDdl(ddlTextArea.getText());
         return super.validate();
     }
 }

@@ -64,7 +64,7 @@ public class CrudModuleBuilder extends ModuleBuilder {
 
     @Override
     public Icon getNodeIcon() {
-        return CrudIcons.CRUD_ICON;
+        return CrudIcons.LOGO;
     }
 
     @Override

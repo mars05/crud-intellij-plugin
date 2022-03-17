@@ -4,6 +4,7 @@ import com.github.mars05.crud.intellij.plugin.dto.CodeGenerateReqDTO;
 import com.github.mars05.crud.intellij.plugin.dto.FileRespDTO;
 import com.github.mars05.crud.intellij.plugin.service.ProjectService;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
+import com.github.mars05.crud.intellij.plugin.ui.CrudActionDialog;
 import com.github.mars05.crud.intellij.plugin.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.util.CrudUtils;
 import com.intellij.openapi.actionSystem.AnAction;

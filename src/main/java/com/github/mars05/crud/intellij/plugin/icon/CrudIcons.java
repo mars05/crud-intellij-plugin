@@ -14,7 +14,7 @@ public class CrudIcons {
         return IconLoader.getIcon(path, CrudIcons.class);
     }
 
-    public static final Icon CRUD_ICON = load("/icons/crud.png");
+    public static final Icon LOGO = load("/icons/logo.png");
     public static final Icon SPRING_BOOT = load("/icons/SpringBoot.png");
 
     public static final Icon MYSQL_CONN = load("/providers/mysql.png");

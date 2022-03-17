@@ -8,16 +8,6 @@
     <properties/>
     <border type="none"/>
     <children>
-      <component id="4b9a4" class="com.intellij.util.ui.LabelWithTooltip" binding="ddlLabel">
-        <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <font size="16"/>
-          <text value="DDL: "/>
-          <toolTipText value="仅支持MySQL"/>
-        </properties>
-      </component>
       <component id="412a2" class="javax.swing.JTextArea" binding="ddlTextArea">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
@@ -25,6 +15,15 @@
           </grid>
         </constraints>
         <properties/>
+      </component>
+      <component id="fceee" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font size="16"/>
+          <text value="DDL（仅支持MySQL）: "/>
+        </properties>
       </component>
     </children>
   </grid>
