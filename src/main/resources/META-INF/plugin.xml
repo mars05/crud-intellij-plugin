@@ -57,7 +57,7 @@
 
     <actions>
         <group id="CrudActionGroup" text="Crud"
-               popup="true" icon="/icons/crud.png">
+               popup="true" icon="/icons/logo.png">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
         </group>
         <!-- Add your actions here -->
