@@ -25,8 +25,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author xiaoyu
@@ -49,8 +47,6 @@ public class TemplateImportConfigurable implements SearchableConfigurable, Dispo
     private JPanel infoPanel;
     private JScrollPane myDescScrollPane;
 
-    private final AtomicBoolean isModified = new AtomicBoolean(false);
-
     private final HubClient hubClient = new HubClient();
 
     private final ProjectTemplateService projectTemplateService = ServiceManager.getService(ProjectTemplateService.class);
@@ -69,7 +65,6 @@ public class TemplateImportConfigurable implements SearchableConfigurable, Dispo
                 }
                 projectTemplateService.create(response.getProjectTemplate());
                 Messages.showInfoMessage("导入成功", "提示");
-                isModified.set(true);
                 MyTemplateConfigurable.refreshList();
             } catch (Exception exception) {
                 Messages.showErrorDialog(exception.getMessage(), "错误");
@@ -85,7 +80,6 @@ public class TemplateImportConfigurable implements SearchableConfigurable, Dispo
                     }
                     projectTemplateService.create(response.getProjectTemplate());
                     Messages.showInfoMessage("导入成功", "提示");
-                    isModified.set(true);
                 }
             } catch (Exception exception) {
                 Messages.showErrorDialog(exception.getMessage(), "错误");
@@ -99,7 +93,7 @@ public class TemplateImportConfigurable implements SearchableConfigurable, Dispo
             ProjectTemplateDTO projectTemplateDTO = marketplaceList.getSelectedElement().getProjectTemplateDTO();
             nameLabel.setText(projectTemplateDTO.getName());
             orgLabel.setText(projectTemplateDTO.getOrganizationName());
-            timeLabel.setText(projectTemplateDTO.getUpdateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            timeLabel.setText(projectTemplateDTO.getUpdateTime());
             creatorLabel.setText(projectTemplateDTO.getCreateName());
             descLabel.setText(projectTemplateDTO.getDescription());
             myInfoScrollPane.setVisible(true);
@@ -137,7 +131,7 @@ public class TemplateImportConfigurable implements SearchableConfigurable, Dispo
 
     @Override
     public boolean isModified() {
-        return isModified.get();
+        return false;
     }
 
     private JBLoadingPanel getLoadingPanel() {
@@ -146,12 +140,6 @@ public class TemplateImportConfigurable implements SearchableConfigurable, Dispo
 
     @Override
     public void apply() throws ConfigurationException {
-        isModified.set(false);
-    }
-
-    @Override
-    public void reset() {
-        isModified.set(false);
     }
 
     @Override

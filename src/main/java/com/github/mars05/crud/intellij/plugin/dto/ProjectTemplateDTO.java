@@ -2,7 +2,6 @@ package com.github.mars05.crud.intellij.plugin.dto;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -15,8 +14,8 @@ public class ProjectTemplateDTO {
     private String description;
     private Integer projectType;
     public List<FileTemplateDTO> fileTemplateList;
-    private LocalDateTime createTime;
-    private LocalDateTime updateTime;
+    private String createTime;
+    private String updateTime;
     private Long createId;
     private String createName;
     private Long updateId;

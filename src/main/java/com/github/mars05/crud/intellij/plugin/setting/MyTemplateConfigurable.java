@@ -13,12 +13,12 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.ui.components.JBScrollPane;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author xiaoyu
@@ -29,8 +29,16 @@ public class MyTemplateConfigurable implements SearchableConfigurable {
     private CrudList templateList;
     private JButton refreshButton;
     private JButton deleteButton;
-
-    private final AtomicBoolean isModified = new AtomicBoolean(false);
+    private JScrollPane myScrollPane;
+    private JScrollPane myInfoScrollPane;
+    private JLabel nameLabel;
+    private JLabel orgLabel;
+    private JLabel timeLabel;
+    private JLabel creatorLabel;
+    private JLabel descLabel;
+    private JPanel infoPanel;
+    private JLabel publicLabel;
+    private JScrollPane myDescScrollPane;
 
     private final HubClient hubClient = new HubClient();
 
@@ -59,7 +67,6 @@ public class MyTemplateConfigurable implements SearchableConfigurable {
                     projectTemplateService.update(response.getProjectTemplate());
                     Messages.showInfoMessage("刷新成功", "提示");
                     getList();
-                    isModified.set(true);
                 }
             } catch (Exception exception) {
                 Messages.showErrorDialog(exception.getMessage(), "错误");
@@ -78,7 +85,6 @@ public class MyTemplateConfigurable implements SearchableConfigurable {
                     projectTemplateService.delete(selectedElement.getId());
                     Messages.showInfoMessage("删除成功", "提示");
                     getList();
-                    isModified.set(true);
                 }
             } catch (Exception exception) {
                 Messages.showErrorDialog(exception.getMessage(), "错误");
@@ -86,7 +92,19 @@ public class MyTemplateConfigurable implements SearchableConfigurable {
         });
 
         templateList.addListSelectionListener(e -> {
-//            ListElement selectedElement = templateList.getSelectedElement();
+            if (templateList.getSelectedElement() == null) {
+                infoPanel.setVisible(false);
+                return;
+            }
+            ProjectTemplateRespDTO projectTemplateDTO = projectTemplateService.detail(templateList.getSelectedElement().getId());
+            nameLabel.setText(projectTemplateDTO.getName());
+            orgLabel.setText(projectTemplateDTO.getOrganizationName());
+            publicLabel.setText(projectTemplateDTO.getPublicFlag() == 1 ? "是" : "否");
+            timeLabel.setText(projectTemplateDTO.getUpdateTime());
+            creatorLabel.setText(projectTemplateDTO.getCreateName());
+            descLabel.setText(projectTemplateDTO.getDescription());
+            myInfoScrollPane.setVisible(true);
+            infoPanel.setVisible(true);
         });
     }
 
@@ -112,12 +130,11 @@ public class MyTemplateConfigurable implements SearchableConfigurable {
 
     @Override
     public boolean isModified() {
-        return isModified.get();
+        return false;
     }
 
     @Override
     public void apply() throws ConfigurationException {
-        isModified.set(false);
     }
 
     public void getList() {
@@ -126,9 +143,18 @@ public class MyTemplateConfigurable implements SearchableConfigurable {
             templateList.addElement(new ListElement(null,
                     projectTemplateDTO.getId(), projectTemplateDTO.getName() + "（" + projectTemplateDTO.getOrganizationName() + "）"));
         }
+        myInfoScrollPane.setVisible(true);
+        infoPanel.setVisible(false);
     }
 
     public static void refreshList() {
         myTemplateConfigurable.getList();
+    }
+
+    private void createUIComponents() {
+        myScrollPane = new JBScrollPane();
+        myInfoScrollPane = new JBScrollPane();
+        myDescScrollPane = new JBScrollPane();
+        myDescScrollPane.setBorder(BorderFactory.createEmptyBorder());
     }
 }
