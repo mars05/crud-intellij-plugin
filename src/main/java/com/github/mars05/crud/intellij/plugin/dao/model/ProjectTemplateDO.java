@@ -23,7 +23,6 @@ public class ProjectTemplateDO extends BaseDO {
     private String accessToken;
     private Integer publicFlag;
 
-    public List<FileTemplateDTO> fileTemplateList;
     private String createTime;
     private String updateTime;
     private Long createId;

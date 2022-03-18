@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.github.mars05.crud.intellij.plugin.dao.model.DataSourceDO;
 import com.github.mars05.crud.intellij.plugin.dao.model.ProjectTemplateDO;
 import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
+import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateDTO;
+import com.github.mars05.crud.intellij.plugin.util.BeanUtils;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
@@ -14,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author xiaoyu
@@ -46,7 +49,12 @@ public class CrudSettings implements PersistentStateComponent<CrudState> {
                 InputStream is = CRUD_SETTINGS.myState.getClass().getResourceAsStream("/templates/default_pts.json");
                 String readText = StreamUtil.readText(is, Charset.defaultCharset());
                 CRUD_SETTINGS.myState.getProjectTemplates().clear();
-                CRUD_SETTINGS.myState.getProjectTemplates().addAll(JSON.parseArray(readText, ProjectTemplateDO.class));
+                List<ProjectTemplateDTO> list = JSON.parseArray(readText, ProjectTemplateDTO.class);
+                CRUD_SETTINGS.myState.getProjectTemplates().addAll(list.stream().map(projectTemplateDTO -> {
+                    ProjectTemplateDO projectTemplateDO = BeanUtils.convertBean(projectTemplateDTO, ProjectTemplateDO.class);
+                    projectTemplateDO.setFileTemplates(JSON.toJSONString(projectTemplateDTO.getFileTemplateList()));
+                    return projectTemplateDO;
+                }).collect(Collectors.toList()));
             } catch (Exception ignored) {
             } finally {
                 CRUD_SETTINGS.myState.setInitialized(true);

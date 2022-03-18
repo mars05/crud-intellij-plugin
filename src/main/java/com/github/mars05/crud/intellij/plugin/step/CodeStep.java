@@ -106,6 +106,10 @@ public class CodeStep extends ModuleWizardStep {
                     checkBoxList.addItem(s, s, true);
                 }
             });
+            if (org.apache.commons.lang3.StringUtils.isNotBlank(generateDTO.getBasePackage())) {
+                basePackageTextField.setText(generateDTO.getBasePackage());
+            }
+
             if (nameList.size() == getSelectedNameList().size()) {
                 allCheckBox.setState(ThreeStateCheckBox.State.SELECTED);
             } else if (getSelectedNameList().size() > 0) {
