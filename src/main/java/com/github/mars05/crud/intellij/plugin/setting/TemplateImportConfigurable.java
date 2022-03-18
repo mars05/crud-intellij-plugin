@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -39,6 +40,14 @@ public class TemplateImportConfigurable implements SearchableConfigurable, Dispo
     private JButton tokenButton;
     private JPanel loadingPanel;
     private JButton importButton;
+    private JScrollPane myInfoScrollPane;
+    private JLabel nameLabel;
+    private JLabel orgLabel;
+    private JLabel timeLabel;
+    private JLabel creatorLabel;
+    private JLabel descLabel;
+    private JPanel infoPanel;
+    private JScrollPane myDescScrollPane;
 
     private final AtomicBoolean isModified = new AtomicBoolean(false);
 
@@ -82,10 +91,27 @@ public class TemplateImportConfigurable implements SearchableConfigurable, Dispo
                 Messages.showErrorDialog(exception.getMessage(), "错误");
             }
         });
+        marketplaceList.addListSelectionListener(e -> {
+            if (marketplaceList.getSelectedElement() == null || marketplaceList.getSelectedElement().getProjectTemplateDTO() == null) {
+                myInfoScrollPane.setVisible(false);
+                return;
+            }
+            ProjectTemplateDTO projectTemplateDTO = marketplaceList.getSelectedElement().getProjectTemplateDTO();
+            nameLabel.setText(projectTemplateDTO.getName());
+            orgLabel.setText(projectTemplateDTO.getOrganizationName());
+            timeLabel.setText(projectTemplateDTO.getUpdateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            creatorLabel.setText(projectTemplateDTO.getCreateName());
+            descLabel.setText(projectTemplateDTO.getDescription());
+            myInfoScrollPane.setVisible(true);
+            infoPanel.setVisible(true);
+        });
     }
 
     private void createUIComponents() {
         myScrollPane = new JBScrollPane();
+        myInfoScrollPane = new JBScrollPane();
+        myDescScrollPane = new JBScrollPane();
+        myDescScrollPane.setBorder(BorderFactory.createEmptyBorder());
         loadingPanel = new JBLoadingPanel(new BorderLayout(), this);
         loadingPanel.setBorder(myScrollPane.getBorder());
     }
@@ -135,12 +161,15 @@ public class TemplateImportConfigurable implements SearchableConfigurable, Dispo
 
     private void startLoading() {
         myScrollPane.setVisible(false);
+        myInfoScrollPane.setVisible(false);
         getLoadingPanel().setVisible(true);
         getLoadingPanel().startLoading();
     }
 
     private void stopLoading() {
         myScrollPane.setVisible(true);
+        myInfoScrollPane.setVisible(true);
+        infoPanel.setVisible(false);
         getLoadingPanel().setVisible(false);
         getLoadingPanel().stopLoading();
     }
@@ -154,8 +183,10 @@ public class TemplateImportConfigurable implements SearchableConfigurable, Dispo
                 if (response.isSuccess() && response.getList() != null) {
                     marketplaceList.clearElement();
                     for (ProjectTemplateDTO projectTemplateDTO : response.getList()) {
-                        marketplaceList.addElement(new ListElement(null,
-                                projectTemplateDTO.getId(), projectTemplateDTO.getName() + "（" + projectTemplateDTO.getOrganizationName() + "）"));
+                        ListElement listElement = new ListElement(null,
+                                projectTemplateDTO.getId(), projectTemplateDTO.getName() + "（" + projectTemplateDTO.getOrganizationName() + "）");
+                        listElement.setProjectTemplateDTO(projectTemplateDTO);
+                        marketplaceList.addElement(listElement);
                     }
                 }
             } finally {
