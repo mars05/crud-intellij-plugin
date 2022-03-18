@@ -8,6 +8,7 @@ import com.github.mars05.crud.intellij.plugin.ui.ListElement;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.ui.components.JBScrollPane;
 
 import javax.swing.*;
 
@@ -17,6 +18,7 @@ import javax.swing.*;
 public class MyTemplateStep extends ModuleWizardStep {
     private JPanel myMainPanel;
     private CrudList templateList;
+    private JScrollPane myScrollPane;
 
     private Long ptId;
 
@@ -70,4 +72,7 @@ public class MyTemplateStep extends ModuleWizardStep {
         return projectTemplateService.detail(selectedElement.getId());
     }
 
+    private void createUIComponents() {
+        myScrollPane = new JBScrollPane();
+    }
 }

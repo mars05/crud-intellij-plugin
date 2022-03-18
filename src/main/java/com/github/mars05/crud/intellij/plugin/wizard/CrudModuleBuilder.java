@@ -14,6 +14,7 @@ import com.github.mars05.crud.intellij.plugin.ui.JavaView;
 import com.github.mars05.crud.intellij.plugin.ui.MavenView;
 import com.github.mars05.crud.intellij.plugin.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.util.CrudUtils;
+import com.google.common.base.Preconditions;
 import com.intellij.ide.util.projectWizard.ModuleBuilder;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.SettingsStep;
@@ -206,6 +207,7 @@ public class CrudModuleBuilder extends ModuleBuilder {
                 if (StringUtils.isBlank(basePackage)) {
                     throw new BizException("basePackage不能为空");
                 }
+                Preconditions.checkArgument(com.github.mars05.crud.intellij.plugin.util.StringUtils.isPackageName(basePackage), "basePackage格式错误");
                 CrudSettings.currentGenerate().setGroupId(groupId);
                 CrudSettings.currentGenerate().setArtifactId(artifactId);
                 CrudSettings.currentGenerate().setVersion(version);
