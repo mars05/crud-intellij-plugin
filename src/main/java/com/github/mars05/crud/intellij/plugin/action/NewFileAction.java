@@ -28,7 +28,7 @@ import java.util.List;
  * @author xiaoyu
  */
 public class NewFileAction extends AnAction {
-    private ProjectService projectService = new ProjectService();
+    private final ProjectService projectService = new ProjectService();
 
     @Override
     public void actionPerformed(AnActionEvent e) {
@@ -46,6 +46,9 @@ public class NewFileAction extends AnAction {
         String basePackage = StringUtils.replace(str, "/", ".");
 
         CrudSettings.getGenerate(project.getName()).setCodeGenerate(true);
+        if (StringUtils.isNotBlank(basePackage) && StringUtils.isBlank(CrudSettings.currentGenerate().getBasePackage())) {
+            CrudSettings.currentGenerate().setBasePackage(basePackage);
+        }
 
         CrudActionDialog dialog = new CrudActionDialog(project, module);
         if (!dialog.showAndGet()) {
