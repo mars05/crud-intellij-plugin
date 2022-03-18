@@ -1,5 +1,6 @@
 package com.github.mars05.crud.intellij.plugin.setting;
 
+import com.alibaba.fastjson.JSON;
 import com.github.mars05.crud.intellij.plugin.dao.model.DataSourceDO;
 import com.github.mars05.crud.intellij.plugin.dao.model.ProjectTemplateDO;
 import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
@@ -7,8 +8,11 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.util.io.StreamUtil;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -37,6 +41,17 @@ public class CrudSettings implements PersistentStateComponent<CrudState> {
     }
 
     public static List<ProjectTemplateDO> getProjectTemplates() {
+        if (!CRUD_SETTINGS.myState.isInitialized()) {
+            try {
+                InputStream is = CRUD_SETTINGS.myState.getClass().getResourceAsStream("/templates/default_pts.json");
+                String readText = StreamUtil.readText(is, Charset.defaultCharset());
+                CRUD_SETTINGS.myState.getProjectTemplates().clear();
+                CRUD_SETTINGS.myState.getProjectTemplates().addAll(JSON.parseArray(readText, ProjectTemplateDO.class));
+            } catch (Exception ignored) {
+            } finally {
+                CRUD_SETTINGS.myState.setInitialized(true);
+            }
+        }
         return CRUD_SETTINGS.myState.getProjectTemplates();
     }
 

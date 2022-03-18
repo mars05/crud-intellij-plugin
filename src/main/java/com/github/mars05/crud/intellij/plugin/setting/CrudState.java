@@ -20,4 +20,6 @@ public class CrudState {
 
     private Map<String, GenerateDTO> generateInfoMap = new ConcurrentHashMap<>();
 
+    private boolean initialized = false;
+
 }
