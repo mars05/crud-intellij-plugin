@@ -63,7 +63,7 @@
         <!-- Add your actions here -->
         <action class="com.github.mars05.crud.intellij.plugin.action.NewFileAction"
                 id="crud.NewFileAction" description="CodeGenerate"
-                icon="/icons/mysql.png"
+                icon="/icons/code.svg"
                 text="代码生成">
             <add-to-group group-id="CrudActionGroup"/>
         </action>
