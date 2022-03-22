@@ -1,20 +1,6 @@
-<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-	<g id="root">
-		<g id="content">
-			<g id="Layer">
-				<g id="Layer">
-					<g id="Layer">
-						<g id="Layer">
-							<path id="Layer" style="fill: none;stroke: #a0522d;stroke-linecap: round;stroke-width: 6 " class="s0" d="m0 0h32v32h-32z"/>
-						</g>
-					</g>
-				</g>
-			</g>
-			<g id="name_and_slogan_id">
-				<g id="Layer">
-					<path id="namepathdata" style="fill: #b27255 " class="s1" d="m14.4 22.5h8.8v2h-13.6v-17.0h13.6v2h-8.8"/>
-				</g>
-			</g>
-		</g>
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+    <g>
+        <rect x="0" y="0" rx="0" ry="0" width="32" height="32" style="fill:none;stroke: #a0522d;stroke-width:6"/>
+        <path style="fill: #b27255 " class="s1" d="m14.4 22.5h8.8v2h-13.6v-17.0h13.6v2h-8.8"/>
+    </g>
 </svg>
