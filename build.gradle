@@ -64,12 +64,16 @@ publishPlugin {
 patchPluginXml {
     changeNotes """
 <div>
+  <p>2.0.1</p> 
+  <ul> 
+    <li>Update change notes and plugin image</li>
+  </ul>
   <p>2.0.0</p> 
   <ul> 
-    <li>项目架构调整</li>
-    <li>支持代码模板可配置</li>
-    <li>支持多种数据库</li>
-    <li>支持DDL</li>
+    <li>Project structure adjustment</li>
+    <li>Support code templates can be configured</li>
+    <li>Support for multiple databases</li>
+    <li>Support DDL</li>
   </ul>
   <p>1.1.2</p> 
   <ul> 
