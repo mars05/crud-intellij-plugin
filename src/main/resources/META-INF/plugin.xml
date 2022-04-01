@@ -14,7 +14,6 @@
     <h1> Crud Plugin </h1>
     <div>
         <p> A plugin for code generation that helps you quickly generate code from different templates based on database table structures. </p>
-        <br/>
         <p> Features: </p>
         <ul>
             <li> Project generation: Create a new project </li>
