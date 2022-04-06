@@ -28,7 +28,7 @@ public class HubClient {
     private final String url;
 
     public HubClient() {
-        this.url = "http://localhost:8080";
+        this.url = "https://api-gateway.crud-hub.top/";
     }
 
     public HubClient(String url) {
