@@ -64,6 +64,10 @@ publishPlugin {
 patchPluginXml {
     changeNotes """
 <div>
+  <p>2.0.3</p> 
+  <ul> 
+    <li>Optimized code</li>
+  </ul>
   <p>2.0.2</p> 
   <ul> 
     <li>Update template marketplace url</li>
