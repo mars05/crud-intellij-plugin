@@ -80,6 +80,7 @@ public class TemplateImportConfigurable implements SearchableConfigurable, Dispo
                     }
                     projectTemplateService.create(response.getProjectTemplate());
                     Messages.showInfoMessage("导入成功", "提示");
+                    MyTemplateConfigurable.refreshList();
                 }
             } catch (Exception exception) {
                 Messages.showErrorDialog(exception.getMessage(), "错误");
