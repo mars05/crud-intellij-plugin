@@ -33,6 +33,7 @@ import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.ui.DocumentAdapter;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -237,6 +238,8 @@ public class CrudModuleBuilder extends ModuleBuilder {
                 ProjectGenerateReqDTO projectGenerateReqDTO = BeanUtils.convertBean(CrudSettings.currentGenerate(), ProjectGenerateReqDTO.class);
                 ProjectRespDTO respDTO = projectService.generateProject(projectGenerateReqDTO);
                 projectService.processProjectToDisk(respDTO, root.getParent().getCanonicalPath());
+                VirtualFileManager.getInstance().asyncRefresh(() -> {
+                });
             }
         }.execute());
     }
