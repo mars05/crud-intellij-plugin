@@ -19,6 +19,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.DumbAwareRunnable;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
@@ -120,4 +121,9 @@ public class CrudUtils {
             }
         }.execute());
     }
+
+    public static void runInBackground(Task.Backgroundable task) {
+        task.queue();
+    }
+
 }
