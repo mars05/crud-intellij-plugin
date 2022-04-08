@@ -93,6 +93,7 @@ public class CodeStep extends ModuleWizardStep {
             Preconditions.checkArgument(StringUtils.isPackageName(basePackage), "basePackage格式错误");
 
             GenerateDTO generateDTO = CrudSettings.currentGenerate();
+            generateDTO.setProjectPath(projectPath);
             generateDTO.setBasePackage(basePackage);
             generateDTO.setNameList(getSelectedNameList());
         } catch (Exception e) {
