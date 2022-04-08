@@ -64,6 +64,11 @@ publishPlugin {
 patchPluginXml {
     changeNotes """
 <div>
+  <p>2.1.0</p> 
+  <ul> 
+    <li>支持当前项目路径选择</li>
+    <li>修复代码生成后文件不刷新问题</li>
+  </ul>
   <p>2.0.3</p> 
   <ul> 
     <li>Optimized code</li>
