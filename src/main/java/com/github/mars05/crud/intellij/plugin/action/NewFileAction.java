@@ -7,12 +7,11 @@ import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
 import com.github.mars05.crud.intellij.plugin.ui.CrudActionDialog;
 import com.github.mars05.crud.intellij.plugin.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.util.CrudUtils;
+import com.intellij.ide.IdeView;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataKeys;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.module.Module;
@@ -39,6 +38,23 @@ public class NewFileAction extends AnAction {
     private final ProjectService projectService = new ProjectService();
 
     @Override
+    public void update(AnActionEvent e) {
+        final DataContext dataContext = e.getDataContext();
+        final Presentation presentation = e.getPresentation();
+
+        final boolean enabled = isAvailable(dataContext);
+
+        presentation.setVisible(enabled);
+        presentation.setEnabled(enabled);
+    }
+
+    protected boolean isAvailable(DataContext dataContext) {
+        final Project project = CommonDataKeys.PROJECT.getData(dataContext);
+        final IdeView view = LangDataKeys.IDE_VIEW.getData(dataContext);
+        return project != null && view != null && view.getDirectories().length != 0;
+    }
+
+    @Override
     public void actionPerformed(AnActionEvent e) {
         Project project = e.getProject();
         VirtualFile virtualFile = e.getData(DataKeys.VIRTUAL_FILE);
@@ -57,6 +73,9 @@ public class NewFileAction extends AnAction {
         if (StringUtils.isNotBlank(basePackage) && StringUtils.isBlank(CrudSettings.currentGenerate().getBasePackage())) {
             CrudSettings.currentGenerate().setBasePackage(basePackage);
         }
+        if (StringUtils.isNotBlank(moduleRootPath) && StringUtils.isBlank(CrudSettings.currentGenerate().getProjectPath())) {
+            CrudSettings.currentGenerate().setProjectPath(moduleRootPath);
+        }
 
         CrudActionDialog dialog = new CrudActionDialog(project, module);
         if (!dialog.showAndGet()) {
@@ -72,9 +91,9 @@ public class NewFileAction extends AnAction {
                             CodeGenerateReqDTO reqDTO = BeanUtils.convertBean(CrudSettings.currentGenerate(), CodeGenerateReqDTO.class);
                             CrudSettings.saveGenerate(project.getName());
                             List<FileRespDTO> fileRespDTOS = projectService.generateCode(reqDTO);
-                            projectService.processCodeToDisk(project.getBaseDir().getCanonicalPath(), fileRespDTOS);
+                            projectService.processCodeToDisk(moduleRootPath, fileRespDTOS);
 
-                            Notifications.Bus.notify(new Notification(NOTIFICATION_GROUP, "代码生成完成", "生成数量: " + fileRespDTOS.size(), NotificationType.INFORMATION), project);
+                            Notifications.Bus.notify(new Notification(NOTIFICATION_GROUP, "代码生成完成", "生成数量: " + fileRespDTOS.size() + "\n项目路径: " + moduleRootPath, NotificationType.INFORMATION), project);
                             //优化生成的所有Java类
                             CrudUtils.doOptimize(project);
                             VirtualFileManager.getInstance().asyncRefresh(() -> {

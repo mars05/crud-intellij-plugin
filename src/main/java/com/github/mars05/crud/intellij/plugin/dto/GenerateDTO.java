@@ -14,6 +14,8 @@ public class GenerateDTO {
 
     private List<String> nameList;
 
+    private String projectPath;
+
     private String basePackage;
 
     private String ddl;

@@ -11,7 +11,10 @@ import com.github.mars05.crud.intellij.plugin.util.StringUtils;
 import com.google.common.base.Preconditions;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.ui.TextComponentAccessor;
+import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.CheckBoxList;
 import com.intellij.util.ui.ThreeStateCheckBox;
@@ -30,6 +33,7 @@ public class CodeStep extends ModuleWizardStep {
     private JScrollPane myScrollPane;
     private ThreeStateCheckBox allCheckBox;
     private CheckBoxList checkBoxList;
+    private TextFieldWithBrowseButton projectPathButton;
 
     private List<String> nameList = new ArrayList<>();
     private Long ptId;
@@ -37,6 +41,9 @@ public class CodeStep extends ModuleWizardStep {
     private final ProjectTemplateService projectTemplateService = ServiceManager.getService(ProjectTemplateService.class);
 
     public CodeStep() {
+        projectPathButton.addBrowseFolderListener("选择代码生成的项目路径", "", null,
+                new FileChooserDescriptor(false, true, false, false, false, false),
+                TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);
         allCheckBox.addActionListener(e -> {
             if (nameList.size() == getSelectedNameList().size()) {
                 allCheckBox.setState(ThreeStateCheckBox.State.NOT_SELECTED);
@@ -72,6 +79,10 @@ public class CodeStep extends ModuleWizardStep {
     @Override
     public boolean validate() throws ConfigurationException {
         try {
+            String projectPath = projectPathButton.getText();
+            if (StringUtil.isEmptyOrSpaces(projectPath)) {
+                throw new Exception("请选择项目路径");
+            }
             String basePackage = basePackageTextField.getText();
             if (StringUtil.isEmptyOrSpaces(basePackage)) {
                 throw new Exception("请输入basePackage");
@@ -106,10 +117,13 @@ public class CodeStep extends ModuleWizardStep {
                     checkBoxList.addItem(s, s, true);
                 }
             });
+
+            if (org.apache.commons.lang3.StringUtils.isNotBlank(generateDTO.getProjectPath())) {
+                projectPathButton.setText(generateDTO.getProjectPath());
+            }
             if (org.apache.commons.lang3.StringUtils.isNotBlank(generateDTO.getBasePackage())) {
                 basePackageTextField.setText(generateDTO.getBasePackage());
             }
-
             if (nameList.size() == getSelectedNameList().size()) {
                 allCheckBox.setState(ThreeStateCheckBox.State.SELECTED);
             } else if (getSelectedNameList().size() > 0) {
