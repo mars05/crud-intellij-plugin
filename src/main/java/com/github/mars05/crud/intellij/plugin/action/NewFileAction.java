@@ -61,20 +61,26 @@ public class NewFileAction extends AnAction {
         if (!virtualFile.isDirectory()) {
             virtualFile = virtualFile.getParent();
         }
+        String projectPath = "";
+        String basePackage = "";
         Module module = ModuleUtil.findModuleForFile(virtualFile, project);
+        if (module != null) {
+            String moduleRootPath = ModuleRootManager.getInstance(module).getContentRoots()[0].getPath();
+            String actionDir = virtualFile.getPath();
 
-        String moduleRootPath = ModuleRootManager.getInstance(module).getContentRoots()[0].getPath();
-        String actionDir = virtualFile.getPath();
-
-        String str = StringUtils.substringAfter(actionDir, moduleRootPath + "/src/main/java/");
-        String basePackage = StringUtils.replace(str, "/", ".");
+            projectPath = moduleRootPath;
+            String str = StringUtils.substringAfter(actionDir, moduleRootPath + "/src/main/java/");
+            basePackage = StringUtils.replace(str, "/", ".");
+        } else {
+            projectPath = project.getPresentableUrl();
+        }
 
         CrudSettings.getGenerate(project.getName()).setCodeGenerate(true);
         if (StringUtils.isNotBlank(basePackage) && StringUtils.isBlank(CrudSettings.currentGenerate().getBasePackage())) {
             CrudSettings.currentGenerate().setBasePackage(basePackage);
         }
-        if (StringUtils.isNotBlank(moduleRootPath) && StringUtils.isBlank(CrudSettings.currentGenerate().getProjectPath())) {
-            CrudSettings.currentGenerate().setProjectPath(moduleRootPath);
+        if (StringUtils.isNotBlank(projectPath) && StringUtils.isBlank(CrudSettings.currentGenerate().getProjectPath())) {
+            CrudSettings.currentGenerate().setProjectPath(projectPath);
         }
 
         CrudActionDialog dialog = new CrudActionDialog(project, module);
@@ -91,9 +97,9 @@ public class NewFileAction extends AnAction {
                             CodeGenerateReqDTO reqDTO = BeanUtils.convertBean(CrudSettings.currentGenerate(), CodeGenerateReqDTO.class);
                             CrudSettings.saveGenerate(project.getName());
                             List<FileRespDTO> fileRespDTOS = projectService.generateCode(reqDTO);
-                            projectService.processCodeToDisk(moduleRootPath, fileRespDTOS);
+                            projectService.processCodeToDisk(reqDTO.getProjectPath(), fileRespDTOS);
 
-                            Notifications.Bus.notify(new Notification(NOTIFICATION_GROUP, "代码生成完成", "生成数量: " + fileRespDTOS.size() + "\n项目路径: " + moduleRootPath, NotificationType.INFORMATION), project);
+                            Notifications.Bus.notify(new Notification(NOTIFICATION_GROUP, "代码生成完成", "生成数量: " + fileRespDTOS.size() + "\n项目路径: " + reqDTO.getProjectPath(), NotificationType.INFORMATION), project);
                             //优化生成的所有Java类
                             CrudUtils.doOptimize(project);
                             VirtualFileManager.getInstance().asyncRefresh(() -> {

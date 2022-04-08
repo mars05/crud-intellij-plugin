@@ -16,6 +16,7 @@ public class CodeGenerateReqDTO {
 
     private List<String> nameList;
 
+    private String projectPath;
     private String basePackage;
 
     private String ddl;
