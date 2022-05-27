@@ -67,8 +67,10 @@ public class ProjectService {
 
     public List<FileRespDTO> generateCode(CodeGenerateReqDTO reqDTO) {
         List<FileRespDTO> files = new ArrayList<>();
-        if (CollectionUtils.isEmpty(reqDTO.getNameList()) || (StringUtils.isBlank(reqDTO.getDdl()) &&
-                CollectionUtils.isEmpty(reqDTO.getTables()))) {
+        if (CollectionUtils.isEmpty(reqDTO.getNameList())
+                || (StringUtils.isBlank(reqDTO.getDdl())
+                && CollectionUtils.isEmpty(reqDTO.getTables())
+                && CollectionUtils.isEmpty(reqDTO.getModelTables()))) {
             return files;
         }
         ValidateUtils.validAnnotation(reqDTO);
@@ -81,6 +83,8 @@ public class ProjectService {
         List<Table> tables;
         if (StringUtils.isNotBlank(reqDTO.getDdl())) {
             tables = SqlUtils.getTablesByDdl(reqDTO.getDdl(), DatabaseTypeEnum.MYSQL);
+        } else if (CollectionUtils.isNotEmpty(reqDTO.getModelTables())) {
+            tables = reqDTO.getModelTables();
         } else {
             tables = new Vector<>();
             CountDownLatch latch = new CountDownLatch(reqDTO.getTables().size());
@@ -147,7 +151,8 @@ public class ProjectService {
         this.processCodeToDisk(projectPath, projectRespDTO.getFiles());
     }
 
-    public void processCodeToDisk(String projectPath, List<FileRespDTO> files) {
+    public List<FileRespDTO> processCodeToDisk(String projectPath, List<FileRespDTO> files) {
+        List<FileRespDTO> successList = new ArrayList<>();
         for (FileRespDTO fileRespDTO : files) {
             String filePath = projectPath + "/" + StringUtils.removeStart(fileRespDTO.getPath(), "/");
             File file = new File(filePath);
@@ -155,13 +160,18 @@ public class ProjectService {
             if (!parentFile.exists() && !parentFile.mkdirs()) {
                 throw new BizException("目录创建失败: " + parentFile.getPath());
             }
+            if (file.exists()) {
+                continue;
+            }
             try {
                 FileWriter fileWriter = new FileWriter(file);
                 fileWriter.write(fileRespDTO.getContent());
                 fileWriter.close();
+                successList.add(fileRespDTO);
             } catch (IOException e) {
                 throw new BizException(e.getMessage(), e);
             }
         }
+        return successList;
     }
 }

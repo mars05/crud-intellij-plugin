@@ -10,13 +10,17 @@ import java.util.List;
 /**
  * @author xiaoyu
  */
-@Setter
-@Getter
 public class Table {
+    @Setter
+    @Getter
     private String tableName;
     private String lowerCamelName;
     private String upperCamelName;
+    @Setter
+    @Getter
     private String remarks;
+    @Setter
+    @Getter
     private List<Column> columns;
 
     public String getLowerCamelName() {

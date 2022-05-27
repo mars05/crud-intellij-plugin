@@ -1,5 +1,6 @@
 package com.github.mars05.crud.intellij.plugin.step;
 
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.github.mars05.crud.intellij.plugin.dto.DataSourceRespDTO;
 import com.github.mars05.crud.intellij.plugin.enums.DatabaseTypeEnum;
 import com.github.mars05.crud.intellij.plugin.icon.CrudIcons;
@@ -75,7 +76,8 @@ public class CrudConnStep extends ModuleWizardStep {
 
     @Override
     public boolean isStepVisible() {
-        return !CrudSettings.currentGenerate().isDdlSelected();
+        return CollectionUtils.isEmpty(CrudSettings.currentGenerate().getModelTables()) && !CrudSettings.currentGenerate().isDdlSelected();
+
     }
 
     @Override

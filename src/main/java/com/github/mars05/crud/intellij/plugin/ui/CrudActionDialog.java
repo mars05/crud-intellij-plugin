@@ -38,7 +38,6 @@ public class CrudActionDialog extends AbstractProjectWizard {
     public ModuleWizardStep[] createWizardSteps() {
         return new ModuleWizardStep[]{
                 new MyTemplateStep(),
-                new DataSelectStep(),
                 new DdlStep(),
                 new CrudConnStep(),
                 new CrudDbStep(),

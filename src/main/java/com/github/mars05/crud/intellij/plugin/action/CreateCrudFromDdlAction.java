@@ -2,6 +2,7 @@ package com.github.mars05.crud.intellij.plugin.action;
 
 import com.github.mars05.crud.intellij.plugin.dto.CodeGenerateReqDTO;
 import com.github.mars05.crud.intellij.plugin.dto.FileRespDTO;
+import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
 import com.github.mars05.crud.intellij.plugin.service.ProjectService;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
 import com.github.mars05.crud.intellij.plugin.ui.CrudActionDialog;
@@ -33,7 +34,7 @@ import java.util.List;
  * @author xiaoyu
  * @see com.intellij.ide.actions.CreateClassAction
  */
-public class NewFileAction extends AnAction {
+public class CreateCrudFromDdlAction extends AnAction {
     private static final String NOTIFICATION_GROUP = "Crud Code Generation";
     private final ProjectService projectService = new ProjectService();
 
@@ -44,7 +45,6 @@ public class NewFileAction extends AnAction {
 
         final boolean enabled = isAvailable(dataContext);
 
-        presentation.setVisible(enabled);
         presentation.setEnabled(enabled);
     }
 
@@ -75,13 +75,22 @@ public class NewFileAction extends AnAction {
             projectPath = project.getPresentableUrl();
         }
 
-        CrudSettings.getGenerate(project.getName()).setCodeGenerate(true);
+        GenerateDTO generateDTO = CrudSettings.getGenerate(project.getName());
+        generateDTO.setCodeGenerate(true);
         if (StringUtils.isNotBlank(basePackage) && StringUtils.isBlank(CrudSettings.currentGenerate().getBasePackage())) {
             CrudSettings.currentGenerate().setBasePackage(basePackage);
         }
         if (StringUtils.isNotBlank(projectPath) && StringUtils.isBlank(CrudSettings.currentGenerate().getProjectPath())) {
             CrudSettings.currentGenerate().setProjectPath(projectPath);
         }
+
+
+        generateDTO.setDsId(null);
+        generateDTO.setDatabase(null);
+        generateDTO.setSchema(null);
+        generateDTO.setTables(null);
+        generateDTO.setModelTables(null);
+        generateDTO.setDdlSelected(true);
 
         CrudActionDialog dialog = new CrudActionDialog(project, module);
         if (!dialog.showAndGet()) {
@@ -97,9 +106,10 @@ public class NewFileAction extends AnAction {
                             CodeGenerateReqDTO reqDTO = BeanUtils.convertBean(CrudSettings.currentGenerate(), CodeGenerateReqDTO.class);
                             CrudSettings.saveGenerate(project.getName());
                             List<FileRespDTO> fileRespDTOS = projectService.generateCode(reqDTO);
-                            projectService.processCodeToDisk(reqDTO.getProjectPath(), fileRespDTOS);
+                            List<FileRespDTO> successList = projectService.processCodeToDisk(reqDTO.getProjectPath(), fileRespDTOS);
 
-                            Notifications.Bus.notify(new Notification(NOTIFICATION_GROUP, "代码生成完成", "生成数量: " + fileRespDTOS.size() + "\n项目路径: " + reqDTO.getProjectPath(), NotificationType.INFORMATION), project);
+                            Notifications.Bus.notify(new Notification(NOTIFICATION_GROUP, "代码生成完成", "生成数量: " + successList.size() + "\n失败数量: "
+                                    + (fileRespDTOS.size() - successList.size()) + "\n项目路径: " + reqDTO.getProjectPath(), NotificationType.INFORMATION), project);
                             //优化生成的所有Java类
                             CrudUtils.doOptimize(project);
                             new SynchronizeCurrentFileAction().actionPerformed(e);

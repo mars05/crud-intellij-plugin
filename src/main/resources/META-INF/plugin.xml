@@ -83,11 +83,31 @@
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
         </group>
         <!-- Add your actions here -->
-        <action class="com.github.mars05.crud.intellij.plugin.action.NewFileAction"
-                id="crud.NewFileAction" description="CodeGenerate"
+        <action class="com.github.mars05.crud.intellij.plugin.action.CreateCrudFromDbAction"
+                id="crud.CreateCrudFromDbAction" description="CodeGenerate"
                 icon="/icons/code.svg"
-                text="代码生成">
+                text="从数据库表生成模板代码">
             <add-to-group group-id="CrudActionGroup"/>
+        </action>
+        <action class="com.github.mars05.crud.intellij.plugin.action.CreateCrudFromDdlAction"
+                id="crud.CreateCrudFromDdlAction" description="CodeGenerate"
+                icon="/icons/code.svg"
+                text="从DDL生成模板代码">
+            <add-to-group group-id="CrudActionGroup"/>
+        </action>
+        <action class="com.github.mars05.crud.intellij.plugin.action.CreateCrudFromModelAction"
+                id="crud.CreateCrudFromModelAction" description="CodeGenerate"
+                icon="/icons/code.svg"
+                text="从当前选中的实体类生成模板代码">
+            <add-to-group group-id="CrudActionGroup"/>
+        </action>
+        <action
+                id="crud.CreateCrudFromModelAction2"
+                class="com.github.mars05.crud.intellij.plugin.action.CreateCrudFromModelAction"
+                text="从该实体类生成模板代码"
+                description="将会把该实体类映射成为模板中的一个table，和从数据库表、DDL生成代码类似"
+                icon="/icons/code.svg">
+            <add-to-group group-id="EditorPopupMenu"/>
         </action>
     </actions>
 </idea-plugin>

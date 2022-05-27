@@ -1,5 +1,6 @@
 package com.github.mars05.crud.intellij.plugin.step;
 
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.github.mars05.crud.intellij.plugin.icon.CrudIcons;
 import com.github.mars05.crud.intellij.plugin.service.DataSourceService;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
@@ -32,7 +33,7 @@ public class CrudDbStep extends ModuleWizardStep {
 
     @Override
     public boolean isStepVisible() {
-        return !CrudSettings.currentGenerate().isDdlSelected();
+        return CollectionUtils.isEmpty(CrudSettings.currentGenerate().getModelTables()) && !CrudSettings.currentGenerate().isDdlSelected();
     }
 
     private void getList() {

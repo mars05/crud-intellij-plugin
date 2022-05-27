@@ -1,5 +1,6 @@
 package com.github.mars05.crud.intellij.plugin.dto;
 
+import com.github.mars05.crud.intellij.plugin.model.Table;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -19,11 +20,11 @@ public class ProjectGenerateReqDTO {
     private String artifactId;
     private String version;
 
-    private String ddl;
-
     private Long dsId;
     private String database;
     private String schema;
     private List<String> tables;
+    private String ddl;
+    private List<Table> modelTables;
 
 }

@@ -4,31 +4,37 @@ import com.github.mars05.crud.intellij.plugin.util.JavaTypeUtils;
 import com.google.common.base.CaseFormat;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author xiaoyu
  */
-@Setter
-@Getter
 public class Column {
+    @Setter
+    @Getter
     private String columnName;
     private String lowerCamelName;
     private String upperCamelName;
+    @Setter
+    @Getter
     private String remarks;
     /**
      * 字段类型 ({@link java.sql.Types})
      *
      * @see java.sql.Types
      */
+    @Setter
+    @Getter
     private Integer type;
     /**
      * 字段类型对应java类型的class
      */
     private Class<?> javaTypeClass;
+    /**
+     * 字段类型对应java类型的名称
+     */
+    private String javaTypeName;
+    @Setter
+    @Getter
     private Boolean primaryKey;
 
     public String getLowerCamelName() {
@@ -43,5 +49,8 @@ public class Column {
         return JavaTypeUtils.convertType(type);
     }
 
+    public String getJavaTypeName() {
+        return JavaTypeUtils.convertType(type).getSimpleName();
+    }
 
 }

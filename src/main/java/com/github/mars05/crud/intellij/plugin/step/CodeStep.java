@@ -104,7 +104,10 @@ public class CodeStep extends ModuleWizardStep {
 
     private void getList() {
         GenerateDTO generateDTO = CrudSettings.currentGenerate();
-        if (generateDTO.getPtId() != null && !generateDTO.getPtId().equals(ptId) && (CollectionUtils.isNotEmpty(generateDTO.getTables()) || org.apache.commons.lang3.StringUtils.isNotBlank(generateDTO.getDdl()))) {
+        if (generateDTO.getPtId() != null && !generateDTO.getPtId().equals(ptId) && (CollectionUtils.isNotEmpty(generateDTO.getTables())
+                || org.apache.commons.lang3.StringUtils.isNotBlank(generateDTO.getDdl())
+                || CollectionUtils.isNotEmpty(generateDTO.getModelTables())
+        )) {
             ptId = generateDTO.getPtId();
             checkBoxList.clear();
 
