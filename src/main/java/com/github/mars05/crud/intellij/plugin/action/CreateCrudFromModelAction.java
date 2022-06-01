@@ -40,7 +40,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -54,24 +53,31 @@ public class CreateCrudFromModelAction extends AnAction {
     @Override
     public void update(AnActionEvent e) {
         final Presentation presentation = e.getPresentation();
-
-        presentation.setEnabled(true);
+        VirtualFile[] virtualFiles = e.getData(DataKeys.VIRTUAL_FILE_ARRAY);
+        if (virtualFiles == null || virtualFiles.length == 0) {
+            presentation.setEnabled(false);
+        } else {
+            for (VirtualFile virtualFile : virtualFiles) {
+                if (virtualFile.isDirectory()) {
+                    presentation.setEnabled(false);
+                    return;
+                }
+            }
+            presentation.setEnabled(true);
+        }
     }
 
     @Override
     public void actionPerformed(AnActionEvent e) {
         Project project = e.getProject();
-        VirtualFile virtualFile = e.getData(DataKeys.VIRTUAL_FILE);
-        VirtualFile currFile = virtualFile;
-        if (!virtualFile.isDirectory()) {
-            virtualFile = virtualFile.getParent();
-        }
+        VirtualFile[] virtualFiles = e.getData(DataKeys.VIRTUAL_FILE_ARRAY);
+
         String projectPath = "";
         String basePackage = "";
-        Module module = ModuleUtil.findModuleForFile(virtualFile, project);
+        Module module = ModuleUtil.findModuleForFile(virtualFiles[0], project);
         if (module != null) {
             String moduleRootPath = ModuleRootManager.getInstance(module).getContentRoots()[0].getPath();
-            String actionDir = virtualFile.getPath();
+            String actionDir = virtualFiles[0].getPath();
 
             projectPath = moduleRootPath;
             String str = StringUtils.substringAfter(actionDir, moduleRootPath + "/src/main/java/");
@@ -84,13 +90,18 @@ public class CreateCrudFromModelAction extends AnAction {
         generateDTO.setCodeGenerate(true);
 
         try {
-            PsiFile psiFile = PsiManager.getInstance(project).findFile(currFile);
-            if (psiFile == null) {
-                throw new BizException("实体类错误");
+            List<Table> tables = new ArrayList<>();
+            for (VirtualFile virtualFile : virtualFiles) {
+                PsiFile psiFile = PsiManager.getInstance(project).findFile(virtualFile);
+                if (psiFile == null) {
+                    throw new BizException("实体类错误: " + virtualFile.getName());
+                }
+                TableVisitor tableVisitor = new TableVisitor();
+                psiFile.accept(tableVisitor);
+
+                tables.add(tableVisitor.getTable());
             }
-            TableVisitor tableVisitor = new TableVisitor();
-            psiFile.accept(tableVisitor);
-            CrudSettings.currentGenerate().setModelTables(Collections.singletonList(tableVisitor.getTable()));
+            CrudSettings.currentGenerate().setModelTables(tables);
         } catch (Exception exception) {
             Messages.showErrorDialog(exception.getMessage(), "错误");
             return;
@@ -156,16 +167,16 @@ public class CreateCrudFromModelAction extends AnAction {
             t.setTableName(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, aClass.getName()));
             t.setRemarks(getRemarks(aClass.getDocComment()));
             t.setColumns(getColumns(aClass.getFields()));
-            boolean key = false;
-            for (Column column : t.getColumns()) {
-                if (column.getPrimaryKey() != null && column.getPrimaryKey()) {
-                    key = true;
-                    break;
-                }
-            }
-            if (!key) {
-                throw new BizException("[" + aClass.getName() + "]实体类中没有找到主键");
-            }
+//            boolean key = false;
+//            for (Column column : t.getColumns()) {
+//                if (column.getPrimaryKey() != null && column.getPrimaryKey()) {
+//                    key = true;
+//                    break;
+//                }
+//            }
+//            if (!key) {
+//                throw new BizException("[" + aClass.getName() + "]实体类中没有找到主键");
+//            }
             this.table = t;
         }
 

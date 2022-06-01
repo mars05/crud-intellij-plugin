@@ -17,6 +17,7 @@ import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.CheckBoxList;
+import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.ThreeStateCheckBox;
 
 import javax.swing.*;
@@ -140,6 +141,7 @@ public class CodeStep extends ModuleWizardStep {
 
     private void createUIComponents() {
         checkBoxList = new CheckBoxList();
+        myScrollPane = new JBScrollPane();
     }
 
     private List<String> getSelectedNameList() {
