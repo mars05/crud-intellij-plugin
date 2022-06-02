@@ -38,6 +38,7 @@ public class JavaTypeUtils {
         TYPE_TO_CLASS.put(JDBCType.BIT, boolean.class);
 
         CLASS_TO_TYPE.put(String.class, JDBCType.VARCHAR);
+        CLASS_TO_TYPE.put(Short.class, JDBCType.INTEGER);
         CLASS_TO_TYPE.put(Integer.class, JDBCType.INTEGER);
         CLASS_TO_TYPE.put(Long.class, JDBCType.BIGINT);
         CLASS_TO_TYPE.put(Float.class, JDBCType.FLOAT);
@@ -63,10 +64,13 @@ public class JavaTypeUtils {
         return TYPE_TO_CLASS.getOrDefault(JDBCType.valueOf(sqlType), Object.class);
     }
 
-    public static int ofType(Class<?> clazz) {
-        return CLASS_TO_TYPE.getOrDefault(clazz, JDBCType.VARCHAR).getVendorTypeNumber();
+    public static Integer ofType(Class<?> clazz) {
+        JDBCType jdbcType = CLASS_TO_TYPE.get(clazz);
+        if (jdbcType == null) {
+            return null;
+        }
+        return jdbcType.getVendorTypeNumber();
     }
-
 
 }
 

@@ -21,6 +21,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
@@ -94,16 +96,17 @@ public class PrimaryKeySelectStep extends ModuleWizardStep {
             final TableColumn displayTypeColumn = getColumnModel().getColumn(1);
             displayTypeColumn.setCellRenderer(ComboBoxTableCellRenderer.INSTANCE);
             displayTypeColumn.setCellEditor(new ComboBoxTableCellEditor() {
+
                 @Override
                 public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-                    if (value != null) {
-                        Table t = CrudSettings.currentGenerate()
-                                .getModelTables().get(row);
-                        t.getColumns().forEach(c -> c.setPrimaryKey(false));
-                        t.getColumns().stream().filter(c -> c.getColumnName().equals(value))
-                                .forEach(c -> c.setPrimaryKey(true));
-                    }
                     JComboBox comboBox = (JComboBox) getComponent();
+                    ItemListener[] itemListeners = comboBox.getItemListeners();
+                    for (ItemListener itemListener : itemListeners) {
+                        if (itemListener instanceof MyItemListener) {
+                            comboBox.removeItemListener(itemListener);
+                        }
+                    }
+                    comboBox.addItemListener(new MyItemListener(row));
                     ListWithSelection<String> options = new ListWithSelection<>(CrudSettings.currentGenerate()
                             .getModelTables().get(row).getColumns().stream()
                             .map(Column::getColumnName).collect(Collectors.toList()),
@@ -114,14 +117,30 @@ public class PrimaryKeySelectStep extends ModuleWizardStep {
                     //noinspection unchecked
                     comboBox.setModel(new ListComboBoxModel(options));
                     if (!options.isEmpty()) {
-                        if (options.getSelection() == null) {
-                            options.selectFirst();
-                        }
                         comboBox.setSelectedItem(options.getSelection());
                     }
                     return comboBox;
                 }
             });
+        }
+
+        private static class MyItemListener implements ItemListener {
+            private final int row;
+
+            public MyItemListener(int row) {
+                this.row = row;
+            }
+
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    Table t = CrudSettings.currentGenerate()
+                            .getModelTables().get(row);
+                    t.getColumns().forEach(c -> c.setPrimaryKey(false));
+                    t.getColumns().stream().filter(c -> c.getColumnName().equals(e.getItem()))
+                            .forEach(c -> c.setPrimaryKey(true));
+                }
+            }
         }
     }
 
@@ -164,9 +183,6 @@ public class PrimaryKeySelectStep extends ModuleWizardStep {
             //noinspection unchecked
             comboBox.setModel(new ListComboBoxModel(options));
             if (!options.isEmpty()) {
-                if (options.getSelection() == null) {
-                    options.selectFirst();
-                }
                 comboBox.setSelectedItem(options.getSelection());
             }
             return this;

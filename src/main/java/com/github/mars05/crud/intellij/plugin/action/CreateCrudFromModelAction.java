@@ -13,7 +13,6 @@ import com.github.mars05.crud.intellij.plugin.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.util.CrudUtils;
 import com.github.mars05.crud.intellij.plugin.util.JavaTypeUtils;
 import com.google.common.base.CaseFormat;
-import com.intellij.ide.actions.SynchronizeCurrentFileAction;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -33,6 +32,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocToken;
@@ -99,7 +99,12 @@ public class CreateCrudFromModelAction extends AnAction {
                 TableVisitor tableVisitor = new TableVisitor();
                 psiFile.accept(tableVisitor);
 
-                tables.add(tableVisitor.getTable());
+                Table table = tableVisitor.getTable();
+                if (tables.stream().anyMatch(table1 -> table1.getTableName().equals(table.getTableName()))) {
+                    throw new BizException("[" + table.getTableName() + "]表名重复");
+                }
+
+                tables.add(table);
             }
             CrudSettings.currentGenerate().setModelTables(tables);
         } catch (Exception exception) {
@@ -141,7 +146,7 @@ public class CreateCrudFromModelAction extends AnAction {
                                     + (fileRespDTOS.size() - successList.size()) + "\n项目路径: " + reqDTO.getProjectPath(), NotificationType.INFORMATION), project);
                             //优化生成的所有Java类
                             CrudUtils.doOptimize(project);
-                            new SynchronizeCurrentFileAction().actionPerformed(e);
+                            VirtualFileManager.getInstance().refreshWithoutFileWatcher(true);
                         } catch (Exception ex) {
                             Notifications.Bus.notify(new Notification(NOTIFICATION_GROUP, "代码生成失败", ex.getMessage(), NotificationType.INFORMATION), project);
                         }
@@ -164,7 +169,7 @@ public class CreateCrudFromModelAction extends AnAction {
                 return;
             }
             Table t = new Table();
-            t.setTableName(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, aClass.getName()));
+            t.setTableName(getTableName(aClass));
             t.setRemarks(getRemarks(aClass.getDocComment()));
             t.setColumns(getColumns(aClass.getFields()));
 //            boolean key = false;
@@ -191,24 +196,81 @@ public class CreateCrudFromModelAction extends AnAction {
             return "";
         }
 
+        private String getTableName(PsiClass aClass) {
+            for (PsiAnnotation annotation : aClass.getAnnotations()) {
+                if (annotation.getQualifiedName().endsWith("TableName")) {
+                    PsiAnnotationMemberValue value = annotation.findAttributeValue("value");
+                    if (value == null) {
+                        break;
+                    }
+                    return value.getText().replaceAll("(^\"|\"$)", "");
+                } else if (annotation.getQualifiedName().endsWith("Table")) {
+                    PsiAnnotationMemberValue value = annotation.findAttributeValue("name");
+                    if (value == null) {
+                        break;
+                    }
+                    return value.getText().replaceAll("(^\"|\"$)", "");
+                }
+            }
+            return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, aClass.getName());
+        }
+
         private List<Column> getColumns(PsiField[] fields) {
             List<Column> columns = new ArrayList<>();
             for (PsiField field : fields) {
                 if (null == field.getName()) {
                     continue;
                 }
-                Column column = new Column();
-                column.setColumnName(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, field.getName()));
-                column.setRemarks(getRemarks(field.getDocComment()));
-                column.setType(JavaTypeUtils.ofType(field.getClass()));
-                if ("id".equals(column.getColumnName())) {
-                    column.setPrimaryKey(true);
-                } else {
-                    column.setPrimaryKey(false);
+                Integer ofType = null;
+                try {
+                    ofType = JavaTypeUtils.ofType(Class.forName(field.getType().getCanonicalText()));
+                } catch (ClassNotFoundException ignored) {
                 }
+                if (ofType == null) {
+                    continue;
+                }
+                Column column = new Column();
+                column.setColumnName(getColumnName(field));
+                column.setRemarks(getRemarks(field.getDocComment()));
+                column.setType(ofType);
+                Boolean primaryKey = getPrimaryKey(field);
+                if (primaryKey) {
+                    columns.forEach(c -> c.setPrimaryKey(false));
+                }
+                column.setPrimaryKey(primaryKey);
                 columns.add(column);
             }
             return columns;
+        }
+
+        private Boolean getPrimaryKey(PsiField field) {
+            for (PsiAnnotation annotation : field.getAnnotations()) {
+                if (annotation.getQualifiedName().endsWith("TableId")) {
+                    return true;
+                } else if (annotation.getQualifiedName().endsWith("Id")) {
+                    return true;
+                }
+            }
+            return "id".equals(getColumnName(field));
+        }
+
+        private String getColumnName(PsiField field) {
+            for (PsiAnnotation annotation : field.getAnnotations()) {
+                if (annotation.getQualifiedName().endsWith("TableField")) {
+                    PsiAnnotationMemberValue value = annotation.findAttributeValue("value");
+                    if (value == null) {
+                        break;
+                    }
+                    return value.getText().replaceAll("(^\"|\"$)", "");
+                } else if (annotation.getQualifiedName().endsWith("Column")) {
+                    PsiAnnotationMemberValue value = annotation.findAttributeValue("name");
+                    if (value == null) {
+                        break;
+                    }
+                    return value.getText().replaceAll("(^\"|\"$)", "");
+                }
+            }
+            return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, field.getName());
         }
     }
 
