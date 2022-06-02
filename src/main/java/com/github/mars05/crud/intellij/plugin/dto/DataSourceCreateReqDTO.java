@@ -50,9 +50,6 @@ public class DataSourceCreateReqDTO {
     @NotEmpty
     private String password;
 
-    /**
-     * 数据库
-     */
-    private String database;
+    private String initDb;
 
 }

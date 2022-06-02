@@ -84,6 +84,8 @@ public class CreateCrudFromDbAction extends AnAction {
             CrudSettings.currentGenerate().setProjectPath(projectPath);
         }
 
+        generateDTO.setDsId(null);
+        generateDTO.setDatabase(null);
         generateDTO.setDdl(null);
         generateDTO.setModelTables(null);
         generateDTO.setDdlSelected(false);

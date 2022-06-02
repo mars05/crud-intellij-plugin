@@ -42,5 +42,6 @@ public class DataSourceRespDTO {
      * 密码
      */
     private String password;
+    private String initDb;
 
 }

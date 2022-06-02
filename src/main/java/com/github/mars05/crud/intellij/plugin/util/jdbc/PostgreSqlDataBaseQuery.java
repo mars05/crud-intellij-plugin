@@ -31,8 +31,10 @@ import cn.smallbun.screw.core.util.ExceptionUtils;
 import cn.smallbun.screw.core.util.JdbcUtils;
 import com.github.mars05.crud.intellij.plugin.dto.DataSourceDTO;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static cn.smallbun.screw.core.constant.DefaultConstants.PERCENT_SIGN;
@@ -89,6 +91,24 @@ public class PostgreSqlDataBaseQuery extends AbstractDatabaseQuery {
             JdbcUtils.close(resultSet);
         }
 
+    }
+
+    @Override
+    public List<String> getCatalogs() throws QueryException {
+        ResultSet resultSet = null;
+        try {
+            Connection connection = this.getConnection();
+            resultSet = connection.createStatement().executeQuery("SELECT datname from pg_catalog.pg_database WHERE datistemplate='f'");
+            List<String> rs = new ArrayList<>();
+            while (resultSet.next()) {
+                rs.add(resultSet.getString("datname"));
+            }
+            return rs;
+        } catch (SQLException e) {
+            throw ExceptionUtils.mpe(e);
+        } finally {
+            JdbcUtils.close(resultSet);
+        }
     }
 
     /**

@@ -68,11 +68,13 @@ public class DataSourceService {
 
     public void testConnection(DataSourceCreateReqDTO reqDTO) {
         ValidateUtils.validAnnotation(reqDTO);
+        DataSourceDTO dataSourceDTO = BeanUtils.convertBean(reqDTO, DataSourceDTO.class);
         String testSql;
         switch (Objects.requireNonNull(DatabaseTypeEnum.findByCode(reqDTO.getDatabaseType()))) {
             case MYSQL:
             case PG_SQL:
                 testSql = "SELECT 1";
+                dataSourceDTO.setDatabase(reqDTO.getInitDb());
                 break;
             case ORACLE:
                 testSql = "SELECT 1 FROM DUAL";
@@ -81,7 +83,7 @@ public class DataSourceService {
             default:
                 throw new UnsupportedOperationException("暂不支持数据库[" + reqDTO.getDatabaseType() + "]");
         }
-        Connection connection = JdbcUtils.getConnection(BeanUtils.convertBean(reqDTO, DataSourceDTO.class));
+        Connection connection = JdbcUtils.getConnection(dataSourceDTO);
         try {
             connection.createStatement().execute(testSql);
         } catch (SQLException e) {
@@ -91,7 +93,11 @@ public class DataSourceService {
 
     public List<String> allDatabase(Long dsId) {
         DataSourceDO dataSourceDO = dataSourceRepository.selectById(dsId);
-        return JdbcUtils.getAllCatalog(BeanUtils.convertBean(dataSourceDO, DataSourceDTO.class));
+        DataSourceDTO dataSourceDTO = BeanUtils.convertBean(dataSourceDO, DataSourceDTO.class);
+        if (dataSourceDO.getDatabaseType().equals(DatabaseTypeEnum.PG_SQL.getCode())) {
+            dataSourceDTO.setDatabase(dataSourceDO.getInitDb());
+        }
+        return JdbcUtils.getAllCatalog(dataSourceDTO);
     }
 
     public List<String> allTableName(Long dsId, String database) {

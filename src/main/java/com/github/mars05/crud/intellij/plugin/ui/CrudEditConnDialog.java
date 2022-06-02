@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
 
 /**
  * @author xiaoyu
@@ -39,6 +40,8 @@ public class CrudEditConnDialog extends DialogWrapper {
     private JLabel myPasswordLabel;
     private JButton myTestButton;
     private JComboBox<DatabaseTypeEnum> databaseTypeComboBox;
+    private JTextField myInitDbField;
+    private JLabel myInitDbLabel;
     private volatile boolean isRepaint = true;
     private CrudConnStep myCrudConnStep;
 
@@ -77,15 +80,12 @@ public class CrudEditConnDialog extends DialogWrapper {
         databaseTypeComboBox.addItem(DatabaseTypeEnum.MYSQL);
         databaseTypeComboBox.addItem(DatabaseTypeEnum.PG_SQL);
         databaseTypeComboBox.addItem(DatabaseTypeEnum.ORACLE);
-        if (dsId != null) {
-            DataSourceRespDTO respDTO = dataSourceService.detail(dsId);
-
-            myNameField.setText(respDTO.getName());
-            myHostField.setText(respDTO.getHost());
-            myPortField.setText(String.valueOf(respDTO.getPort()));
-            myUsernameField.setText(respDTO.getUsername());
-            myPasswordField.setText(respDTO.getPassword());
-        }
+        databaseTypeComboBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                switchDbType();
+            }
+        });
+        switchDbType();
         myTestButton.addActionListener(e -> {
             isRepaint = false;
             Container contentPane = getContentPane();
@@ -98,6 +98,7 @@ public class CrudEditConnDialog extends DialogWrapper {
                 createReqDTO.setName(myNameField.getText());
                 createReqDTO.setHost(myHostField.getText());
                 createReqDTO.setPort(Integer.valueOf(myPortField.getText()));
+                createReqDTO.setInitDb(myInitDbField.getText());
                 createReqDTO.setUsername(myUsernameField.getText());
                 createReqDTO.setPassword(new String(myPasswordField.getPassword()));
                 dataSourceService.testConnection(createReqDTO);
@@ -141,6 +142,46 @@ public class CrudEditConnDialog extends DialogWrapper {
         return info;
     }
 
+    private void switchDbType() {
+        if (dsId != null) {
+            databaseTypeComboBox.setEnabled(false);
+            DataSourceRespDTO respDTO = dataSourceService.detail(dsId);
+            databaseTypeComboBox.setSelectedItem(DatabaseTypeEnum.findByCode(respDTO.getDatabaseType()));
+            myNameField.setText(respDTO.getName());
+
+            myHostField.setText(respDTO.getHost());
+            myPortField.setText(String.valueOf(respDTO.getPort()));
+            myInitDbField.setText(respDTO.getInitDb());
+            myUsernameField.setText(respDTO.getUsername());
+            myPasswordField.setText(respDTO.getPassword());
+        }
+        DatabaseTypeEnum typeEnum = (DatabaseTypeEnum) databaseTypeComboBox.getSelectedItem();
+        switch (typeEnum) {
+            case MYSQL:
+                myInitDbLabel.setVisible(false);
+                myInitDbField.setVisible(false);
+                if (dsId == null) {
+                    myHostField.setText("localhost");
+                    myPortField.setText("3306");
+                    myUsernameField.setText("root");
+                }
+                break;
+            case PG_SQL:
+                myInitDbLabel.setVisible(true);
+                myInitDbField.setVisible(true);
+                if (dsId == null) {
+                    myHostField.setText("localhost");
+                    myPortField.setText("5432");
+                    myInitDbField.setText("postgres");
+                    myUsernameField.setText("postgres");
+                }
+                break;
+            case ORACLE:
+                break;
+            default:
+                throw new BizException("暂不支持的数据库类型");
+        }
+    }
 
     @Override
     public void doCancelAction() {
@@ -153,6 +194,7 @@ public class CrudEditConnDialog extends DialogWrapper {
         reqDTO.setDatabaseType(((DatabaseTypeEnum) databaseTypeComboBox.getSelectedItem()).getCode());
         reqDTO.setName(myNameField.getText());
         reqDTO.setHost(myHostField.getText());
+        reqDTO.setInitDb(myInitDbField.getText());
         reqDTO.setPort(Integer.valueOf(myPortField.getText()));
         reqDTO.setUsername(myUsernameField.getText());
         reqDTO.setPassword(new String(myPasswordField.getPassword()));

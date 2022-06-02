@@ -75,7 +75,7 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
      * @return {@link Connection}
      * @throws QueryException QueryException
      */
-    private Connection getConnection() throws QueryException {
+    protected Connection getConnection() throws QueryException {
         try {
             //不为空
             if (!Objects.isNull(connection) && !connection.isClosed()) {
