@@ -100,27 +100,46 @@ public class DataSourceService {
         return JdbcUtils.getAllCatalog(dataSourceDTO);
     }
 
+    public List<String> allSchema(Long dsId, String database) {
+        DataSourceDO dataSourceDO = dataSourceRepository.selectById(dsId);
+        DataSourceDTO dataSourceDTO = BeanUtils.convertBean(dataSourceDO, DataSourceDTO.class);
+        dataSourceDTO.setDatabase(database);
+        return JdbcUtils.getAllSchema(dataSourceDTO);
+    }
+
     public List<String> allTableName(Long dsId, String database) {
         DataSourceDO dataSourceDO = dataSourceRepository.selectById(dsId);
         List<? extends Table> allTable = JdbcUtils.getAllTable(BeanUtils.convertBean(dataSourceDO, DataSourceDTO.class), database);
         return allTable.stream().map(Table::getTableName).collect(Collectors.toList());
     }
 
-    public com.github.mars05.crud.intellij.plugin.model.Table getTable(Long dsId, String database, String tableName) {
+    public List<String> allTableName(Long dsId, String database, String schema) {
         DataSourceDO dataSourceDO = dataSourceRepository.selectById(dsId);
-        List<? extends Table> allTable = JdbcUtils.getAllTable(BeanUtils.convertBean(dataSourceDO, DataSourceDTO.class), database);
+        DataSourceDTO dataSourceDTO = BeanUtils.convertBean(dataSourceDO, DataSourceDTO.class);
+        dataSourceDTO.setDatabase(database);
+        List<? extends Table> allTable = JdbcUtils.getAllTable(dataSourceDTO, database, schema);
+        return allTable.stream().map(Table::getTableName).collect(Collectors.toList());
+    }
+
+    public com.github.mars05.crud.intellij.plugin.model.Table getTable(Long dsId, String database, String tableName) {
+        return this.getTable(dsId, database, null, tableName);
+    }
+
+    public com.github.mars05.crud.intellij.plugin.model.Table getTable(Long dsId, String database, String schema, String tableName) {
+        DataSourceDO dataSourceDO = dataSourceRepository.selectById(dsId);
+        List<? extends Table> allTable = JdbcUtils.getAllTable(BeanUtils.convertBean(dataSourceDO, DataSourceDTO.class), database, schema);
         return allTable.stream().filter(table -> table.getTableName().equals(tableName)).map(table -> {
             com.github.mars05.crud.intellij.plugin.model.Table t = new com.github.mars05.crud.intellij.plugin.model.Table();
             t.setTableName(table.getTableName());
             t.setRemarks(table.getRemarks());
-            t.setColumns(allColumn(dsId, database, tableName));
+            t.setColumns(allColumn(dsId, database, schema, tableName));
             return t;
         }).findFirst().orElse(null);
     }
 
-    public List<com.github.mars05.crud.intellij.plugin.model.Column> allColumn(Long dsId, String database, String table) {
+    public List<com.github.mars05.crud.intellij.plugin.model.Column> allColumn(Long dsId, String database, String schema, String table) {
         DataSourceDO dataSourceDO = dataSourceRepository.selectById(dsId);
-        List<? extends Column> allColumn = JdbcUtils.getAllColumn(BeanUtils.convertBean(dataSourceDO, DataSourceDTO.class), database, table);
+        List<? extends Column> allColumn = JdbcUtils.getAllColumn(BeanUtils.convertBean(dataSourceDO, DataSourceDTO.class), database, schema, table);
         return allColumn.stream().map(column -> {
             com.github.mars05.crud.intellij.plugin.model.Column c = new com.github.mars05.crud.intellij.plugin.model.Column();
             c.setColumnName(column.getColumnName());
@@ -133,12 +152,6 @@ public class DataSourceService {
             }
             return c;
         }).collect(Collectors.toList());
-    }
-
-    public List<String> allColumnName(String dsId, String catalog, String table) {
-        DataSourceDO dataSourceDO = dataSourceRepository.selectById(dsId);
-        List<? extends Column> allColumn = JdbcUtils.getAllColumn(BeanUtils.convertBean(dataSourceDO, DataSourceDTO.class), catalog, table);
-        return allColumn.stream().map(Column::getColumnName).collect(Collectors.toList());
     }
 
 }

@@ -42,6 +42,7 @@ public class CrudActionDialog extends AbstractProjectWizard {
                 new DdlStep(),
                 new CrudConnStep(),
                 new CrudDbStep(),
+                new CrudSchemaStep(),
                 new CrudTableStep(),
                 new CodeStep()
         };

@@ -86,6 +86,8 @@ public class CreateCrudFromDbAction extends AnAction {
 
         generateDTO.setDsId(null);
         generateDTO.setDatabase(null);
+        generateDTO.setSchema(null);
+        generateDTO.setTables(null);
         generateDTO.setDdl(null);
         generateDTO.setModelTables(null);
         generateDTO.setDdlSelected(false);

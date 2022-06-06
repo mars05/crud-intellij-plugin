@@ -47,7 +47,13 @@ public class CrudTableStep extends ModuleWizardStep {
         GenerateDTO generateDTO = CrudSettings.currentGenerate();
         if (generateDTO.getDatabase() != null) {
             myTableList.clearElement();
-            for (String name : dataSourceService.allTableName(generateDTO.getDsId(), generateDTO.getDatabase())) {
+            List<String> strings;
+            if (generateDTO.getSchema() != null) {
+                strings = dataSourceService.allTableName(generateDTO.getDsId(), generateDTO.getDatabase(), generateDTO.getSchema());
+            } else {
+                strings = dataSourceService.allTableName(generateDTO.getDsId(), generateDTO.getDatabase());
+            }
+            for (String name : strings) {
                 myTableList.addElement(new ListElement(CrudIcons.TABLE, name));
             }
         }

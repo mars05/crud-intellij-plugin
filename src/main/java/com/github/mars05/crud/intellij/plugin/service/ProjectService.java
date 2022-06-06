@@ -92,7 +92,7 @@ public class ProjectService {
                 // 线程处理
                 new Thread(() -> {
                     try {
-                        tables.add(dataSourceService.getTable(reqDTO.getDsId(), reqDTO.getDatabase(), tableName));
+                        tables.add(dataSourceService.getTable(reqDTO.getDsId(), reqDTO.getDatabase(), reqDTO.getSchema(), tableName));
                     } finally {
                         latch.countDown();
                     }

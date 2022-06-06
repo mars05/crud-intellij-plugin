@@ -59,11 +59,14 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
     }
 
     public AbstractDatabaseQuery(DataSourceDTO dataSource, String catalog) {
+        dataSource.setDatabase(catalog);
         this.dataSource = dataSource;
         this.catalog = catalog;
     }
 
     public AbstractDatabaseQuery(DataSourceDTO dataSource, String catalog, String schema) {
+        dataSource.setDatabase(catalog);
+        dataSource.setSchema(schema);
         this.dataSource = dataSource;
         this.catalog = catalog;
         this.schema = schema;
@@ -100,6 +103,19 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
             List<String> rs = new ArrayList<>();
             while (catalogs.next()) {
                 rs.add(catalogs.getString("TABLE_CAT"));
+            }
+            return rs;
+        } catch (SQLException e) {
+            throw ExceptionUtils.mpe(e);
+        }
+    }
+
+    public List<String> getSchemas(String catalog) throws QueryException {
+        try {
+            ResultSet schemas = this.getConnection().getMetaData().getSchemas(catalog, null);
+            List<String> rs = new ArrayList<>();
+            while (schemas.next()) {
+                rs.add(schemas.getString("TABLE_SCHEM"));
             }
             return rs;
         } catch (SQLException e) {

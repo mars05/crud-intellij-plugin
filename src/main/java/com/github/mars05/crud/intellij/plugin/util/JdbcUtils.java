@@ -107,6 +107,29 @@ public class JdbcUtils {
         }
     }
 
+    public static List<String> getAllSchema(DataSourceDTO dataSourceVO) {
+        AbstractDatabaseQuery baseQuery = null;
+        try {
+            switch (Objects.requireNonNull(DatabaseTypeEnum.findByCode(dataSourceVO.getDatabaseType()))) {
+                case PG_SQL:
+                    baseQuery = new PostgreSqlDataBaseQuery(dataSourceVO);
+                    return baseQuery.getSchemas(dataSourceVO.getDatabase());
+                case MYSQL:
+                case ORACLE:
+                case SQL_SERVER:
+                default:
+                    throw new BizException("暂不支持");
+            }
+        } finally {
+            if (baseQuery != null) {
+                try {
+                    ((Connection) Permit.getField(baseQuery.getClass(), "connection").get(baseQuery)).close();
+                } catch (Exception ignored) {
+                }
+            }
+        }
+    }
+
     public static List<? extends Table> getAllTable(DataSourceDTO dataSourceVO, String database) {
         AbstractDatabaseQuery baseQuery = null;
         try {
@@ -134,25 +157,51 @@ public class JdbcUtils {
         }
     }
 
-    public static List<? extends Column> getAllColumn(DataSourceDTO dataSourceVO, String catalog, String tableName) {
+    public static List<? extends Table> getAllTable(DataSourceDTO dataSourceVO, String database, String schema) {
+        if (schema == null) {
+            return getAllTable(dataSourceVO, database);
+        }
+        AbstractDatabaseQuery baseQuery = null;
+        try {
+            switch (Objects.requireNonNull(DatabaseTypeEnum.findByCode(dataSourceVO.getDatabaseType()))) {
+                case PG_SQL:
+                    baseQuery = new PostgreSqlDataBaseQuery(dataSourceVO, database, schema);
+                    return baseQuery.getTables();
+                case MYSQL:
+                case ORACLE:
+                case SQL_SERVER:
+                default:
+                    throw new BizException("暂不支持");
+            }
+        } finally {
+            if (baseQuery != null) {
+                try {
+                    ((Connection) Permit.getField(baseQuery.getClass(), "connection").get(baseQuery)).close();
+                } catch (Exception ignored) {
+                }
+            }
+        }
+    }
+
+    public static List<? extends Column> getAllColumn(DataSourceDTO dataSourceVO, String catalog, String schema, String tableName) {
         AbstractDatabaseQuery baseQuery = null;
         List<? extends PrimaryKey> primaryKeys;
         try {
             switch (Objects.requireNonNull(DatabaseTypeEnum.findByCode(dataSourceVO.getDatabaseType()))) {
                 case MYSQL:
-                    baseQuery = new MySqlDataBaseQuery(dataSourceVO, catalog, tableName);
+                    baseQuery = new MySqlDataBaseQuery(dataSourceVO, catalog);
                     primaryKeys = baseQuery.getPrimaryKeys(tableName);
                     return baseQuery.getTableColumns(tableName).stream().peek(column -> {
                         ((MySqlColumnModel) column).setPrimaryKey(String.valueOf(primaryKeys.stream().anyMatch(pk -> pk.getColumnName().equals(column.getColumnName()))));
                     }).collect(Collectors.toList());
                 case ORACLE:
-                    baseQuery = new OracleDataBaseQuery(dataSourceVO, catalog, tableName);
+                    baseQuery = new OracleDataBaseQuery(dataSourceVO, catalog);
                     primaryKeys = baseQuery.getPrimaryKeys(tableName);
                     return baseQuery.getTableColumns(tableName).stream().peek(column -> {
                         ((OracleColumnModel) column).setPrimaryKey(String.valueOf(primaryKeys.stream().anyMatch(pk -> pk.getColumnName().equals(column.getColumnName()))));
                     }).collect(Collectors.toList());
                 case PG_SQL:
-                    baseQuery = new PostgreSqlDataBaseQuery(dataSourceVO, catalog, tableName);
+                    baseQuery = new PostgreSqlDataBaseQuery(dataSourceVO, catalog, schema);
                     primaryKeys = baseQuery.getPrimaryKeys(tableName);
                     return baseQuery.getTableColumns(tableName).stream().peek(column -> {
                         ((PostgreSqlColumnModel) column).setPrimaryKey(String.valueOf(primaryKeys.stream().anyMatch(pk -> pk.getColumnName().equals(column.getColumnName()))));

@@ -18,7 +18,6 @@
 package com.github.mars05.crud.intellij.plugin.util.jdbc;
 
 import cn.smallbun.screw.core.exception.QueryException;
-import cn.smallbun.screw.core.mapping.Mapping;
 import cn.smallbun.screw.core.metadata.Column;
 import cn.smallbun.screw.core.metadata.Database;
 import cn.smallbun.screw.core.metadata.PrimaryKey;

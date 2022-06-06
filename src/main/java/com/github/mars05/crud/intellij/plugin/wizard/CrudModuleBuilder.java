@@ -98,12 +98,12 @@ public class CrudModuleBuilder extends ModuleBuilder {
     @Override
     public ModuleWizardStep[] createWizardSteps(@NotNull WizardContext wizardContext, @NotNull ModulesProvider modulesProvider) {
         CrudSettings.newGenerate().setCodeGenerate(false);
-
         return new ModuleWizardStep[]{
                 new DataSelectStep(),
                 new DdlStep(),
                 new CrudConnStep(),
                 new CrudDbStep(),
+                new CrudSchemaStep(),
                 new CrudTableStep()
         };
     }
