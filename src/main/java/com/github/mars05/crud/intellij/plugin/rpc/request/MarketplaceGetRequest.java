@@ -30,7 +30,7 @@ public class MarketplaceGetRequest extends Request<ProjectTemplateResponse> {
     }
 
     @Override
-    public String getPah() {
+    public String getPath() {
         return "/api/crud-hub/marketplace/get";
     }
 

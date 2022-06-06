@@ -26,7 +26,7 @@ public abstract class Request<T extends Response> {
     }
 
     @JSONField(serialize = false)
-    public abstract String getPah();
+    public abstract String getPath();
 
     @JSONField(serialize = false)
     public abstract Class<T> getResponseClass();

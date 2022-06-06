@@ -47,7 +47,7 @@ public class HubClient {
         try {
             StringBuilder urlBuilder = new StringBuilder();
             urlBuilder.append(StringUtils.removeEnd(url, "/"));
-            urlBuilder.append(request.getPah());
+            urlBuilder.append(request.getPath());
             if (METHOD_GET.equalsIgnoreCase(request.getMethod())) {
                 List<String> paramList = new ArrayList<>();
                 for (Map.Entry<String, String> entry : request.getQuery().entrySet()) {

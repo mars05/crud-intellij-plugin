@@ -24,7 +24,7 @@ public class MarketplaceListRequest extends Request<MarketplaceListResponse> {
     private Integer pageSize = 20;
 
     @Override
-    public String getPah() {
+    public String getPath() {
         return "/api/crud-hub/marketplace/list";
     }
 
