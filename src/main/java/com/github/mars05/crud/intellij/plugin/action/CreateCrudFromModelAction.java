@@ -52,13 +52,14 @@ public class CreateCrudFromModelAction extends AnAction {
 
     @Override
     public void update(AnActionEvent e) {
+        Project project = e.getProject();
         final Presentation presentation = e.getPresentation();
         VirtualFile[] virtualFiles = e.getData(DataKeys.VIRTUAL_FILE_ARRAY);
         if (virtualFiles == null || virtualFiles.length == 0) {
             presentation.setEnabled(false);
         } else {
             for (VirtualFile virtualFile : virtualFiles) {
-                if (virtualFile.isDirectory()) {
+                if (virtualFile.isDirectory() || !(PsiManager.getInstance(project).findFile(virtualFile) instanceof PsiJavaFile)) {
                     presentation.setEnabled(false);
                     return;
                 }
@@ -93,7 +94,7 @@ public class CreateCrudFromModelAction extends AnAction {
             List<Table> tables = new ArrayList<>();
             for (VirtualFile virtualFile : virtualFiles) {
                 PsiFile psiFile = PsiManager.getInstance(project).findFile(virtualFile);
-                if (psiFile == null) {
+                if (!(psiFile instanceof PsiJavaFile)) {
                     throw new BizException("实体类错误: " + virtualFile.getName());
                 }
                 TableVisitor tableVisitor = new TableVisitor();
