@@ -1,6 +1,7 @@
 package com.github.mars05.crud.intellij.plugin.step;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.github.mars05.crud.intellij.plugin.enums.DatabaseTypeEnum;
 import com.github.mars05.crud.intellij.plugin.icon.CrudIcons;
 import com.github.mars05.crud.intellij.plugin.service.DataSourceService;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
@@ -33,7 +34,13 @@ public class CrudDbStep extends ModuleWizardStep {
 
     @Override
     public boolean isStepVisible() {
-        return CollectionUtils.isEmpty(CrudSettings.currentGenerate().getModelTables()) && !CrudSettings.currentGenerate().isDdlSelected();
+        Long dsId = CrudSettings.currentGenerate().getDsId();
+        if (dsId == null) {
+            return false;
+        }
+        return CollectionUtils.isEmpty(CrudSettings.currentGenerate().getModelTables())
+                && !CrudSettings.currentGenerate().isDdlSelected()
+                && !DatabaseTypeEnum.ORACLE.getCode().equals(dataSourceService.detail(dsId).getDatabaseType());
     }
 
     private void getList() {

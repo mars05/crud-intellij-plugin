@@ -43,5 +43,6 @@ public class DataSourceDO extends BaseDO {
     private String password;
 
     private String initDb;
+    private String sid;
 
 }

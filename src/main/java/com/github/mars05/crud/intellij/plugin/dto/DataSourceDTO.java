@@ -54,4 +54,6 @@ public class DataSourceDTO {
 
     private String option;
 
+    private String sid;
+
 }

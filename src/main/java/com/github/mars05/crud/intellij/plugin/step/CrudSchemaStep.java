@@ -41,12 +41,13 @@ public class CrudSchemaStep extends ModuleWizardStep {
         }
         return CollectionUtils.isEmpty(CrudSettings.currentGenerate().getModelTables())
                 && !CrudSettings.currentGenerate().isDdlSelected()
-                && DatabaseTypeEnum.PG_SQL.getCode().equals(dataSourceService.detail(dsId).getDatabaseType());
+                && (DatabaseTypeEnum.PG_SQL.getCode().equals(dataSourceService.detail(dsId).getDatabaseType())
+                || DatabaseTypeEnum.ORACLE.getCode().equals(dataSourceService.detail(dsId).getDatabaseType()));
     }
 
     private void getList() {
         GenerateDTO generateDTO = CrudSettings.currentGenerate();
-        if (generateDTO.getDsId() != null && generateDTO.getDatabase() != null) {
+        if (generateDTO.getDsId() != null) {
             mySchemaList.clearElement();
             for (String name : dataSourceService.allSchema(generateDTO.getDsId(), generateDTO.getDatabase())) {
                 mySchemaList.addElement(new ListElement(CrudIcons.SCHEMA, name));

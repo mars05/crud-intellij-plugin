@@ -22,6 +22,7 @@ public class JavaTypeUtils {
         TYPE_TO_CLASS.put(JDBCType.LONGVARCHAR, String.class);
         TYPE_TO_CLASS.put(JDBCType.CHAR, String.class);
         //整数类型
+        TYPE_TO_CLASS.put(JDBCType.NUMERIC, Integer.class);
         TYPE_TO_CLASS.put(JDBCType.INTEGER, Integer.class);
         TYPE_TO_CLASS.put(JDBCType.BIGINT, Long.class);
         TYPE_TO_CLASS.put(JDBCType.SMALLINT, Integer.class);

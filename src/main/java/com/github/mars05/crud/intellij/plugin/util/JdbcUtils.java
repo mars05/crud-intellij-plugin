@@ -30,8 +30,8 @@ public class JdbcUtils {
 
     public static Connection getConnection(DataSourceDTO dataSource) {
         try {
-            String url = null;
-            String driverClassName = null;
+            String url;
+            String driverClassName;
             switch (Objects.requireNonNull(DatabaseTypeEnum.findByCode(dataSource.getDatabaseType()))) {
                 case MYSQL:
                     url = "jdbc:mysql://";
@@ -46,6 +46,7 @@ public class JdbcUtils {
                     driverClassName = "oracle.jdbc.OracleDriver";
                     break;
                 case SQL_SERVER:
+                default:
                     throw new UnsupportedOperationException("暂不支持数据库[" + dataSource.getDatabaseType() + "]");
             }
             try {
@@ -54,7 +55,10 @@ public class JdbcUtils {
                 throw new RuntimeException(e.getMessage(), e);
             }
             url = url + dataSource.getHost() + ":" + dataSource.getPort();
-            if (StringUtils.isNotBlank(dataSource.getDatabase())) {
+
+            if (DatabaseTypeEnum.ORACLE.getCode().equals(dataSource.getDatabaseType())) {
+                url = url + "/" + dataSource.getSid();
+            } else if (StringUtils.isNotBlank(dataSource.getDatabase())) {
                 url = url + "/" + dataSource.getDatabase();
             }
             List<String> optionList = new ArrayList<>();
@@ -114,8 +118,10 @@ public class JdbcUtils {
                 case PG_SQL:
                     baseQuery = new PostgreSqlDataBaseQuery(dataSourceVO);
                     return baseQuery.getSchemas(dataSourceVO.getDatabase());
-                case MYSQL:
                 case ORACLE:
+                    baseQuery = new OracleDataBaseQuery(dataSourceVO);
+                    return baseQuery.getSchemas(dataSourceVO.getDatabase());
+                case MYSQL:
                 case SQL_SERVER:
                 default:
                     throw new BizException("暂不支持");
@@ -167,8 +173,10 @@ public class JdbcUtils {
                 case PG_SQL:
                     baseQuery = new PostgreSqlDataBaseQuery(dataSourceVO, database, schema);
                     return baseQuery.getTables();
-                case MYSQL:
                 case ORACLE:
+                    baseQuery = new OracleDataBaseQuery(dataSourceVO, database, schema);
+                    return baseQuery.getTables();
+                case MYSQL:
                 case SQL_SERVER:
                 default:
                     throw new BizException("暂不支持");

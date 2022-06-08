@@ -45,7 +45,7 @@ public class CrudTableStep extends ModuleWizardStep {
 
     private void getList() {
         GenerateDTO generateDTO = CrudSettings.currentGenerate();
-        if (generateDTO.getDatabase() != null) {
+        if (generateDTO.getDatabase() != null || generateDTO.getSchema() != null) {
             myTableList.clearElement();
             List<String> strings;
             if (generateDTO.getSchema() != null) {

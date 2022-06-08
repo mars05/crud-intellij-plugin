@@ -1,5 +1,6 @@
 package com.github.mars05.crud.intellij.plugin.dto;
 
+import com.github.mars05.crud.intellij.plugin.model.Column;
 import com.github.mars05.crud.intellij.plugin.model.Table;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -19,6 +20,17 @@ public class TemplateParam {
 
     private Table table;
 
+    public void setTable(Table table) {
+        this.table = table;
+        if (this.table.getRemarks() == null) {
+            this.table.setRemarks(this.table.getTableName());
+        }
+        for (Column column : this.table.getColumns()) {
+            if (column.getRemarks() == null) {
+                column.setRemarks(column.getColumnName());
+            }
+        }
+    }
 
     @Data
     @Accessors(chain = true)

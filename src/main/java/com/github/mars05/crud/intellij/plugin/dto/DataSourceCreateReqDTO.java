@@ -51,5 +51,6 @@ public class DataSourceCreateReqDTO {
     private String password;
 
     private String initDb;
+    private String sid;
 
 }

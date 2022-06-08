@@ -42,6 +42,8 @@ public class CrudEditConnDialog extends DialogWrapper {
     private JComboBox<DatabaseTypeEnum> databaseTypeComboBox;
     private JTextField myInitDbField;
     private JLabel myInitDbLabel;
+    private JTextField mySidField;
+    private JLabel mySidLabel;
     private volatile boolean isRepaint = true;
     private CrudConnStep myCrudConnStep;
 
@@ -99,6 +101,7 @@ public class CrudEditConnDialog extends DialogWrapper {
                 createReqDTO.setHost(myHostField.getText());
                 createReqDTO.setPort(Integer.valueOf(myPortField.getText()));
                 createReqDTO.setInitDb(myInitDbField.getText());
+                createReqDTO.setSid(mySidField.getText());
                 createReqDTO.setUsername(myUsernameField.getText());
                 createReqDTO.setPassword(new String(myPasswordField.getPassword()));
                 dataSourceService.testConnection(createReqDTO);
@@ -152,6 +155,7 @@ public class CrudEditConnDialog extends DialogWrapper {
             myHostField.setText(respDTO.getHost());
             myPortField.setText(String.valueOf(respDTO.getPort()));
             myInitDbField.setText(respDTO.getInitDb());
+            mySidField.setText(respDTO.getSid());
             myUsernameField.setText(respDTO.getUsername());
             myPasswordField.setText(respDTO.getPassword());
         }
@@ -160,6 +164,8 @@ public class CrudEditConnDialog extends DialogWrapper {
             case MYSQL:
                 myInitDbLabel.setVisible(false);
                 myInitDbField.setVisible(false);
+                mySidLabel.setVisible(false);
+                mySidField.setVisible(false);
                 if (dsId == null) {
                     myHostField.setText("localhost");
                     myPortField.setText("3306");
@@ -169,6 +175,8 @@ public class CrudEditConnDialog extends DialogWrapper {
             case PG_SQL:
                 myInitDbLabel.setVisible(true);
                 myInitDbField.setVisible(true);
+                mySidLabel.setVisible(false);
+                mySidField.setVisible(false);
                 if (dsId == null) {
                     myHostField.setText("localhost");
                     myPortField.setText("5432");
@@ -177,6 +185,16 @@ public class CrudEditConnDialog extends DialogWrapper {
                 }
                 break;
             case ORACLE:
+                myInitDbLabel.setVisible(false);
+                myInitDbField.setVisible(false);
+                mySidLabel.setVisible(true);
+                mySidField.setVisible(true);
+                if (dsId == null) {
+                    myHostField.setText("localhost");
+                    myPortField.setText("1521");
+                    mySidField.setText("ORCL");
+                    myUsernameField.setText("");
+                }
                 break;
             default:
                 throw new BizException("暂不支持的数据库类型");
@@ -195,6 +213,7 @@ public class CrudEditConnDialog extends DialogWrapper {
         reqDTO.setName(myNameField.getText());
         reqDTO.setHost(myHostField.getText());
         reqDTO.setInitDb(myInitDbField.getText());
+        reqDTO.setSid(mySidField.getText());
         reqDTO.setPort(Integer.valueOf(myPortField.getText()));
         reqDTO.setUsername(myUsernameField.getText());
         reqDTO.setPassword(new String(myPasswordField.getPassword()));
