@@ -6,42 +6,122 @@
     <description><![CDATA[
 <div>
     <p>
-    <a href="https://github.com/mars05/crud-intellij-plugin" target="_blank" rel="nofollow">GitHub</a>
-     | <a href="https://crud-hub.top/" target="_blank" rel="nofollow">Crud Hub</a>
-      | <a href="https://crud-hub.top/docs/" target="_blank" rel="nofollow">在线文档</a>
+        <a href="https://github.com/mars05/crud-intellij-plugin" target="_blank" rel="nofollow">GitHub</a>
+        |
+        <a href="https://crud-hub.top/" target="_blank" rel="nofollow">Crud Hub</a>
+        |
+        <a href="https://crud-hub.top/docs/" target="_blank" rel="nofollow">在线文档</a>
     </p>
     <img src="https://gitee.com/mars05_xy/static/raw/master/crud-hub/crud-plugin.png">
-    <h1> Crud Plugin </h1>
+    <h1>Crud Plugin</h1>
     <div>
-        <p> A plugin for code generation that helps you quickly generate code from different templates based on database table structures. </p>
-        <p> Features: </p>
+        <p>A plugin for code generation, based on database table structure, DDL,
+            entity classes, to help you quickly generate relevant code from different templates. JPA, MyBatis,
+            MyBatis-Plus template code generation is supported. You can also customize templates to meet customization
+            requirements.
+        </p>
+        <p>Features:</p>
         <ul>
-            <li> Project generation: Create a new project </li>
-            <li> Code generation: Generate code based on table structure in existing project </li>
-            <li> Multiple databases: Maintains database connections globally, including MySQL, PostgreSQL, and Oracle  </li>
-            <li> DDL: Supports code generation from DDL </li>
-            <li> Template import: Import templates on demand from template markets or using access token </li>
+            <li>Project generation: Create a new project</li>
+            <li>Code generation: generate code according to table structure in existing projects,
+                support to generate template code from database tables, DDL, entity classes
+            </li>
+            <li>Multiple databases: Maintains database connections globally, including MySQL, PostgreSQL, and Oracle
+            </li>
+            <li>Template import: Import custom templates as needed from the template market or using access tokens.
+                For template instructions, visit:
+                <a href="https://crud-hub.top/docs/plugin/idea.html#%E6%A8%A1%E6%9D%BF%E5%AF%BC%E5%85%A5">在线文档</a>
+            </li>
         </ul>
-        <p> For more information about curd please visit: <a href="https://github.com/mars05/crud-intellij-plugin">GitHub</a></p>
+        <p>For more information about curd please visit:
+            <a href="https://github.com/mars05/crud-intellij-plugin">GitHub</a>
+        </p>
     </div>
     <br/>
     <br/>
     <div>
-        <p> 一个用于代码生成的插件，可以根据数据库表结构，帮助您从不同的模板快速生成相关代码。 </p>
-        <p> 特性: </p>
+        <p>一个用于代码生成的插件，可以根据数据库表结构、DDL、实体类，帮助您从不同的模板快速生成相关代码。已支持JPA、MyBatis、MyBatis-Plus模板代码生成，也可以通过自定义模板来实现定制化需求。</p>
+        <p>特性:</p>
         <ul>
-            <li> 项目生成: 创建一个新的项目 </li>
-            <li> 代码生成: 在已有项目中，根据表结构生成代码 </li>
-            <li> 多数据库: 全局维护数据库连接，目前支持MySQL、PostgreSQL、Oracle </li>
-            <li> DDL: 支持从DDL生成代码 </li>
-            <li> 模板导入: 按需从模板市场或使用访问令牌导入模板 </li>
+            <li>项目生成: 创建一个新的项目</li>
+            <li>代码生成: 在已有项目中，根据表结构生成代码，支持从数据库表、DDL、实体类生成模板代码</li>
+            <li>多数据库: 全局维护数据库连接，目前支持MySQL、PostgreSQL、Oracle</li>
+            <li>模板导入: 按需从模板市场导入或使用访问令牌导入自定义模板。模板使用说明请访问:
+                <a href="https://crud-hub.top/docs/plugin/idea.html#%E6%A8%A1%E6%9D%BF%E5%AF%BC%E5%85%A5">在线文档</a>
+            </li>
         </ul>
-        <p> 有关增删改查的更多信息，请访问: <a href="https://github.com/mars05/crud-intellij-plugin">GitHub</a></p>
+        <p>有关增删改查的更多信息，请访问:
+            <a href="https://github.com/mars05/crud-intellij-plugin">GitHub</a>
+        </p>
     </div>
 </div>
     ]]></description>
     <change-notes><![CDATA[
-        Change notes will be filled by gradle build
+<div>
+    <p>3.0.0</p>
+    <ul>
+        <li>新增从实体类生成模板代码</li>
+        <li>调整项目右键的动作选项</li>
+        <li>完善从PostgreSQL、Oracle数据库表生成模板代码</li>
+    </ul>
+    <p>2.1.0</p>
+    <ul>
+        <li>支持当前项目路径选择</li>
+        <li>修复代码生成后文件不刷新问题</li>
+    </ul>
+    <p>2.0.3</p>
+    <ul>
+        <li>Optimized code</li>
+    </ul>
+    <p>2.0.2</p>
+    <ul>
+        <li>Update template marketplace url</li>
+    </ul>
+    <p>2.0.1</p>
+    <ul>
+        <li>Update change notes and plugin image</li>
+    </ul>
+    <p>2.0.0</p>
+    <ul>
+        <li>Project structure adjustment</li>
+        <li>Support code templates can be configured</li>
+        <li>Support for multiple databases</li>
+        <li>Support DDL</li>
+    </ul>
+    <p>1.1.2</p>
+    <ul>
+        <li>Support package path persistence</li>
+        <li>Remove the processing judgment of the prefix field of is_ when the curd code is generated</li>
+    </ul>
+    <p>1.1.1</p>
+    <ul>
+        <li>Fixed the slow problem of multiple tables</li>
+    </ul>
+    <p>1.1.0</p>
+    <ul>
+        <li>Support MybatisPlus</li>
+        <li>Refactored template</li>
+    </ul>
+    <p>1.0.3</p>
+    <ul>
+        <li>Fixed template encoding issue</li>
+    </ul>
+    <p>1.0.2</p>
+    <ul>
+        <li>Support internationalization</li>
+        <li>Support test connection</li>
+        <li>Optimize project structure</li>
+        <li>Remove unnecessary dependencies</li>
+    </ul>
+    <p>1.0.1</p>
+    <ul>
+        <li>Changed some plugin information</li>
+    </ul>
+    <p>1.0.0</p>
+    <ul>
+        <li>Initial release</li>
+    </ul>
+</div>
 ]]></change-notes>
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
