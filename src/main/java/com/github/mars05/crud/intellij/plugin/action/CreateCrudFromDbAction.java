@@ -9,7 +9,6 @@ import com.github.mars05.crud.intellij.plugin.ui.CrudActionDialog;
 import com.github.mars05.crud.intellij.plugin.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.util.CrudUtils;
 import com.intellij.ide.IdeView;
-import com.intellij.ide.actions.SynchronizeCurrentFileAction;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -25,6 +24,7 @@ import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -112,7 +112,7 @@ public class CreateCrudFromDbAction extends AnAction {
                                     + (fileRespDTOS.size() - successList.size()) + "\n项目路径: " + reqDTO.getProjectPath(), NotificationType.INFORMATION), project);
                             //优化生成的所有Java类
                             CrudUtils.doOptimize(project);
-                            new SynchronizeCurrentFileAction().actionPerformed(e);
+                            VirtualFileManager.getInstance().refreshWithoutFileWatcher(true);
                         } catch (Exception ex) {
                             Notifications.Bus.notify(new Notification(NOTIFICATION_GROUP, "代码生成失败", ex.getMessage(), NotificationType.INFORMATION), project);
                         }
