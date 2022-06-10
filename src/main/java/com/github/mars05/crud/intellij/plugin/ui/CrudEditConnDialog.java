@@ -1,15 +1,16 @@
 package com.github.mars05.crud.intellij.plugin.ui;
 
+import com.github.mars05.crud.hub.common.dto.DataSourceCreateReqDTO;
+import com.github.mars05.crud.hub.common.dto.DataSourceRespDTO;
+import com.github.mars05.crud.hub.common.dto.DataSourceUpdateReqDTO;
+import com.github.mars05.crud.hub.common.enums.DatabaseTypeEnum;
+import com.github.mars05.crud.hub.common.exception.BizException;
+import com.github.mars05.crud.hub.common.service.DataSourceService;
+import com.github.mars05.crud.hub.common.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.CrudBundle;
-import com.github.mars05.crud.intellij.plugin.dto.DataSourceCreateReqDTO;
-import com.github.mars05.crud.intellij.plugin.dto.DataSourceRespDTO;
-import com.github.mars05.crud.intellij.plugin.dto.DataSourceUpdateReqDTO;
-import com.github.mars05.crud.intellij.plugin.enums.DatabaseTypeEnum;
-import com.github.mars05.crud.intellij.plugin.exception.BizException;
 import com.github.mars05.crud.intellij.plugin.icon.CrudIcons;
-import com.github.mars05.crud.intellij.plugin.service.DataSourceService;
 import com.github.mars05.crud.intellij.plugin.step.CrudConnStep;
-import com.github.mars05.crud.intellij.plugin.util.BeanUtils;
+import com.github.mars05.crud.intellij.plugin.util.CrudUtils;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.ValidationInfo;
@@ -47,7 +48,7 @@ public class CrudEditConnDialog extends DialogWrapper {
     private volatile boolean isRepaint = true;
     private CrudConnStep myCrudConnStep;
 
-    private DataSourceService dataSourceService = new DataSourceService();
+    private final DataSourceService dataSourceService = CrudUtils.getBean(DataSourceService.class);
     private Long dsId;
 
     public CrudEditConnDialog(CrudConnStep crudConnStep, Long dsId) {

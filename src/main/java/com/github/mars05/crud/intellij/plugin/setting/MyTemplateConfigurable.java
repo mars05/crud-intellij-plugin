@@ -1,7 +1,7 @@
 package com.github.mars05.crud.intellij.plugin.setting;
 
+import com.github.mars05.crud.hub.common.exception.BizException;
 import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateRespDTO;
-import com.github.mars05.crud.intellij.plugin.exception.BizException;
 import com.github.mars05.crud.intellij.plugin.rpc.HubClient;
 import com.github.mars05.crud.intellij.plugin.rpc.request.MarketplaceGetRequest;
 import com.github.mars05.crud.intellij.plugin.rpc.request.TokenGetRequest;

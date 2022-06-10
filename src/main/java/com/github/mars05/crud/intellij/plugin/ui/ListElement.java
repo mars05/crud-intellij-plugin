@@ -1,6 +1,6 @@
 package com.github.mars05.crud.intellij.plugin.ui;
 
-import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateDTO;
+import com.github.mars05.crud.hub.common.dto.ProjectTemplateDTO;
 
 import javax.swing.*;
 

@@ -1,9 +1,9 @@
 package com.github.mars05.crud.intellij.plugin.step;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.github.mars05.crud.hub.common.model.Column;
+import com.github.mars05.crud.hub.common.model.Table;
 import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
-import com.github.mars05.crud.intellij.plugin.model.Column;
-import com.github.mars05.crud.intellij.plugin.model.Table;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.openapi.diagnostic.Logger;

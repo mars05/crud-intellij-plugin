@@ -1,17 +1,17 @@
 package com.github.mars05.crud.intellij.plugin.action;
 
-import com.github.mars05.crud.intellij.plugin.dto.CodeGenerateReqDTO;
-import com.github.mars05.crud.intellij.plugin.dto.FileRespDTO;
+import com.github.mars05.crud.hub.common.dto.CodeGenerateReqDTO;
+import com.github.mars05.crud.hub.common.dto.FileRespDTO;
+import com.github.mars05.crud.hub.common.exception.BizException;
+import com.github.mars05.crud.hub.common.model.Column;
+import com.github.mars05.crud.hub.common.model.Table;
+import com.github.mars05.crud.hub.common.service.ProjectService;
+import com.github.mars05.crud.hub.common.util.BeanUtils;
+import com.github.mars05.crud.hub.common.util.JavaTypeUtils;
 import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
-import com.github.mars05.crud.intellij.plugin.exception.BizException;
-import com.github.mars05.crud.intellij.plugin.model.Column;
-import com.github.mars05.crud.intellij.plugin.model.Table;
-import com.github.mars05.crud.intellij.plugin.service.ProjectService;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
 import com.github.mars05.crud.intellij.plugin.ui.CrudActionDialog;
-import com.github.mars05.crud.intellij.plugin.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.util.CrudUtils;
-import com.github.mars05.crud.intellij.plugin.util.JavaTypeUtils;
 import com.google.common.base.CaseFormat;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -48,7 +48,7 @@ import java.util.List;
  */
 public class CreateCrudFromModelAction extends AnAction {
     private static final String NOTIFICATION_GROUP = "Crud Code Generation";
-    private final ProjectService projectService = new ProjectService();
+    private final ProjectService projectService = CrudUtils.getBean(ProjectService.class);
 
     @Override
     public void update(AnActionEvent e) {

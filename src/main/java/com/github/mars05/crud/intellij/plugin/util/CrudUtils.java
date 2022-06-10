@@ -15,6 +15,11 @@
  */
 package com.github.mars05.crud.intellij.plugin.util;
 
+import com.github.mars05.crud.hub.common.service.DataSourceService;
+import com.github.mars05.crud.hub.common.service.ProjectService;
+import com.github.mars05.crud.intellij.plugin.dao.mapper.DataSourceMapper;
+import com.github.mars05.crud.intellij.plugin.dao.mapper.ProjectTemplateMapper;
+import com.github.mars05.crud.intellij.plugin.service.ProjectTemplateService;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.application.Result;
@@ -34,12 +39,34 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author xiaoyu
  */
 public class CrudUtils {
+    private static final Map<Class<?>, Object> BEAN_MAP = new ConcurrentHashMap<>();
     public static final String DEFAULT_CHARSET = "UTF-8";
+
+    static {
+        BEAN_MAP.put(DataSourceMapper.class, new DataSourceMapper());
+        BEAN_MAP.put(ProjectTemplateMapper.class, new ProjectTemplateMapper());
+
+        BEAN_MAP.put(DataSourceService.class, new DataSourceService(getBean(DataSourceMapper.class)));
+        BEAN_MAP.put(ProjectService.class, new ProjectService(getBean(ProjectTemplateMapper.class),
+                getBean(DataSourceService.class)));
+        BEAN_MAP.put(ProjectTemplateService.class, new ProjectTemplateService());
+
+    }
+
+    public static <T> T getBean(Class<T> clazz) {
+        Object obj = BEAN_MAP.get(clazz);
+        if (obj == null) {
+            throw new IllegalStateException("[" + clazz.getName() + "]实例未找到");
+        }
+        return (T) obj;
+    }
 
     public static void invokeAndWait(Project p, Runnable r) {
         invokeAndWait(p, ModalityState.defaultModalityState(), r);
@@ -125,5 +152,6 @@ public class CrudUtils {
     public static void runInBackground(Task.Backgroundable task) {
         task.queue();
     }
+
 
 }

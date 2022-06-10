@@ -1,18 +1,21 @@
 package com.github.mars05.crud.intellij.plugin.wizard;
 
-import com.github.mars05.crud.intellij.plugin.dto.ProjectGenerateReqDTO;
-import com.github.mars05.crud.intellij.plugin.dto.ProjectRespDTO;
+import com.github.mars05.crud.hub.common.dto.ProjectGenerateReqDTO;
+import com.github.mars05.crud.hub.common.dto.ProjectRespDTO;
+import com.github.mars05.crud.hub.common.enums.ProjectTypeEnum;
+import com.github.mars05.crud.hub.common.exception.BizException;
+import com.github.mars05.crud.hub.common.service.DataSourceService;
+import com.github.mars05.crud.hub.common.service.ProjectService;
+import com.github.mars05.crud.hub.common.util.BeanUtils;
+import com.github.mars05.crud.intellij.plugin.dao.mapper.DataSourceMapper;
+import com.github.mars05.crud.intellij.plugin.dao.mapper.ProjectTemplateMapper;
 import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateRespDTO;
-import com.github.mars05.crud.intellij.plugin.enums.ProjectTypeEnum;
-import com.github.mars05.crud.intellij.plugin.exception.BizException;
 import com.github.mars05.crud.intellij.plugin.icon.CrudIcons;
-import com.github.mars05.crud.intellij.plugin.service.ProjectService;
 import com.github.mars05.crud.intellij.plugin.service.ProjectTemplateService;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
 import com.github.mars05.crud.intellij.plugin.step.*;
 import com.github.mars05.crud.intellij.plugin.ui.JavaView;
 import com.github.mars05.crud.intellij.plugin.ui.MavenView;
-import com.github.mars05.crud.intellij.plugin.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.util.CrudUtils;
 import com.google.common.base.Preconditions;
 import com.intellij.ide.util.projectWizard.ModuleBuilder;
@@ -52,8 +55,9 @@ public class CrudModuleBuilder extends ModuleBuilder {
     JavaView javaView = new JavaView();
     MavenView mavenView = new MavenView();
 
-    private ProjectTemplateService projectTemplateService = new ProjectTemplateService();
-    private ProjectService projectService = new ProjectService();
+    private final ProjectTemplateService projectTemplateService = new ProjectTemplateService();
+    private final ProjectService projectService = new ProjectService(new ProjectTemplateMapper(),
+            new DataSourceService(new DataSourceMapper()));
 
     public CrudModuleBuilder() {
     }
@@ -208,7 +212,7 @@ public class CrudModuleBuilder extends ModuleBuilder {
                 if (StringUtils.isBlank(basePackage)) {
                     throw new BizException("basePackage不能为空");
                 }
-                Preconditions.checkArgument(com.github.mars05.crud.intellij.plugin.util.StringUtils.isPackageName(basePackage), "basePackage格式错误");
+                Preconditions.checkArgument(com.github.mars05.crud.hub.common.util.StringUtils.isPackageName(basePackage), "basePackage格式错误");
                 CrudSettings.currentGenerate().setGroupId(groupId);
                 CrudSettings.currentGenerate().setArtifactId(artifactId);
                 CrudSettings.currentGenerate().setVersion(version);

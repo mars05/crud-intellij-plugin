@@ -1,5 +1,6 @@
 package com.github.mars05.crud.intellij.plugin.dto;
 
+import com.github.mars05.crud.hub.common.dto.FileTemplateDTO;
 import lombok.Getter;
 import lombok.Setter;
 

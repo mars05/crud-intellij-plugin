@@ -1,12 +1,12 @@
 package com.github.mars05.crud.intellij.plugin.action;
 
-import com.github.mars05.crud.intellij.plugin.dto.CodeGenerateReqDTO;
-import com.github.mars05.crud.intellij.plugin.dto.FileRespDTO;
+import com.github.mars05.crud.hub.common.dto.CodeGenerateReqDTO;
+import com.github.mars05.crud.hub.common.dto.FileRespDTO;
+import com.github.mars05.crud.hub.common.service.ProjectService;
+import com.github.mars05.crud.hub.common.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
-import com.github.mars05.crud.intellij.plugin.service.ProjectService;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
 import com.github.mars05.crud.intellij.plugin.ui.CrudActionDialog;
-import com.github.mars05.crud.intellij.plugin.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.util.CrudUtils;
 import com.intellij.ide.IdeView;
 import com.intellij.notification.Notification;
@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class CreateCrudFromDdlAction extends AnAction {
     private static final String NOTIFICATION_GROUP = "Crud Code Generation";
-    private final ProjectService projectService = new ProjectService();
+    private final ProjectService projectService = CrudUtils.getBean(ProjectService.class);
 
     @Override
     public void update(AnActionEvent e) {

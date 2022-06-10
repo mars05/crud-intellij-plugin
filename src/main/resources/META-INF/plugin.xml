@@ -138,13 +138,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
         <moduleBuilder builderClass="com.github.mars05.crud.intellij.plugin.wizard.CrudModuleBuilder"/>
+
         <applicationService serviceImplementation="com.github.mars05.crud.intellij.plugin.setting.CrudSettings"/>
-
-        <applicationService
-                serviceImplementation="com.github.mars05.crud.intellij.plugin.dao.mapper.ProjectTemplateMapper"/>
-        <applicationService
-                serviceImplementation="com.github.mars05.crud.intellij.plugin.service.ProjectTemplateService"/>
-
 
         <applicationConfigurable parentId="tools"
                                  instance="com.github.mars05.crud.intellij.plugin.setting.CrudConfigurable"

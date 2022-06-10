@@ -1,11 +1,11 @@
 package com.github.mars05.crud.intellij.plugin.setting;
 
 import com.alibaba.fastjson.JSON;
-import com.github.mars05.crud.intellij.plugin.dao.model.DataSourceDO;
-import com.github.mars05.crud.intellij.plugin.dao.model.ProjectTemplateDO;
+import com.github.mars05.crud.hub.common.dto.ProjectTemplateDTO;
+import com.github.mars05.crud.hub.common.entity.DataSourceDO;
+import com.github.mars05.crud.hub.common.entity.ProjectTemplateDO;
+import com.github.mars05.crud.hub.common.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
-import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateDTO;
-import com.github.mars05.crud.intellij.plugin.util.BeanUtils;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;

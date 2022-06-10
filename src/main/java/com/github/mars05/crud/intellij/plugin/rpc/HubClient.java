@@ -1,7 +1,7 @@
 package com.github.mars05.crud.intellij.plugin.rpc;
 
 import com.alibaba.fastjson.JSON;
-import com.github.mars05.crud.intellij.plugin.exception.BizException;
+import com.github.mars05.crud.hub.common.exception.BizException;
 import com.github.mars05.crud.intellij.plugin.rpc.request.Request;
 import com.github.mars05.crud.intellij.plugin.rpc.response.Response;
 import org.apache.commons.lang3.StringUtils;

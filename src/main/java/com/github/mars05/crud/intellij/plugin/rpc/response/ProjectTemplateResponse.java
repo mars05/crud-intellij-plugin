@@ -1,7 +1,7 @@
 package com.github.mars05.crud.intellij.plugin.rpc.response;
 
 import com.alibaba.fastjson.JSON;
-import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateDTO;
+import com.github.mars05.crud.hub.common.dto.ProjectTemplateDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

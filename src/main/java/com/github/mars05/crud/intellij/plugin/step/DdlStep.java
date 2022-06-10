@@ -1,8 +1,8 @@
 package com.github.mars05.crud.intellij.plugin.step;
 
-import com.github.mars05.crud.intellij.plugin.enums.DatabaseTypeEnum;
+import com.github.mars05.crud.hub.common.enums.DatabaseTypeEnum;
+import com.github.mars05.crud.hub.common.util.SqlUtils;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
-import com.github.mars05.crud.intellij.plugin.util.SqlUtils;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.ui.components.JBScrollPane;

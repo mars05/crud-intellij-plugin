@@ -1,13 +1,13 @@
 package com.github.mars05.crud.intellij.plugin.step;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.github.mars05.crud.intellij.plugin.dto.FileTemplateDTO;
+import com.github.mars05.crud.hub.common.dto.FileTemplateDTO;
+import com.github.mars05.crud.hub.common.enums.FileTemplateTypeEnum;
+import com.github.mars05.crud.hub.common.util.StringUtils;
 import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
 import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateRespDTO;
-import com.github.mars05.crud.intellij.plugin.enums.FileTemplateTypeEnum;
 import com.github.mars05.crud.intellij.plugin.service.ProjectTemplateService;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
-import com.github.mars05.crud.intellij.plugin.util.StringUtils;
 import com.google.common.base.Preconditions;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.openapi.components.ServiceManager;

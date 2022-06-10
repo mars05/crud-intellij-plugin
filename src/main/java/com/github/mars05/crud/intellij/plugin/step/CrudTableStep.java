@@ -1,12 +1,13 @@
 package com.github.mars05.crud.intellij.plugin.step;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.github.mars05.crud.hub.common.service.DataSourceService;
 import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
 import com.github.mars05.crud.intellij.plugin.icon.CrudIcons;
-import com.github.mars05.crud.intellij.plugin.service.DataSourceService;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
 import com.github.mars05.crud.intellij.plugin.ui.CrudList;
 import com.github.mars05.crud.intellij.plugin.ui.ListElement;
+import com.github.mars05.crud.intellij.plugin.util.CrudUtils;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.ui.components.JBLabel;
@@ -26,7 +27,7 @@ public class CrudTableStep extends ModuleWizardStep {
     private JLabel myPathLabel;
     private JScrollPane myScrollPane;
 
-    private DataSourceService dataSourceService = new DataSourceService();
+    private final DataSourceService dataSourceService = CrudUtils.getBean(DataSourceService.class);
 
     public CrudTableStep() {
         this.myTableList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
