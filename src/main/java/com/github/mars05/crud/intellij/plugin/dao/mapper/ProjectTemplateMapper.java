@@ -1,6 +1,6 @@
 package com.github.mars05.crud.intellij.plugin.dao.mapper;
 
-import com.github.mars05.crud.hub.common.entity.ProjectTemplateDO;
+import com.github.mars05.crud.intellij.plugin.dao.model.ProjectTemplateDO;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
 import org.jetbrains.annotations.NotNull;
 

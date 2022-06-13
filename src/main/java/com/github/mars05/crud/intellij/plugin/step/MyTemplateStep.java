@@ -5,8 +5,8 @@ import com.github.mars05.crud.intellij.plugin.service.ProjectTemplateService;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
 import com.github.mars05.crud.intellij.plugin.ui.CrudList;
 import com.github.mars05.crud.intellij.plugin.ui.ListElement;
+import com.github.mars05.crud.intellij.plugin.util.CrudUtils;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.ui.components.JBScrollPane;
 
@@ -22,7 +22,7 @@ public class MyTemplateStep extends ModuleWizardStep {
 
     private Long ptId;
 
-    private final ProjectTemplateService projectTemplateService = ServiceManager.getService(ProjectTemplateService.class);
+    private final ProjectTemplateService projectTemplateService = CrudUtils.getBean(ProjectTemplateService.class);
 
     public MyTemplateStep() {
 

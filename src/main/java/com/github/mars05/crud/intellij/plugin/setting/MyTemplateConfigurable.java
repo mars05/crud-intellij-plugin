@@ -9,7 +9,7 @@ import com.github.mars05.crud.intellij.plugin.rpc.response.ProjectTemplateRespon
 import com.github.mars05.crud.intellij.plugin.service.ProjectTemplateService;
 import com.github.mars05.crud.intellij.plugin.ui.CrudList;
 import com.github.mars05.crud.intellij.plugin.ui.ListElement;
-import com.intellij.openapi.components.ServiceManager;
+import com.github.mars05.crud.intellij.plugin.util.CrudUtils;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.ui.Messages;
@@ -42,7 +42,7 @@ public class MyTemplateConfigurable implements SearchableConfigurable {
 
     private final HubClient hubClient = new HubClient();
 
-    private final ProjectTemplateService projectTemplateService = ServiceManager.getService(ProjectTemplateService.class);
+    private final ProjectTemplateService projectTemplateService = CrudUtils.getBean(ProjectTemplateService.class);
 
     public MyTemplateConfigurable() {
         refreshButton.addActionListener(e -> {

@@ -4,11 +4,8 @@ import com.github.mars05.crud.hub.common.dto.ProjectGenerateReqDTO;
 import com.github.mars05.crud.hub.common.dto.ProjectRespDTO;
 import com.github.mars05.crud.hub.common.enums.ProjectTypeEnum;
 import com.github.mars05.crud.hub.common.exception.BizException;
-import com.github.mars05.crud.hub.common.service.DataSourceService;
 import com.github.mars05.crud.hub.common.service.ProjectService;
 import com.github.mars05.crud.hub.common.util.BeanUtils;
-import com.github.mars05.crud.intellij.plugin.dao.mapper.DataSourceMapper;
-import com.github.mars05.crud.intellij.plugin.dao.mapper.ProjectTemplateMapper;
 import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateRespDTO;
 import com.github.mars05.crud.intellij.plugin.icon.CrudIcons;
 import com.github.mars05.crud.intellij.plugin.service.ProjectTemplateService;
@@ -55,9 +52,8 @@ public class CrudModuleBuilder extends ModuleBuilder {
     JavaView javaView = new JavaView();
     MavenView mavenView = new MavenView();
 
-    private final ProjectTemplateService projectTemplateService = new ProjectTemplateService();
-    private final ProjectService projectService = new ProjectService(new ProjectTemplateMapper(),
-            new DataSourceService(new DataSourceMapper()));
+    private final ProjectTemplateService projectTemplateService = CrudUtils.getBean(ProjectTemplateService.class);
+    private final ProjectService projectService = CrudUtils.getBean(ProjectService.class);
 
     public CrudModuleBuilder() {
     }

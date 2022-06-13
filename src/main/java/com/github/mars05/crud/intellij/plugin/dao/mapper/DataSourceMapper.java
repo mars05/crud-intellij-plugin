@@ -1,6 +1,6 @@
 package com.github.mars05.crud.intellij.plugin.dao.mapper;
 
-import com.github.mars05.crud.hub.common.entity.DataSourceDO;
+import com.github.mars05.crud.intellij.plugin.dao.model.DataSourceDO;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

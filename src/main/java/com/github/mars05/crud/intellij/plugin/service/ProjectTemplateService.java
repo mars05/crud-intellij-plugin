@@ -1,13 +1,12 @@
 package com.github.mars05.crud.intellij.plugin.service;
 
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.github.mars05.crud.hub.common.dto.FileTemplateDTO;
 import com.github.mars05.crud.hub.common.dto.ProjectTemplateDTO;
-import com.github.mars05.crud.hub.common.entity.ProjectTemplateDO;
 import com.github.mars05.crud.hub.common.exception.BizException;
 import com.github.mars05.crud.hub.common.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.dao.mapper.ProjectTemplateMapper;
+import com.github.mars05.crud.intellij.plugin.dao.model.ProjectTemplateDO;
 import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateRespDTO;
 import com.github.mars05.crud.intellij.plugin.util.CrudUtils;
 import com.google.common.base.Preconditions;
@@ -15,7 +14,7 @@ import com.google.common.base.Preconditions;
 import java.util.List;
 
 public class ProjectTemplateService {
-    private final BaseMapper<ProjectTemplateDO> projectTemplateMapper = CrudUtils.getBean(ProjectTemplateMapper.class);
+    private final ProjectTemplateMapper projectTemplateMapper = CrudUtils.getBean(ProjectTemplateMapper.class);
 
     public void create(ProjectTemplateDTO reqDTO) {
         //校验
@@ -37,7 +36,7 @@ public class ProjectTemplateService {
     }
 
     public List<ProjectTemplateRespDTO> list() {
-        return BeanUtils.convertList(projectTemplateMapper.selectList(null), ProjectTemplateRespDTO.class);
+        return BeanUtils.convertList(projectTemplateMapper.selectList(), ProjectTemplateRespDTO.class);
     }
 
     public ProjectTemplateRespDTO detail(Long id) {
@@ -53,7 +52,7 @@ public class ProjectTemplateService {
     }
 
     private void checkRepeat(ProjectTemplateDO param) {
-        if (projectTemplateMapper.selectList(null).stream().anyMatch(projectTemplateDO ->
+        if (projectTemplateMapper.selectList().stream().anyMatch(projectTemplateDO ->
                 projectTemplateDO.getId().equals(param.getId()))) {
             throw new BizException("模板已存在");
         }

@@ -15,10 +15,16 @@
  */
 package com.github.mars05.crud.intellij.plugin.util;
 
+import com.github.mars05.crud.hub.common.dto.DataSourceDTO;
+import com.github.mars05.crud.hub.common.dto.ProjectTemplateDTO;
+import com.github.mars05.crud.hub.common.repository.DataSourceRepository;
+import com.github.mars05.crud.hub.common.repository.ProjectTemplateRepository;
 import com.github.mars05.crud.hub.common.service.DataSourceService;
 import com.github.mars05.crud.hub.common.service.ProjectService;
+import com.github.mars05.crud.hub.common.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.dao.mapper.DataSourceMapper;
 import com.github.mars05.crud.intellij.plugin.dao.mapper.ProjectTemplateMapper;
+import com.github.mars05.crud.intellij.plugin.dao.model.DataSourceDO;
 import com.github.mars05.crud.intellij.plugin.service.ProjectTemplateService;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
@@ -53,8 +59,45 @@ public class CrudUtils {
         BEAN_MAP.put(DataSourceMapper.class, new DataSourceMapper());
         BEAN_MAP.put(ProjectTemplateMapper.class, new ProjectTemplateMapper());
 
-        BEAN_MAP.put(DataSourceService.class, new DataSourceService(getBean(DataSourceMapper.class)));
-        BEAN_MAP.put(ProjectService.class, new ProjectService(getBean(ProjectTemplateMapper.class),
+        BEAN_MAP.put(DataSourceRepository.class, new DataSourceRepository() {
+            private final DataSourceMapper dataSourceMapper = CrudUtils.getBean(DataSourceMapper.class);
+
+            @Override
+            public List<DataSourceDTO> selectList() {
+                return BeanUtils.convertList(dataSourceMapper.selectList(), DataSourceDTO.class);
+            }
+
+            @Override
+            public void insert(DataSourceDTO dataSourceDTO) {
+                dataSourceMapper.insert(BeanUtils.convertBean(dataSourceDTO, DataSourceDO.class));
+            }
+
+            @Override
+            public void updateById(DataSourceDTO dataSourceDTO) {
+                dataSourceMapper.updateById(BeanUtils.convertBean(dataSourceDTO, DataSourceDO.class));
+            }
+
+            @Override
+            public DataSourceDTO selectById(Long id) {
+                return BeanUtils.convertBean(dataSourceMapper.selectById(id), DataSourceDTO.class);
+            }
+
+            @Override
+            public void deleteById(Long id) {
+                dataSourceMapper.deleteById(id);
+            }
+        });
+        BEAN_MAP.put(ProjectTemplateRepository.class, new ProjectTemplateRepository() {
+            private final ProjectTemplateMapper projectTemplateMapper = CrudUtils.getBean(ProjectTemplateMapper.class);
+
+            @Override
+            public ProjectTemplateDTO selectById(Long id) {
+                return BeanUtils.convertBean(projectTemplateMapper.selectById(id), ProjectTemplateDTO.class);
+            }
+        });
+
+        BEAN_MAP.put(DataSourceService.class, new DataSourceService(getBean(DataSourceRepository.class)));
+        BEAN_MAP.put(ProjectService.class, new ProjectService(getBean(ProjectTemplateRepository.class),
                 getBean(DataSourceService.class)));
         BEAN_MAP.put(ProjectTemplateService.class, new ProjectTemplateService());
 
