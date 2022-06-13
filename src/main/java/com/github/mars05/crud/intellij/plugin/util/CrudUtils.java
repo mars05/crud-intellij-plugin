@@ -15,7 +15,9 @@
  */
 package com.github.mars05.crud.intellij.plugin.util;
 
+import com.alibaba.fastjson.JSON;
 import com.github.mars05.crud.hub.common.dto.DataSourceDTO;
+import com.github.mars05.crud.hub.common.dto.FileTemplateDTO;
 import com.github.mars05.crud.hub.common.dto.ProjectTemplateDTO;
 import com.github.mars05.crud.hub.common.repository.DataSourceRepository;
 import com.github.mars05.crud.hub.common.repository.ProjectTemplateRepository;
@@ -25,6 +27,7 @@ import com.github.mars05.crud.hub.common.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.dao.mapper.DataSourceMapper;
 import com.github.mars05.crud.intellij.plugin.dao.mapper.ProjectTemplateMapper;
 import com.github.mars05.crud.intellij.plugin.dao.model.DataSourceDO;
+import com.github.mars05.crud.intellij.plugin.dao.model.ProjectTemplateDO;
 import com.github.mars05.crud.intellij.plugin.service.ProjectTemplateService;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
@@ -92,7 +95,13 @@ public class CrudUtils {
 
             @Override
             public ProjectTemplateDTO selectById(Long id) {
-                return BeanUtils.convertBean(projectTemplateMapper.selectById(id), ProjectTemplateDTO.class);
+                ProjectTemplateDO projectTemplateDO = projectTemplateMapper.selectById(id);
+                if (projectTemplateDO == null) {
+                    return null;
+                }
+                ProjectTemplateDTO projectTemplateDTO = BeanUtils.convertBean(projectTemplateDO, ProjectTemplateDTO.class);
+                projectTemplateDTO.setFileTemplateList(JSON.parseArray(projectTemplateDO.getFileTemplates(), FileTemplateDTO.class));
+                return projectTemplateDTO;
             }
         });
 

@@ -77,12 +77,7 @@ public class CreateCrudFromModelAction extends AnAction {
         String basePackage = "";
         Module module = ModuleUtil.findModuleForFile(virtualFiles[0], project);
         if (module != null) {
-            String moduleRootPath = ModuleRootManager.getInstance(module).getContentRoots()[0].getPath();
-            String actionDir = virtualFiles[0].getPath();
-
-            projectPath = moduleRootPath;
-            String str = StringUtils.substringAfter(actionDir, moduleRootPath + "/src/main/java/");
-            basePackage = StringUtils.replace(str, "/", ".");
+            projectPath = ModuleRootManager.getInstance(module).getContentRoots()[0].getPath();
         } else {
             projectPath = project.getPresentableUrl();
         }
