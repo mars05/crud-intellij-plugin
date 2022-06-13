@@ -58,6 +58,10 @@
     ]]></description>
     <change-notes><![CDATA[
 <div>
+    <p>3.0.1</p>
+    <ul>
+        <li>优化代码和修复bug</li>
+    </ul>
     <p>3.0.0</p>
     <ul>
         <li>新增从实体类生成模板代码</li>
