@@ -148,7 +148,9 @@ public class MyTemplateConfigurable implements SearchableConfigurable {
     }
 
     public static void refreshList() {
-        myTemplateConfigurable.getList();
+        if (myTemplateConfigurable != null) {
+            myTemplateConfigurable.getList();
+        }
     }
 
     private void createUIComponents() {
