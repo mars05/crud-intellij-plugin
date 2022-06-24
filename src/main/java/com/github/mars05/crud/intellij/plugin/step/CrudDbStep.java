@@ -1,8 +1,9 @@
 package com.github.mars05.crud.intellij.plugin.step;
 
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.github.mars05.crud.hub.common.dto.DataSourceDTO;
 import com.github.mars05.crud.hub.common.enums.DatabaseTypeEnum;
 import com.github.mars05.crud.hub.common.service.DataSourceService;
+import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
 import com.github.mars05.crud.intellij.plugin.icon.CrudIcons;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
 import com.github.mars05.crud.intellij.plugin.ui.CrudList;
@@ -35,19 +36,17 @@ public class CrudDbStep extends ModuleWizardStep {
 
     @Override
     public boolean isStepVisible() {
-        Long dsId = CrudSettings.currentGenerate().getDsId();
-        if (dsId == null) {
-            return false;
-        }
-        return CollectionUtils.isEmpty(CrudSettings.currentGenerate().getModelTables())
-                && !CrudSettings.currentGenerate().isDdlSelected()
-                && !DatabaseTypeEnum.ORACLE.getCode().equals(dataSourceService.detail(dsId).getDatabaseType());
+        GenerateDTO generateDTO = CrudSettings.currentGenerate();
+        return 1 == generateDTO.getTableSource()
+                && generateDTO.getDataSource() != null
+                && !DatabaseTypeEnum.ORACLE.getCode().equals(generateDTO.getDataSource().getDatabaseType());
     }
 
     private void getList() {
-        if (CrudSettings.currentGenerate().getDsId() != null) {
+        DataSourceDTO dataSource = CrudSettings.currentGenerate().getDataSource();
+        if (dataSource != null) {
             myDbList.clearElement();
-            for (String name : dataSourceService.allDatabase(CrudSettings.currentGenerate().getDsId())) {
+            for (String name : dataSourceService.allDatabase(dataSource.getId())) {
                 myDbList.addElement(new ListElement(CrudIcons.DB, name));
             }
         }
@@ -65,7 +64,7 @@ public class CrudDbStep extends ModuleWizardStep {
             if (listElement == null) {
                 throw new Exception("请选择一个数据库");
             }
-            CrudSettings.currentGenerate().setDatabase(listElement.getName());
+            CrudSettings.currentGenerate().getDataSource().setDatabase(listElement.getName());
         } catch (Exception e) {
             throw new ConfigurationException(e.getMessage(), "数据库打开失败");
         }

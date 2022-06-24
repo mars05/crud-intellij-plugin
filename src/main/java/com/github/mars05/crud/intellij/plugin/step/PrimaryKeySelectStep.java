@@ -1,6 +1,5 @@
 package com.github.mars05.crud.intellij.plugin.step;
 
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.github.mars05.crud.hub.common.model.Column;
 import com.github.mars05.crud.hub.common.model.Table;
 import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
@@ -49,12 +48,12 @@ public class PrimaryKeySelectStep extends ModuleWizardStep {
 
     @Override
     public boolean isStepVisible() {
-        return CollectionUtils.isNotEmpty(CrudSettings.currentGenerate().getModelTables());
+        return 3 == CrudSettings.currentGenerate().getTableSource();
     }
 
     @Override
     public boolean validate() throws ConfigurationException {
-        List<Table> modelTables = CrudSettings.currentGenerate().getModelTables();
+        List<Table> modelTables = CrudSettings.currentGenerate().getTables();
         for (Table t : modelTables) {
             boolean key = false;
             for (Column column : t.getColumns()) {
@@ -77,9 +76,9 @@ public class PrimaryKeySelectStep extends ModuleWizardStep {
 
     private static Vector<Vector<String>> getData() {
         GenerateDTO generateDTO = CrudSettings.currentGenerate();
-        if (generateDTO.getModelTables() != null) {
+        if (generateDTO.getTables() != null) {
             Vector<Vector<String>> dataVector = new Vector<>();
-            for (Table modelTable : generateDTO.getModelTables()) {
+            for (Table modelTable : generateDTO.getTables()) {
                 Vector<String> v = new Vector<>();
                 v.add(modelTable.getTableName());
                 dataVector.add(v);
@@ -108,10 +107,10 @@ public class PrimaryKeySelectStep extends ModuleWizardStep {
                     }
                     comboBox.addItemListener(new MyItemListener(row));
                     ListWithSelection<String> options = new ListWithSelection<>(CrudSettings.currentGenerate()
-                            .getModelTables().get(row).getColumns().stream()
+                            .getTables().get(row).getColumns().stream()
                             .map(Column::getColumnName).collect(Collectors.toList()),
                             CrudSettings.currentGenerate()
-                                    .getModelTables().get(row).getColumns().stream().filter(Column::getPrimaryKey)
+                                    .getTables().get(row).getColumns().stream().filter(Column::getPrimaryKey)
                                     .map(Column::getColumnName).findFirst().orElse(null)
                     );
                     //noinspection unchecked
@@ -135,7 +134,7 @@ public class PrimaryKeySelectStep extends ModuleWizardStep {
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     Table t = CrudSettings.currentGenerate()
-                            .getModelTables().get(row);
+                            .getTables().get(row);
                     t.getColumns().forEach(c -> c.setPrimaryKey(false));
                     t.getColumns().stream().filter(c -> c.getColumnName().equals(e.getItem()))
                             .forEach(c -> c.setPrimaryKey(true));
@@ -173,11 +172,11 @@ public class PrimaryKeySelectStep extends ModuleWizardStep {
         public JComponent getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JComboBox comboBox = myCombo;
             ListWithSelection<String> options = new ListWithSelection<>(CrudSettings.currentGenerate()
-                    .getModelTables().get(row).getColumns().stream()
+                    .getTables().get(row).getColumns().stream()
                     .map(Column::getColumnName).collect(Collectors.toList()),
                     value != null ? value.toString() :
                             CrudSettings.currentGenerate()
-                                    .getModelTables().get(row).getColumns().stream().filter(Column::getPrimaryKey)
+                                    .getTables().get(row).getColumns().stream().filter(Column::getPrimaryKey)
                                     .map(Column::getColumnName).findFirst().orElse(null)
             );
             //noinspection unchecked

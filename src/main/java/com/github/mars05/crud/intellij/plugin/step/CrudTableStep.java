@@ -1,8 +1,9 @@
 package com.github.mars05.crud.intellij.plugin.step;
 
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.github.mars05.crud.hub.common.dto.DataSourceDTO;
+import com.github.mars05.crud.hub.common.exception.BizException;
+import com.github.mars05.crud.hub.common.model.Table;
 import com.github.mars05.crud.hub.common.service.DataSourceService;
-import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
 import com.github.mars05.crud.intellij.plugin.icon.CrudIcons;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
 import com.github.mars05.crud.intellij.plugin.ui.CrudList;
@@ -45,14 +46,17 @@ public class CrudTableStep extends ModuleWizardStep {
     }
 
     private void getList() {
-        GenerateDTO generateDTO = CrudSettings.currentGenerate();
-        if (generateDTO.getDatabase() != null || generateDTO.getSchema() != null) {
+        DataSourceDTO dataSource = CrudSettings.currentGenerate().getDataSource();
+        if (dataSource == null) {
+            return;
+        }
+        if (dataSource.getDatabase() != null || dataSource.getSchema() != null) {
             myTableList.clearElement();
             List<String> strings;
-            if (generateDTO.getSchema() != null) {
-                strings = dataSourceService.allTableName(generateDTO.getDsId(), generateDTO.getDatabase(), generateDTO.getSchema());
+            if (dataSource.getSchema() != null) {
+                strings = dataSourceService.allTableName(dataSource.getId(), dataSource.getDatabase(), dataSource.getSchema());
             } else {
-                strings = dataSourceService.allTableName(generateDTO.getDsId(), generateDTO.getDatabase());
+                strings = dataSourceService.allTableName(dataSource.getId(), dataSource.getDatabase());
             }
             for (String name : strings) {
                 myTableList.addElement(new ListElement(CrudIcons.TABLE, name));
@@ -62,7 +66,7 @@ public class CrudTableStep extends ModuleWizardStep {
 
     @Override
     public boolean isStepVisible() {
-        return CollectionUtils.isEmpty(CrudSettings.currentGenerate().getModelTables()) && !CrudSettings.currentGenerate().isDdlSelected();
+        return 1 == CrudSettings.currentGenerate().getTableSource();
     }
 
     @Override
@@ -72,7 +76,19 @@ public class CrudTableStep extends ModuleWizardStep {
             if (elements == null || elements.size() == 0) {
                 throw new Exception("请选择至少一个表");
             }
-            CrudSettings.currentGenerate().setTables(elements.stream().map(ListElement::getName).collect(Collectors.toList()));
+            List<String> tableNameList = elements.stream().map(ListElement::getName).collect(Collectors.toList());
+
+            DataSourceDTO dataSource = CrudSettings.currentGenerate().getDataSource();
+            List<Table> tables = dataSourceService.getTables(dataSource.getId(), dataSource.getDatabase(), dataSource.getSchema(), tableNameList);
+
+            List<String> errorList = tableNameList.stream().filter(name -> !tables.stream().map(Table::getTableName)
+                    .collect(Collectors.toList()).contains(name)
+            ).collect(Collectors.toList());
+            if (!errorList.isEmpty()) {
+                throw new BizException(errorList + "表获取失败");
+            }
+
+            CrudSettings.currentGenerate().setTables(tables);
         } catch (Exception e) {
             throw new ConfigurationException(e.getMessage(), "表选择失败");
         }

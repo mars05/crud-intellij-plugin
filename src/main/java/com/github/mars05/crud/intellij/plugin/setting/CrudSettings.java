@@ -2,9 +2,9 @@ package com.github.mars05.crud.intellij.plugin.setting;
 
 import com.alibaba.fastjson.JSON;
 import com.github.mars05.crud.hub.common.dto.ProjectTemplateDTO;
+import com.github.mars05.crud.hub.common.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.dao.model.DataSourceDO;
 import com.github.mars05.crud.intellij.plugin.dao.model.ProjectTemplateDO;
-import com.github.mars05.crud.hub.common.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
@@ -79,10 +79,7 @@ public class CrudSettings implements PersistentStateComponent<CrudState> {
 
     public static void saveGenerate(String projectName) {
         if (CRUD_SETTINGS.generateDTO != null) {
-            CRUD_SETTINGS.generateDTO.setDdl(null);
-            CRUD_SETTINGS.generateDTO.setDsId(null);
-            CRUD_SETTINGS.generateDTO.setDatabase(null);
-            CRUD_SETTINGS.generateDTO.setSchema(null);
+            CRUD_SETTINGS.generateDTO.setDataSource(null);
             CRUD_SETTINGS.generateDTO.setTables(null);
             CRUD_SETTINGS.myState.getGenerateInfoMap().put(projectName, CRUD_SETTINGS.generateDTO);
         }

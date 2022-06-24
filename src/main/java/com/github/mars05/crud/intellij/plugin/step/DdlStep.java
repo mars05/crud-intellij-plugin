@@ -20,6 +20,13 @@ public class DdlStep extends ModuleWizardStep {
 
     @Override
     public JComponent getComponent() {
+        ddlTextArea.setText("CREATE TABLE `demo` (\n" +
+                "  `demo_id` bigint NOT NULL COMMENT '主键ID',\n" +
+                "  `demo_name` varchar(255) DEFAULT NULL COMMENT '名称',\n" +
+                "  `create_time` datetime DEFAULT NULL COMMENT '创建时间',\n" +
+                "  `update_time` datetime DEFAULT NULL COMMENT '修改时间',\n" +
+                "  PRIMARY KEY (`demo_id`)\n" +
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Demo';");
         return myMainPanel;
     }
 
@@ -30,7 +37,7 @@ public class DdlStep extends ModuleWizardStep {
 
     @Override
     public boolean isStepVisible() {
-        return CrudSettings.currentGenerate().isDdlSelected();
+        return 2 == CrudSettings.currentGenerate().getTableSource();
     }
 
     @Override
@@ -43,7 +50,8 @@ public class DdlStep extends ModuleWizardStep {
         } catch (Exception exception) {
             throw new ConfigurationException(exception.getMessage(), "DDL解析错误");
         }
-        CrudSettings.currentGenerate().setDdl(ddlTextArea.getText());
+        CrudSettings.currentGenerate().setTables(SqlUtils.getTablesByDdl(ddlTextArea.getText(),
+                DatabaseTypeEnum.MYSQL));
         return super.validate();
     }
 

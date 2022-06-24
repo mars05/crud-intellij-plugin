@@ -1,6 +1,6 @@
 package com.github.mars05.crud.intellij.plugin.step;
 
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.github.mars05.crud.hub.common.dto.DataSourceDTO;
 import com.github.mars05.crud.hub.common.enums.DatabaseTypeEnum;
 import com.github.mars05.crud.hub.common.service.DataSourceService;
 import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
@@ -36,21 +36,18 @@ public class CrudSchemaStep extends ModuleWizardStep {
 
     @Override
     public boolean isStepVisible() {
-        Long dsId = CrudSettings.currentGenerate().getDsId();
-        if (dsId == null) {
-            return false;
-        }
-        return CollectionUtils.isEmpty(CrudSettings.currentGenerate().getModelTables())
-                && !CrudSettings.currentGenerate().isDdlSelected()
-                && (DatabaseTypeEnum.PG_SQL.getCode().equals(dataSourceService.detail(dsId).getDatabaseType())
-                || DatabaseTypeEnum.ORACLE.getCode().equals(dataSourceService.detail(dsId).getDatabaseType()));
+        GenerateDTO generateDTO = CrudSettings.currentGenerate();
+        return 1 == generateDTO.getTableSource()
+                && generateDTO.getDataSource() != null
+                && (DatabaseTypeEnum.PG_SQL.getCode().equals(generateDTO.getDataSource().getDatabaseType())
+                || DatabaseTypeEnum.ORACLE.getCode().equals(generateDTO.getDataSource().getDatabaseType()));
     }
 
     private void getList() {
-        GenerateDTO generateDTO = CrudSettings.currentGenerate();
-        if (generateDTO.getDsId() != null) {
+        DataSourceDTO dataSource = CrudSettings.currentGenerate().getDataSource();
+        if (dataSource != null) {
             mySchemaList.clearElement();
-            for (String name : dataSourceService.allSchema(generateDTO.getDsId(), generateDTO.getDatabase())) {
+            for (String name : dataSourceService.allSchema(dataSource.getId(), dataSource.getDatabase())) {
                 mySchemaList.addElement(new ListElement(CrudIcons.SCHEMA, name));
             }
         }
@@ -68,7 +65,7 @@ public class CrudSchemaStep extends ModuleWizardStep {
             if (listElement == null) {
                 throw new Exception("请选择一个模式");
             }
-            CrudSettings.currentGenerate().setSchema(listElement.getName());
+            CrudSettings.currentGenerate().getDataSource().setSchema(listElement.getName());
         } catch (Exception e) {
             throw new ConfigurationException(e.getMessage(), "数据库打开失败");
         }

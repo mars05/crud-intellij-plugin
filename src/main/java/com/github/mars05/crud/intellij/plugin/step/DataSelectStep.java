@@ -21,7 +21,7 @@ public class DataSelectStep extends ModuleWizardStep {
     public JComponent getComponent() {
         buttonGroup.add(tableRadioButton);
         buttonGroup.add(ddlRadioButton);
-        if (CrudSettings.currentGenerate().isDdlSelected()) {
+        if (2 == CrudSettings.currentGenerate().getTableSource()) {
             tableRadioButton.setSelected(false);
             ddlRadioButton.setSelected(true);
         } else {
@@ -39,15 +39,7 @@ public class DataSelectStep extends ModuleWizardStep {
     @Override
     public boolean validate() throws ConfigurationException {
         GenerateDTO generateDTO = CrudSettings.currentGenerate();
-        generateDTO.setDdlSelected(ddlRadioButton.isSelected());
-        if (generateDTO.isDdlSelected()) {
-            generateDTO.setDsId(null);
-            generateDTO.setDatabase(null);
-            generateDTO.setSchema(null);
-            generateDTO.setTables(null);
-        } else {
-            generateDTO.setDdl(null);
-        }
+        generateDTO.setTableSource(ddlRadioButton.isSelected() ? 2 : 1);
         return super.validate();
     }
 }

@@ -1,9 +1,10 @@
 package com.github.mars05.crud.intellij.plugin.step;
 
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.github.mars05.crud.hub.common.dto.DataSourceDTO;
 import com.github.mars05.crud.hub.common.dto.DataSourceRespDTO;
 import com.github.mars05.crud.hub.common.enums.DatabaseTypeEnum;
 import com.github.mars05.crud.hub.common.service.DataSourceService;
+import com.github.mars05.crud.hub.common.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.icon.CrudIcons;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
 import com.github.mars05.crud.intellij.plugin.ui.CrudEditConnDialog;
@@ -77,8 +78,7 @@ public class CrudConnStep extends ModuleWizardStep {
 
     @Override
     public boolean isStepVisible() {
-        return CollectionUtils.isEmpty(CrudSettings.currentGenerate().getModelTables()) && !CrudSettings.currentGenerate().isDdlSelected();
-
+        return 1 == CrudSettings.currentGenerate().getTableSource();
     }
 
     @Override
@@ -95,8 +95,7 @@ public class CrudConnStep extends ModuleWizardStep {
                 throw new Exception("请选择一个连接");
             }
             DataSourceRespDTO respDTO = dataSourceService.detail(myConnsList.getSelectedElement().getId());
-            CrudSettings.currentGenerate().setDsId(respDTO.getId());
-
+            CrudSettings.currentGenerate().setDataSource(BeanUtils.convertBean(respDTO, DataSourceDTO.class));
         } catch (Exception e) {
             throw new ConfigurationException(e.getMessage(), "连接打开失败");
         }
@@ -104,7 +103,7 @@ public class CrudConnStep extends ModuleWizardStep {
     }
 
     public void getList() {
-        if (!CrudSettings.currentGenerate().isDdlSelected()) {
+        if (isStepVisible()) {
             myConnsList.clearElement();
             for (DataSourceRespDTO conn : dataSourceService.list()) {
                 Icon icon = null;
@@ -121,7 +120,6 @@ public class CrudConnStep extends ModuleWizardStep {
     }
 
     private void createUIComponents() {
-        // TODO: place custom component creation code here
         myScrollPane = new JBScrollPane();
         myConnLabel = new JBLabel();
     }

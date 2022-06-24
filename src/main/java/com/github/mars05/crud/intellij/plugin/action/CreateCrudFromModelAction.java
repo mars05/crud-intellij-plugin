@@ -83,7 +83,9 @@ public class CreateCrudFromModelAction extends AnAction {
         }
 
         GenerateDTO generateDTO = CrudSettings.getGenerate(project.getName());
-        generateDTO.setCodeGenerate(true);
+        generateDTO.setDataSource(null);
+        generateDTO.setTables(null);
+        generateDTO.setTableSource(3);
 
         try {
             List<Table> tables = new ArrayList<>();
@@ -102,18 +104,11 @@ public class CreateCrudFromModelAction extends AnAction {
 
                 tables.add(table);
             }
-            CrudSettings.currentGenerate().setModelTables(tables);
+            CrudSettings.currentGenerate().setTables(tables);
         } catch (Exception exception) {
             Messages.showErrorDialog(exception.getMessage(), "错误");
             return;
         }
-
-        generateDTO.setDsId(null);
-        generateDTO.setDatabase(null);
-        generateDTO.setSchema(null);
-        generateDTO.setTables(null);
-        generateDTO.setDdl(null);
-        generateDTO.setDdlSelected(false);
 
         if (StringUtils.isNotBlank(basePackage) && StringUtils.isBlank(CrudSettings.currentGenerate().getBasePackage())) {
             CrudSettings.currentGenerate().setBasePackage(basePackage);
@@ -133,18 +128,23 @@ public class CreateCrudFromModelAction extends AnAction {
                     @Override
                     public void run(@NotNull ProgressIndicator indicator) {
                         try {
-                            CodeGenerateReqDTO reqDTO = BeanUtils.convertBean(CrudSettings.currentGenerate(), CodeGenerateReqDTO.class);
-                            CrudSettings.saveGenerate(project.getName());
-                            List<FileRespDTO> fileRespDTOS = projectService.generateCode(reqDTO);
-                            List<FileRespDTO> successList = projectService.processCodeToDisk(reqDTO.getProjectPath(), fileRespDTOS);
+                            GenerateDTO currentGenerate = CrudSettings.currentGenerate();
 
-                            Notifications.Bus.notify(new Notification(NOTIFICATION_GROUP, "代码生成完成", "生成数量: " + successList.size() + "\n失败数量: "
-                                    + (fileRespDTOS.size() - successList.size()) + "\n项目路径: " + reqDTO.getProjectPath(), NotificationType.INFORMATION), project);
+                            List<FileRespDTO> fileRespDTOList = projectService.generateCode(BeanUtils.convertBean(currentGenerate,
+                                    CodeGenerateReqDTO.class));
+                            List<FileRespDTO> successList = projectService.processFileToDisk(currentGenerate.getProjectPath(),
+                                    fileRespDTOList);
+
+                            Notifications.Bus.notify(new Notification(NOTIFICATION_GROUP, "代码生成完成", "生成数量: " + successList.size()
+                                    + "\n失败数量: " + (fileRespDTOList.size() - successList.size())
+                                    + "\n项目路径: " + currentGenerate.getProjectPath(), NotificationType.INFORMATION), project);
                             //优化生成的所有Java类
                             CrudUtils.doOptimize(project);
                             VirtualFileManager.getInstance().refreshWithoutFileWatcher(true);
                         } catch (Exception ex) {
                             Notifications.Bus.notify(new Notification(NOTIFICATION_GROUP, "代码生成失败", ex.getMessage(), NotificationType.INFORMATION), project);
+                        } finally {
+                            CrudSettings.saveGenerate(project.getName());
                         }
                     }
                 });

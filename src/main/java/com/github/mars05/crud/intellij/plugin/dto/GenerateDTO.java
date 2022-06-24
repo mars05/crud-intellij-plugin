@@ -1,5 +1,7 @@
 package com.github.mars05.crud.intellij.plugin.dto;
 
+import com.github.mars05.crud.hub.common.dto.DataSourceDTO;
+import com.github.mars05.crud.hub.common.dto.ProjectTemplateDTO;
 import com.github.mars05.crud.hub.common.model.Table;
 import lombok.Data;
 
@@ -11,7 +13,7 @@ import java.util.List;
 @Data
 public class GenerateDTO {
 
-    private Long ptId;
+    private ProjectTemplateDTO projectTemplate;
 
     private List<String> nameList;
 
@@ -19,12 +21,9 @@ public class GenerateDTO {
 
     private String basePackage;
 
-    private Long dsId;
-    private String database;
-    private String schema;
-    private List<String> tables;
-    private String ddl;
-    private List<Table> modelTables;
+    private DataSourceDTO dataSource;
+
+    private List<Table> tables;
 
     private String projectName;
 
@@ -32,6 +31,8 @@ public class GenerateDTO {
     private String artifactId;
     private String version;
 
-    private boolean ddlSelected;
-    private boolean codeGenerate;
+    /**
+     * 表结构来源 1:数据库表 2:DDL 3:实体类
+     */
+    private Integer tableSource = 0;
 }

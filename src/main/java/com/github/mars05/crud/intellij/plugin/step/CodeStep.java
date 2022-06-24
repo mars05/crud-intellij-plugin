@@ -3,6 +3,7 @@ package com.github.mars05.crud.intellij.plugin.step;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.github.mars05.crud.hub.common.dto.FileTemplateDTO;
 import com.github.mars05.crud.hub.common.enums.FileTemplateTypeEnum;
+import com.github.mars05.crud.hub.common.enums.ProjectTypeEnum;
 import com.github.mars05.crud.hub.common.util.StringUtils;
 import com.github.mars05.crud.intellij.plugin.dto.GenerateDTO;
 import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateRespDTO;
@@ -22,6 +23,7 @@ import com.intellij.util.ui.ThreeStateCheckBox;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +37,7 @@ public class CodeStep extends ModuleWizardStep {
     private ThreeStateCheckBox allCheckBox;
     private CheckBoxList checkBoxList;
     private TextFieldWithBrowseButton projectPathButton;
+    private JLabel basePackageLabel;
 
     private List<String> nameList = new ArrayList<>();
     private Long ptId;
@@ -85,13 +88,16 @@ public class CodeStep extends ModuleWizardStep {
                 throw new Exception("请选择项目路径");
             }
             String basePackage = basePackageTextField.getText();
-            if (StringUtil.isEmptyOrSpaces(basePackage)) {
-                throw new Exception("请输入basePackage");
+            if (Arrays.asList(ProjectTypeEnum.JAVA.getCode(), ProjectTypeEnum.MAVEN.getCode())
+                    .contains(projectTemplateService.detail(ptId).getProjectType())) {
+                if (StringUtil.isEmptyOrSpaces(basePackage)) {
+                    throw new Exception("请输入basePackage");
+                }
+                Preconditions.checkArgument(StringUtils.isPackageName(basePackage), "basePackage格式错误");
             }
             if (getSelectedNameList().isEmpty()) {
                 throw new Exception("请选择需要生成的代码");
             }
-            Preconditions.checkArgument(StringUtils.isPackageName(basePackage), "basePackage格式错误");
 
             GenerateDTO generateDTO = CrudSettings.currentGenerate();
             generateDTO.setProjectPath(projectPath);
@@ -105,11 +111,9 @@ public class CodeStep extends ModuleWizardStep {
 
     private void getList() {
         GenerateDTO generateDTO = CrudSettings.currentGenerate();
-        if (generateDTO.getPtId() != null && !generateDTO.getPtId().equals(ptId) && (CollectionUtils.isNotEmpty(generateDTO.getTables())
-                || org.apache.commons.lang3.StringUtils.isNotBlank(generateDTO.getDdl())
-                || CollectionUtils.isNotEmpty(generateDTO.getModelTables())
-        )) {
-            ptId = generateDTO.getPtId();
+        if (generateDTO.getProjectTemplate() != null && !generateDTO.getProjectTemplate().getId().equals(ptId)
+                && CollectionUtils.isNotEmpty(generateDTO.getTables())) {
+            ptId = generateDTO.getProjectTemplate().getId();
             checkBoxList.clear();
 
             ProjectTemplateRespDTO projectTemplateRespDTO = projectTemplateService.detail(ptId);
@@ -122,6 +126,15 @@ public class CodeStep extends ModuleWizardStep {
                     checkBoxList.addItem(s, s, true);
                 }
             });
+
+            if (Arrays.asList(ProjectTypeEnum.JAVA.getCode(), ProjectTypeEnum.MAVEN.getCode())
+                    .contains(projectTemplateRespDTO.getProjectType())) {
+                basePackageLabel.setVisible(true);
+                basePackageTextField.setVisible(true);
+            } else {
+                basePackageLabel.setVisible(false);
+                basePackageTextField.setVisible(false);
+            }
 
             if (org.apache.commons.lang3.StringUtils.isNotBlank(generateDTO.getProjectPath())) {
                 projectPathButton.setText(generateDTO.getProjectPath());

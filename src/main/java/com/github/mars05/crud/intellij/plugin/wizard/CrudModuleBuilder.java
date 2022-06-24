@@ -2,11 +2,11 @@ package com.github.mars05.crud.intellij.plugin.wizard;
 
 import com.github.mars05.crud.hub.common.dto.ProjectGenerateReqDTO;
 import com.github.mars05.crud.hub.common.dto.ProjectRespDTO;
+import com.github.mars05.crud.hub.common.dto.ProjectTemplateDTO;
 import com.github.mars05.crud.hub.common.enums.ProjectTypeEnum;
 import com.github.mars05.crud.hub.common.exception.BizException;
 import com.github.mars05.crud.hub.common.service.ProjectService;
 import com.github.mars05.crud.hub.common.util.BeanUtils;
-import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateRespDTO;
 import com.github.mars05.crud.intellij.plugin.icon.CrudIcons;
 import com.github.mars05.crud.intellij.plugin.service.ProjectTemplateService;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
@@ -97,7 +97,7 @@ public class CrudModuleBuilder extends ModuleBuilder {
 
     @Override
     public ModuleWizardStep[] createWizardSteps(@NotNull WizardContext wizardContext, @NotNull ModulesProvider modulesProvider) {
-        CrudSettings.newGenerate().setCodeGenerate(false);
+        CrudSettings.newGenerate();
         return new ModuleWizardStep[]{
                 new DataSelectStep(),
                 new DdlStep(),
@@ -111,22 +111,22 @@ public class CrudModuleBuilder extends ModuleBuilder {
     @Nullable
     @Override
     public ModuleWizardStep modifySettingsStep(@NotNull SettingsStep settingsStep) {
-        ProjectTemplateRespDTO respDTO = projectTemplateService.detail(CrudSettings.currentGenerate().getPtId());
+        ProjectTemplateDTO projectTemplate = CrudSettings.currentGenerate().getProjectTemplate();
 
         JTextField moduleNameField = settingsStep.getModuleNameField();
         JTextField groupIdTextField = mavenView.getGroupIdTextField();
         JTextField artifactIdTextField = mavenView.getArtifactIdTextField();
-        JTextField basePackageTextField = ProjectTypeEnum.JAVA.getCode() == respDTO.getProjectType() ?
+        JTextField basePackageTextField = ProjectTypeEnum.JAVA.getCode() == projectTemplate.getProjectType() ?
                 javaView.getBasePackageTextField() : mavenView.getBasePackageTextField();
 
         AtomicBoolean moduleInput = new AtomicBoolean(false);
         AtomicBoolean artifactIdInput = new AtomicBoolean(false);
         AtomicBoolean syncInput = new AtomicBoolean(false);
 
-        if (ProjectTypeEnum.JAVA.getCode() == respDTO.getProjectType()) {
+        if (ProjectTypeEnum.JAVA.getCode() == projectTemplate.getProjectType()) {
             settingsStep.addSettingsComponent(javaView.getComponent());
         }
-        if (ProjectTypeEnum.MAVEN.getCode() == respDTO.getProjectType()) {
+        if (ProjectTypeEnum.MAVEN.getCode() == projectTemplate.getProjectType()) {
             settingsStep.addSettingsComponent(mavenView.getComponent());
             if (moduleNameField != null) {
                 artifactIdTextField.setText(moduleNameField.getText());
@@ -164,7 +164,7 @@ public class CrudModuleBuilder extends ModuleBuilder {
             moduleNameField.getDocument().addDocumentListener(new DocumentAdapter() {
                 @Override
                 protected void textChanged(DocumentEvent e) {
-                    if (ProjectTypeEnum.MAVEN.getCode() == respDTO.getProjectType()) {
+                    if (ProjectTypeEnum.MAVEN.getCode() == projectTemplate.getProjectType()) {
                         if (!syncInput.get()) {
                             moduleInput.set(true);
                             if (!artifactIdInput.get()) {
@@ -183,15 +183,15 @@ public class CrudModuleBuilder extends ModuleBuilder {
 
     @Override
     public boolean validateModuleName(@NotNull String moduleName) throws ConfigurationException {
-        ProjectTemplateRespDTO respDTO = projectTemplateService.detail(CrudSettings.currentGenerate().getPtId());
+        ProjectTemplateDTO projectTemplate = CrudSettings.currentGenerate().getProjectTemplate();
         try {
-            if (respDTO.getProjectType() == ProjectTypeEnum.JAVA.getCode()) {
+            if (projectTemplate.getProjectType() == ProjectTypeEnum.JAVA.getCode()) {
                 String basePackage = javaView.getBasePackageTextField().getText();
                 if (StringUtils.isBlank(basePackage)) {
                     throw new BizException("basePackage不能为空");
                 }
                 CrudSettings.currentGenerate().setBasePackage(basePackage);
-            } else if (respDTO.getProjectType() == ProjectTypeEnum.MAVEN.getCode()) {
+            } else if (projectTemplate.getProjectType() == ProjectTypeEnum.MAVEN.getCode()) {
                 String groupId = mavenView.getGroupIdTextField().getText();
                 String artifactId = mavenView.getArtifactIdTextField().getText();
                 String version = mavenView.getVersionTextField().getText();
@@ -237,7 +237,7 @@ public class CrudModuleBuilder extends ModuleBuilder {
             protected void run(@NotNull Result<VirtualFile> result) throws Throwable {
                 ProjectGenerateReqDTO projectGenerateReqDTO = BeanUtils.convertBean(CrudSettings.currentGenerate(), ProjectGenerateReqDTO.class);
                 ProjectRespDTO respDTO = projectService.generateProject(projectGenerateReqDTO);
-                projectService.processProjectToDisk(respDTO, root.getParent().getCanonicalPath());
+                projectService.processFileToDisk(root.getCanonicalPath(), respDTO.getFiles());
                 VirtualFileManager.getInstance().asyncRefresh(() -> {
                 });
             }

@@ -1,5 +1,7 @@
 package com.github.mars05.crud.intellij.plugin.step;
 
+import com.github.mars05.crud.hub.common.dto.ProjectTemplateDTO;
+import com.github.mars05.crud.hub.common.util.BeanUtils;
 import com.github.mars05.crud.intellij.plugin.dto.ProjectTemplateRespDTO;
 import com.github.mars05.crud.intellij.plugin.service.ProjectTemplateService;
 import com.github.mars05.crud.intellij.plugin.setting.CrudSettings;
@@ -20,7 +22,7 @@ public class MyTemplateStep extends ModuleWizardStep {
     private CrudList templateList;
     private JScrollPane myScrollPane;
 
-    private Long ptId;
+    private ProjectTemplateDTO curr;
 
     private final ProjectTemplateService projectTemplateService = CrudUtils.getBean(ProjectTemplateService.class);
 
@@ -46,8 +48,8 @@ public class MyTemplateStep extends ModuleWizardStep {
             if (projectTemplateRespDTO == null) {
                 throw new Exception("请选择一个项目");
             }
-            ptId = projectTemplateRespDTO.getId();
-            CrudSettings.currentGenerate().setPtId(ptId);
+            curr = BeanUtils.convertBean(projectTemplateRespDTO, ProjectTemplateDTO.class);
+            CrudSettings.currentGenerate().setProjectTemplate(curr);
         } catch (Exception e) {
             throw new ConfigurationException(e.getMessage(), "验证失败");
         }
@@ -55,7 +57,7 @@ public class MyTemplateStep extends ModuleWizardStep {
     }
 
     private void getList() {
-        if (ptId == null) {
+        if (curr == null) {
             templateList.clearElement();
             for (ProjectTemplateRespDTO projectTemplateDTO : projectTemplateService.list()) {
                 templateList.addElement(new ListElement(null,
