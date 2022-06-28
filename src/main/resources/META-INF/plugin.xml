@@ -54,10 +54,18 @@
             <a href="https://github.com/mars05/crud-intellij-plugin">GitHub</a>
         </p>
     </div>
+    <br/>
+    <br/>
+    <img src="https://gitee.com/mars05_xy/static/raw/master/crud-hub/plugin-idea-usage.gif">
 </div>
     ]]></description>
     <change-notes><![CDATA[
 <div>
+    <p>3.0.2</p>
+    <ul>
+        <li>优化生成模板步骤的代码</li>
+        <li>添加插件默认支持的模板: JPA、MyBatis、Vue</li>
+    </ul>
     <p>3.0.1</p>
     <ul>
         <li>优化代码和修复bug</li>
