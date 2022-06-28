@@ -22,13 +22,11 @@
 
 - 项目生成: 创建一个新的项目
 
-- 代码生成: 在已有项目中，根据表结构生成代码
+- 代码生成: 在已有项目中，根据表结构生成代码，支持从数据库表、DDL、实体类生成模板代码
 
 - 多数据库: 全局维护数据库连接，目前支持**MySQL、PostgreSQL、Oracle**
 
-- DDL: 支持从**DDL**生成代码
-
-- 模板导入: 按需从模板市场或使用访问令牌导入模板
+- 模板导入: 按需从模板市场导入或使用访问令牌导入自定义模板。模板使用说明请访问: [在线文档](https://crud-hub.top/docs/plugin/idea.html#%E6%A8%A1%E6%9D%BF%E5%AF%BC%E5%85%A5)
 
 ## 插件安装
 - **插件市场:**  <kbd>File</kbd> > <kbd>Settings</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "crud"</kbd> > <kbd>Install Plugin</kbd>
@@ -60,11 +58,15 @@
 
 打开创建项目的界面:  <kbd>New</kbd> > <kbd>Project</kbd> / <kbd>Module</kbd> > <kbd>Crud</kbd> > <kbd>模板项目选择</kbd>
 
+![](./docs/xmsc.jpg)
 
 ## 代码生成
 
 选中已有项目，鼠标右键: <kbd>Crud</kbd> > <kbd>代码生成</kbd> > <kbd>模板项目选择</kbd>
 
+![](./docs/dmsc1.jpg)
+
+![](./docs/dmsc2.jpg)
 ## 鸣谢
 
 ![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)
