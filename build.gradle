@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.intellij' version '0.4.8'
+    id 'org.jetbrains.intellij' version '0.7.3'
 }
 Properties properties = new Properties()
 def lp = project.rootProject.file('local.properties')
@@ -12,10 +12,8 @@ if (lp.exists()) {
 group 'com.github.mars05'
 version pluginVersion
 
-apply plugin: 'java'
-
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
@@ -55,7 +53,7 @@ intellij {
     version ideaVersion
     intellij.updateSinceUntilBuild false
     sandboxDirectory = "${rootProject.projectDir}/idea-sandbox/idea-${ideaVersion}"
-    plugins 'maven'
+    plugins 'java','maven'
 }
 
 publishPlugin {

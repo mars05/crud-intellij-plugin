@@ -126,6 +126,10 @@ public class CrudUtils {
 
     }
 
+    public static void runWriteCommandAction(final Project project, final Runnable r) {
+        runWhenInitialized(project, () -> WriteCommandAction.writeCommandAction(project).run(r::run));
+    }
+
     public static void runWhenInitialized(final Project project, final Runnable r) {
         if (project.isDisposed()) {
             return;
