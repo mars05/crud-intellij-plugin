@@ -25,7 +25,7 @@ public class MarketplaceListRequest extends Request<MarketplaceListResponse> {
 
     @Override
     public String getPath() {
-        return "/api/crud-hub/marketplace/list";
+        return "/api/crud-admin/marketplace/list";
     }
 
     @Override
