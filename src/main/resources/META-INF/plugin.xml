@@ -61,6 +61,10 @@
     ]]></description>
     <change-notes><![CDATA[
 <div>
+    <p>3.0.3</p>
+    <ul>
+        <li>模板市场调整</li>
+    </ul>
     <p>3.0.2</p>
     <ul>
         <li>优化生成模板步骤的代码</li>
