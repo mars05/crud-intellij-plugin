@@ -31,7 +31,7 @@ public class TokenGetRequest extends Request<ProjectTemplateResponse> {
 
     @Override
     public String getPath() {
-        return "/api/crud-hub/plugin/getTemplate";
+        return "/api/crud-admin/plugin/getTemplate";
     }
 
     @Override
