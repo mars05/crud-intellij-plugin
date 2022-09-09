@@ -41,6 +41,8 @@ import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.util.DisposeAwareRunnable;
 import org.jetbrains.annotations.NotNull;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +53,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CrudUtils {
     private static final Map<Class<?>, Object> BEAN_MAP = new ConcurrentHashMap<>();
-    public static final String DEFAULT_CHARSET = "UTF-8";
+    public static final Charset UTF_8 = StandardCharsets.UTF_8;
 
     static {
         BEAN_MAP.put(DataSourceMapper.class, new DataSourceMapper());
