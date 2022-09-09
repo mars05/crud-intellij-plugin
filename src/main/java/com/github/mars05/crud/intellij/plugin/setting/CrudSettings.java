@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * @author xiaoyu
  */
-@State(name = "CrudSettings", storages = @Storage("crud-plugin-3.0.3.xml"))
+@State(name = "CrudSettings", storages = @Storage("crud-plugin-3.0.4.xml"))
 public class CrudSettings implements PersistentStateComponent<CrudState> {
     private static final CrudSettings CRUD_SETTINGS = ServiceManager.getService(CrudSettings.class);
     private CrudState myState = new CrudState();

@@ -61,6 +61,11 @@
     ]]></description>
     <change-notes><![CDATA[
 <div>
+    <p>3.0.4</p>
+    <ul>
+        <li>乱码修复</li>
+        <li>加载默认模板异常处理</li>
+    </ul>
     <p>3.0.3</p>
     <ul>
         <li>模板市场调整</li>
