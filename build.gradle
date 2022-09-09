@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.intellij' version '0.7.3'
+    id 'org.jetbrains.intellij' version '1.9.0'
 }
 Properties properties = new Properties()
 def lp = project.rootProject.file('local.properties')
@@ -50,12 +50,12 @@ dependencies {
 }
 
 intellij {
-    version ideaVersion
-    intellij.updateSinceUntilBuild false
-    sandboxDirectory = "${rootProject.projectDir}/idea-sandbox/idea-${ideaVersion}"
-    plugins 'java','maven'
+    version.set(ideaVersion)
+    updateSinceUntilBuild.set(false)
+    sandboxDir.set("${rootProject.projectDir}/idea-sandbox/idea-${ideaVersion}")
+    plugins.set(['java', 'maven'])
 }
 
 publishPlugin {
-    token IJ_REPO_TOKEN
+    token.set(IJ_REPO_TOKEN)
 }
