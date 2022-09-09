@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.github.mars05.crud.hub.common.exception.BizException;
 import com.github.mars05.crud.intellij.plugin.rpc.request.Request;
 import com.github.mars05.crud.intellij.plugin.rpc.response.Response;
+import com.github.mars05.crud.intellij.plugin.util.CrudUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -13,7 +14,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +51,7 @@ public class HubClient {
             if (METHOD_GET.equalsIgnoreCase(request.getMethod())) {
                 List<String> paramList = new ArrayList<>();
                 for (Map.Entry<String, String> entry : request.getQuery().entrySet()) {
-                    paramList.add(entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), "utf-8"));
+                    paramList.add(entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), CrudUtils.UTF_8.toString()));
                 }
                 if (!paramList.isEmpty()) {
                     urlBuilder.append("?").append(String.join("&", paramList));
@@ -97,21 +97,21 @@ public class HubClient {
         try {
             InputStream input = conn.getInputStream();
             String ce = conn.getHeaderField("Content-Encoding");
-            if (ce != null && ce.equalsIgnoreCase("gzip")) {
+            if ("gzip".equalsIgnoreCase(ce)) {
                 input = new GZIPInputStream(input);
             }
-            return copyToString(input, Charset.defaultCharset());
+            return copyToString(input);
         } finally {
             conn.getInputStream().close();
         }
     }
 
-    private String copyToString(InputStream in, Charset charset) throws IOException {
+    private String copyToString(InputStream in) throws IOException {
         if (in == null) {
             return "";
         }
         StringBuilder out = new StringBuilder();
-        InputStreamReader reader = new InputStreamReader(in, charset);
+        InputStreamReader reader = new InputStreamReader(in, CrudUtils.UTF_8);
         char[] buffer = new char[4096];
         int bytesRead;
         while ((bytesRead = reader.read(buffer)) != -1) {
