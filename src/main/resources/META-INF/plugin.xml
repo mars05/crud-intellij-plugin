@@ -61,6 +61,10 @@
     ]]></description>
     <change-notes><![CDATA[
 <div>
+    <p>3.0.5</p>
+    <ul>
+        <li>DDL解析Bug修复</li>
+    </ul>
     <p>3.0.4</p>
     <ul>
         <li>乱码修复</li>
