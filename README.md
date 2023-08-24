@@ -67,6 +67,3 @@
 ![](./docs/dmsc1.jpg)
 
 ![](./docs/dmsc2.jpg)
-## 鸣谢
-
-![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)
